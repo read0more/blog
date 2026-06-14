@@ -33,21 +33,27 @@ function build() {
     return;
   }
 
+  // 배포 빌드(OMIT_DRAFTS=true)에서는 draft 글을 검색 인덱스에서도 제외한다.
+  const omitDrafts = process.env.OMIT_DRAFTS === "true";
+
   const files = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".md"));
-  const docs = files.map((file) => {
-    const slug = file.replace(/\.md$/, "");
-    const raw = fs.readFileSync(path.join(POSTS_DIR, file), "utf8");
-    const { data, content } = matter(raw);
-    const plain = extractPlainText(content);
-    return {
-      slug,
-      title: data.title,
-      description: data.description,
-      category: data.category,
-      date: data.date,
-      text: `${data.title} ${data.description} ${plain}`,
-    };
-  });
+  const docs = files
+    .map((file) => {
+      const slug = file.replace(/\.md$/, "");
+      const raw = fs.readFileSync(path.join(POSTS_DIR, file), "utf8");
+      const { data, content } = matter(raw);
+      if (omitDrafts && data.draft === true) return null;
+      const plain = extractPlainText(content);
+      return {
+        slug,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        date: data.date,
+        text: `${data.title} ${data.description} ${plain}`,
+      };
+    })
+    .filter(Boolean);
 
   // 최신순으로 정렬해두면 클라이언트가 동점 결과를 자연스러운 순서로 보여줄 수 있다.
   docs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

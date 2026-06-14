@@ -7,6 +7,8 @@ export interface PostFrontmatter {
   date: string;
   description: string;
   category: string;
+  /** true면 OMIT_DRAFTS 빌드(배포)에서 제외된다. 없으면 공개 글. */
+  draft?: boolean;
 }
 
 /** TOC 항목 — 본문 heading 에서 추출 */

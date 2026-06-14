@@ -56,6 +56,9 @@ jobs:
       - name: Build (static export)
         run: npm run build
         env:
+          # frontmatter draft: true 글을 배포 산출물(out/)·검색 인덱스에서 제외.
+          # 로컬 dev/build/E2E 에서는 미설정이라 그대로 노출된다.
+          OMIT_DRAFTS: "true"
           # 프로젝트 페이지 basePath — 루트 배포 시 빈 값. CI 빌드시 주입.
           BASE_PATH: ${{ secrets.BASE_PATH }}
           # giscus 댓글 — 미설정 시 빌드는 통과하되 댓글 위젯 비활성화

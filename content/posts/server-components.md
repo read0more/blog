@@ -3,6 +3,7 @@ title: "(테스트용 AI 더미 post) React Server Components 멘탈 모델 한 
 date: "2026-04-12T09:00:00.000Z"
 description: "서버에서 렌더되는 컴포넌트가 기존 멘탈 모델을 어떻게 바꾸는지, 경계선 하나로 설명한다."
 category: "React"
+draft: true
 ---
 
 ## 두 개의 세계: 서버와 클라이언트

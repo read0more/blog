@@ -29,7 +29,16 @@ function frontmatterOf(data: Record<string, unknown>, slug: string): PostFrontma
       `Invalid frontmatter in "${slug}.md": title/date/description/category are all required strings.`,
     );
   }
-  return { title, date, description, category };
+  if (typeof data.draft !== "undefined" && typeof data.draft !== "boolean") {
+    throw new Error(`Invalid frontmatter in "${slug}.md": draft must be a boolean.`);
+  }
+  return {
+    title,
+    date,
+    description,
+    category,
+    ...(typeof data.draft === "boolean" ? { draft: data.draft } : {}),
+  };
 }
 
 /**
@@ -46,14 +55,20 @@ async function loadAllPosts(): Promise<Post[]> {
     return cache;
   }
 
+  // 배포(GitHub Actions) 빌드에서만 OMIT_DRAFTS=true 로 draft 글을 제외한다.
+  // 로컬 dev/build/E2E 에서는 미설정이라 draft 글도 그대로 노출된다.
+  const omitDrafts = process.env.OMIT_DRAFTS === "true";
+
   const files = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".md"));
 
-  const posts = await Promise.all(
-    files.map(async (file): Promise<Post> => {
+  const loaded = await Promise.all(
+    files.map(async (file): Promise<Post | null> => {
       const slug = file.replace(/\.md$/, "");
       const raw = fs.readFileSync(path.join(POSTS_DIR, file), "utf8");
       const { data, content } = matter(raw);
       const fm = frontmatterOf(data, slug);
+      // draft 판정은 렌더 전에 — 제외 대상이면 마크다운 렌더도 건너뛴다.
+      if (omitDrafts && fm.draft) return null;
       const { html, toc, plainText } = await renderMarkdown(content);
 
       // 읽는 시간은 제목 + 설명 + 본문 plaintext 기준(디자인 plainOf 와 동일 범위).
@@ -72,6 +87,8 @@ async function loadAllPosts(): Promise<Post[]> {
       };
     }),
   );
+
+  const posts = loaded.filter((p): p is Post => p !== null);
 
   // 최신순 정렬(date 내림차순).
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

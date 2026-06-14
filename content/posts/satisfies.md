@@ -3,6 +3,7 @@ title: "(테스트용 AI 더미 post) satisfies 연산자, 언제 써야 하나"
 date: "2026-03-21T09:00:00.000Z"
 description: "타입을 좁히면서도 추론은 유지하는 satisfies의 쓸모. 타입 주석과 무엇이 다른가."
 category: "TypeScript"
+draft: true
 ---
 
 ## 타입을 좁히되 추론은 잃지 않기
