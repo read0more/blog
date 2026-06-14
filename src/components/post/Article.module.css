@@ -1,0 +1,327 @@
+/* ============================================================
+   Article — 글 상세 레이아웃 + 본문 타이포
+   디자인(read0more.dc.html)의 post detail 영역을 재현한다.
+   본문 HTML(remark/rehype 렌더 결과)에 prose 클래스로 스타일을 입힌다.
+   ============================================================ */
+
+/* ---- 글 상세 내부 그리드: [본문][우측 TOC 188] ----
+   좌측 카테고리 사이드바는 AppShell 이 제공하므로, 글 상세는 본문 + 우측 TOC
+   2컬럼만 main 내부에서 배치한다. */
+.detailWrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 188px;
+  gap: 44px;
+  align-items: start;
+}
+/* TOC 없는 글은 본문 1컬럼 */
+.detailWrap.noToc {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.article {
+  min-width: 0;
+  padding: 34px 0 64px;
+}
+
+.category {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+.categoryLink {
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.categoryLink:hover {
+  text-decoration: underline;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.12;
+  margin: 0 0 16px;
+  color: var(--label);
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  color: var(--label-tertiary);
+  padding-bottom: 22px;
+  margin-bottom: 8px;
+  border-bottom: var(--hairline) solid var(--separator);
+}
+
+/* ============================================================
+   Prose — 본문 HTML 스타일 (dangerouslySetInnerHTML 대상)
+   ============================================================ */
+.prose {
+  margin-top: 8px;
+}
+
+.prose :global(h2) {
+  font-family: var(--font-display);
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 42px 0 14px;
+  color: var(--label);
+}
+.prose :global(h3) {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin: 30px 0 10px;
+  color: var(--label);
+}
+
+/* autolink-headings 가 heading 텍스트를 <a>로 감쌌으므로 색/밑줄 제거 */
+.prose :global(h2) .heading-anchor,
+.prose :global(h3) .heading-anchor,
+.prose :global(h2) :global(a),
+.prose :global(h3) :global(a) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.prose :global(p) {
+  font-size: 18px;
+  line-height: 1.78;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+  color: rgba(0, 0, 0, 0.86);
+}
+
+.prose :global(blockquote) {
+  margin: 26px 0;
+  padding: 6px 0 6px 20px;
+  border-left: 3px solid var(--tint);
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--label-secondary);
+}
+.prose :global(blockquote) :global(p) {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* 불릿 리스트 — tint dot */
+.prose :global(ul) {
+  margin: 0 0 22px;
+  padding-left: 4px;
+  list-style: none;
+}
+.prose :global(ul) :global(li) {
+  position: relative;
+  padding-left: 22px;
+  font-size: 18px;
+  line-height: 1.7;
+  margin-bottom: 9px;
+  color: rgba(0, 0, 0, 0.86);
+}
+.prose :global(ul) :global(li)::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tint);
+}
+
+.prose :global(a) {
+  color: var(--tint);
+}
+
+/* ---- 코드블록 ----
+   rehype-pretty-code 가 figure[data-rehype-pretty-code-figure] > pre 를 만든다.
+   ArticleBody(client)가 마운트 후 이 figure 를 .codeBlock 래퍼로 감싸고
+   헤더(lang + 복사버튼)를 삽입한다. enhance 전에도 보기 흉하지 않도록 기본 스타일을 준다. */
+.prose :global(figure[data-rehype-pretty-code-figure]) {
+  margin: 24px 0;
+  border: var(--hairline) solid var(--separator);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+}
+.prose :global(figure[data-rehype-pretty-code-figure]) :global(pre) {
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.prose :global(figure[data-rehype-pretty-code-figure]) :global(code) {
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+/* 코드블록 헤더(클라이언트가 삽입) */
+.codeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  border-bottom: var(--hairline) solid var(--separator);
+  background: rgba(120, 120, 128, 0.06);
+}
+.codeLang {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--label-tertiary);
+}
+.copyButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 9px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  background: var(--fill-quaternary);
+  color: var(--label-secondary);
+  transition: background 0.12s, color 0.12s;
+}
+.copyButton:hover {
+  background: var(--fill-tertiary);
+}
+.copyButton.copied {
+  color: var(--sys-green);
+}
+
+/* ============================================================
+   Mobile TOC toggle
+   ============================================================ */
+.mobileToc {
+  display: none; /* 데스크톱에선 우측 TOC 가 대신 */
+  margin: 18px 0 6px;
+  border: var(--hairline) solid var(--separator);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.mobileTocButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border: none;
+  background: var(--fill-quaternary);
+  font-family: var(--font-text);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--label);
+  cursor: pointer;
+}
+.mobileTocChevron {
+  transition: transform 0.2s;
+}
+.mobileTocChevron.open {
+  transform: rotate(180deg);
+}
+.mobileTocPanel {
+  padding: 6px 6px 10px;
+}
+.mobileTocItem {
+  cursor: pointer;
+  font-size: 14.5px;
+  line-height: 1.4;
+  padding: 8px 10px;
+  border-radius: 7px;
+  color: var(--label-secondary);
+  text-decoration: none;
+  display: block;
+}
+.mobileTocItem.sub {
+  padding-left: 26px;
+}
+.mobileTocItem.active {
+  color: var(--tint);
+  font-weight: 600;
+}
+
+/* ============================================================
+   Right TOC column (desktop)
+   ============================================================ */
+.tocCol {
+  position: sticky;
+  top: 57px;
+  align-self: start;
+  padding-top: 38px;
+}
+.tocLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--label-tertiary);
+  padding: 0 0 12px 13px;
+}
+.tocList {
+  border-left: 2px solid var(--separator);
+}
+.tocItem {
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 6px 0 6px 13px;
+  margin-left: -2px;
+  border-left: 2px solid transparent;
+  transition: color 0.15s;
+  color: var(--label-secondary);
+  font-weight: 400;
+  text-decoration: none;
+  display: block;
+}
+.tocItem:hover {
+  color: var(--label);
+  text-decoration: none;
+}
+.tocItem.sub {
+  padding-left: 26px;
+}
+.tocItem.active {
+  border-left-color: var(--tint);
+  color: var(--tint);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .detailWrap,
+  .detailWrap.noToc {
+    display: block;
+  }
+  .article {
+    padding: 22px 0 48px;
+  }
+  .title {
+    font-size: 30px;
+  }
+  .tocCol {
+    display: none;
+  }
+  .mobileToc {
+    display: block;
+  }
+}

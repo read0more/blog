@@ -1,0 +1,59 @@
+/* ============================================================
+   iOS Design System — Spacing, radius & layout tokens
+   iOS layout is built on a soft 4/8pt rhythm with very specific
+   chrome dimensions (44pt tab/nav bars, 51×31 switches, 34pt home
+   indicator) and the modern "continuous corner" radii.
+   ============================================================ */
+
+:root {
+  /* ---- Spacing scale (pt ≈ px @1x) ---- */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;   /* standard screen edge margin */
+  --space-6: 20px;
+  --space-7: 24px;
+  --space-8: 32px;
+  --space-9: 44px;
+  --space-10: 64px;
+
+  /* Standard horizontal screen margin */
+  --margin-screen: 16px;
+  /* Inset for grouped-list separators (aligns to text, not edge) */
+  --inset-list: 16px;
+
+  /* ---- Corner radii (continuous / "squircle" feel) ---- */
+  --radius-xs: 6px;    /* small chips, segmented thumbs */
+  --radius-sm: 8px;
+  --radius-md: 10px;   /* buttons, alerts inner */
+  --radius-lg: 12px;   /* search field, cards */
+  --radius-xl: 14px;   /* alerts, action sheets */
+  --radius-2xl: 20px;  /* large sheets, widgets (small) */
+  --radius-3xl: 38px;  /* device / app-icon superellipse */
+  --radius-card: 10px;
+  --radius-sheet: 10px;
+  --radius-full: 9999px;
+
+  /* App-icon corner radius ratio is ~22.37% of the icon size */
+  --radius-app-icon: 22.37%;
+
+  /* ---- Control / chrome heights ---- */
+  --control-h: 50px;        /* full-width primary button / form field */
+  --control-h-sm: 34px;     /* small/compact button */
+  --hit-target: 44px;       /* minimum tappable size */
+  --nav-bar-h: 44px;
+  --nav-bar-large-h: 96px;  /* large-title nav bar */
+  --tab-bar-h: 49px;
+  --status-bar-h: 47px;     /* iPhone 13/14 notch class */
+  --home-indicator-h: 34px;
+  --switch-w: 51px;
+  --switch-h: 31px;
+  --switch-knob: 27px;
+  --slider-track-h: 4px;
+  --slider-knob: 28px;
+
+  /* ---- Border widths ---- */
+  --hairline: 0.5px;   /* iOS separators render as a physical hairline */
+  --border: 1px;
+}

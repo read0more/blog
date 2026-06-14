@@ -1,0 +1,99 @@
+/* ============================================================
+   NotFoundView — 404 화면(디자인 read0more.dc.html 의 404 블록)
+   ============================================================ */
+
+.wrap {
+  padding: 80px 0;
+  text-align: center;
+}
+
+.code {
+  font-family: var(--font-display);
+  font-size: 90px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--tint);
+  line-height: 1;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  margin: 18px 0 8px;
+  color: var(--label);
+}
+
+.message {
+  font-size: 16px;
+  color: var(--label-secondary);
+  margin: 0 0 28px;
+  line-height: 1.5;
+}
+
+.homeButtonWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 34px;
+}
+
+/* iOS filled large button (200x50) — 디자인 시스템 Button 재현 */
+.homeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 50px;
+  border-radius: var(--radius-md);
+  background: var(--tint);
+  color: var(--on-tint);
+  font-family: var(--font-text);
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.homeButton:hover {
+  background: var(--tint-pressed);
+  text-decoration: none;
+}
+
+.recentLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--label-tertiary);
+  margin-bottom: 14px;
+}
+
+.recentList {
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.recentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
+}
+.recentRow:hover {
+  background: var(--fill-quaternary);
+  text-decoration: none;
+}
+
+.recentTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--label);
+}

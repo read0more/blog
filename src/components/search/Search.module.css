@@ -1,0 +1,238 @@
+/* ============================================================
+   Search — 데스크톱 헤더 검색박스 + 결과 패널 + 모바일 오버레이
+   디자인(read0more.dc.html)의 검색 영역 수치를 재현한다.
+   ============================================================ */
+
+/* ---- 데스크톱 헤더 검색박스 (300x36) ---- */
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 300px;
+  height: 36px;
+  background: var(--fill-tertiary);
+  border-radius: 10px;
+  padding: 0 12px;
+}
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-text);
+  font-size: 15px;
+  color: var(--label);
+  min-width: 0;
+}
+.clearButton {
+  display: flex;
+  border: none;
+  background: var(--label-tertiary);
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex: none;
+}
+
+/* ---- 데스크톱 결과 패널 (560px) ---- */
+.panelScrim {
+  position: fixed;
+  inset: 57px 0 0 0;
+  background: rgba(0, 0, 0, 0.04);
+  z-index: 35;
+  animation: r0-fade 0.18s ease;
+}
+.panel {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  max-height: 520px;
+  background: var(--bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow-popover);
+  border: var(--hairline) solid var(--separator);
+  z-index: 36;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: r0-panel 0.2s ease;
+}
+.panelHeader {
+  padding: 13px 18px;
+  border-bottom: var(--hairline) solid var(--separator);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--label-tertiary);
+}
+.panelBody {
+  overflow-y: auto;
+}
+
+/* ---- 결과 카드 ---- */
+.result {
+  display: block;
+  padding: 14px 18px;
+  border-bottom: var(--hairline) solid var(--separator);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+.result:hover {
+  background: var(--fill-quaternary);
+  text-decoration: none;
+}
+.resultCategory {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.resultTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--label);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.resultSnippet {
+  font-size: 13.5px;
+  color: var(--label-secondary);
+  line-height: 1.5;
+}
+.resultSnippet mark {
+  background: rgba(0, 122, 255, 0.16);
+  color: var(--tint);
+  border-radius: 3px;
+  padding: 0 1px;
+  font-weight: 600;
+}
+
+/* ---- 결과 없음 ---- */
+.empty {
+  padding: 34px 24px;
+  text-align: center;
+}
+.emptyTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--label);
+  margin-bottom: 6px;
+}
+.emptyDesc {
+  font-size: 14px;
+  color: var(--label-secondary);
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+.emptyChips {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.emptyChip {
+  font-size: 13px;
+  font-family: var(--font-text);
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: var(--hairline) solid var(--separator);
+  background: var(--bg);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.emptyChip:hover {
+  background: var(--fill-quaternary);
+  text-decoration: none;
+}
+
+/* ============================================================
+   모바일 검색 오버레이 (전체화면)
+   ============================================================ */
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  animation: r0-fade 0.18s ease;
+}
+.mobileBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: var(--hairline) solid var(--separator);
+}
+.mobileSearchField {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 38px;
+  background: var(--fill-tertiary);
+  border-radius: 10px;
+  padding: 0 12px;
+}
+.mobileInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-text);
+  font-size: 16px;
+  color: var(--label);
+  min-width: 0;
+}
+.mobileCancel {
+  border: none;
+  background: transparent;
+  font-family: var(--font-text);
+  font-size: 16px;
+  color: var(--tint);
+  cursor: pointer;
+  padding: 4px;
+  flex: none;
+}
+.mobileBody {
+  flex: 1;
+  overflow-y: auto;
+}
+.mobileIdle {
+  padding: 50px 24px;
+  text-align: center;
+  color: var(--label-tertiary);
+  font-size: 14px;
+}
+.mobileEmpty {
+  padding: 50px 24px;
+  text-align: center;
+}
+
+@keyframes r0-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes r0-panel {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

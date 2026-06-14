@@ -1,0 +1,88 @@
+/* ============================================================
+   PostList — 홈/카테고리 글 목록(헤더 + 카드)
+   디자인(read0more.dc.html)의 list 영역 수치를 그대로 옮긴다.
+   ============================================================ */
+
+.header {
+  padding-top: 30px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+  color: var(--label);
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--label-secondary);
+  margin-bottom: 14px;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: block;
+  padding: 22px 12px;
+  margin: 0 -12px;
+  border-bottom: var(--hairline) solid var(--separator);
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background 0.15s;
+  text-decoration: none;
+  color: inherit;
+}
+.card:hover {
+  background: var(--fill-quaternary);
+  text-decoration: none;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 9px;
+  font-size: 13px;
+}
+.metaCategory {
+  font-weight: 600;
+}
+.metaDot {
+  color: var(--label-tertiary);
+}
+.metaText {
+  color: var(--label-tertiary);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin: 0 0 8px;
+  color: var(--label);
+}
+
+.cardDesc {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--label-secondary);
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .header {
+    padding-top: 22px;
+  }
+  .title {
+    font-size: 28px;
+  }
+}

@@ -1,0 +1,295 @@
+/* ============================================================
+   AppShell — 공통 레이아웃(헤더 + 좌측 사이드바 + 본문)
+   디자인(read0more.dc.html)의 프레임 내부 레이아웃을 실제 반응형으로 옮긴다.
+   디자인의 미리보기 프레임/디바이스 토글은 재현하지 않는다(뷰포트가 프레임).
+   ============================================================ */
+
+.shell {
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+/* ---- Frosted header (57px) ---- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 57px;
+  padding: 0 22px;
+  background: var(--material-chrome);
+  /* lightningcss(Turbopack)가 var() 값을 가진 backdrop-filter 선언을 drop 하므로
+     토큰(--blur-regular) 값을 리터럴로 작성한다. blur(30px) saturate(180%). */
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(180%);
+  border-bottom: var(--hairline) solid var(--separator);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  color: var(--label);
+  user-select: none;
+  text-decoration: none;
+}
+.wordmark:hover {
+  text-decoration: none;
+}
+
+/* Desktop search box (300x36) — 검색 동작은 Task #7. 여기선 모양/슬롯. */
+.headerSearchSlot {
+  margin-left: auto;
+}
+
+/* Icon buttons (hamburger / mobile search) */
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 9px;
+  color: var(--label);
+}
+.iconButton:hover {
+  background: var(--fill-quaternary);
+}
+
+/* Hamburger + mobile search are hidden on desktop */
+.mobileOnly {
+  display: none;
+}
+.desktopOnly {
+  display: flex;
+}
+
+/* ---- Content grid: [sidebar 200] [main] ---- */
+.contentWrap {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 44px;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+  align-items: start;
+}
+
+/* 글 상세 컨테이너 폭(dc.html 689-694):
+   - TOC 없음 → maxW 900 (짧은 글 가독성: 본문 줄길이 제한)
+   - TOC 있음 → maxW 1140 (본문 + 우측 TOC 188px)
+   우측 TOC(.tocCol, [data-testid="toc"]) 가 실제 렌더될 때만 :has 로 넓힌다.
+   본문/TOC 의 내부 2컬럼 분할은 글 상세 컴포넌트(Article)가 담당한다. */
+.contentWrap.post {
+  max-width: 900px;
+}
+.contentWrap.post:has([data-testid="toc"]) {
+  max-width: 1140px;
+}
+
+/* Sidebar (sticky) */
+.sidebar {
+  position: sticky;
+  top: 57px;
+  align-self: start;
+  padding-top: 26px;
+}
+
+.sidebarHeading {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--label-tertiary);
+  padding: 0 10px 10px;
+}
+
+.catRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  margin-bottom: 1px;
+  transition: background 0.12s;
+  color: var(--label);
+  text-decoration: none;
+}
+.catRow:hover {
+  background: var(--fill-quaternary);
+  text-decoration: none;
+}
+.catRow.active {
+  background: rgba(0, 122, 255, 0.12);
+  color: var(--tint);
+  font-weight: 600;
+}
+
+.catName {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.catDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+.catCount {
+  font-size: 14px;
+  color: var(--label-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.catRow.active .catCount {
+  color: var(--tint);
+}
+
+/* Main column */
+.main {
+  min-width: 0;
+  padding: 0 0 64px;
+}
+
+/* ---- Mobile sidebar (slide-in 272px) + scrim ---- */
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  z-index: 40;
+  transition: opacity 0.25s;
+  opacity: 0;
+  pointer-events: none;
+}
+.scrim.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobileSidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 272px;
+  background: var(--bg);
+  z-index: 41;
+  box-shadow: var(--shadow-popover);
+  transition: transform 0.28s var(--ease-out);
+  transform: translateX(-100%);
+  overflow-y: auto;
+}
+.mobileSidebar.open {
+  transform: translateX(0);
+}
+
+.mobileSidebarHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 18px 10px;
+}
+.mobileSidebarBody {
+  padding: 0 12px 18px;
+}
+.closeButton {
+  display: flex;
+  border: none;
+  background: var(--fill-tertiary);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--label-secondary);
+}
+
+/* ---- Back-to-top FAB (우하단 플로팅, PRD §5.9) ---- */
+.backToTop {
+  position: fixed;
+  right: 24px;
+  bottom: 28px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--tint);
+  color: var(--on-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-fab);
+  /* 기본 숨김: opacity + scale 조합으로 iOS FAB 등장 느낌 */
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+.backToTop.backToTopVisible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.backToTop:hover {
+  background: var(--tint-pressed);
+}
+.backToTop:active {
+  transform: scale(var(--press-scale));
+  opacity: calc(1 - var(--press-dim) * 0.3);
+}
+@media (prefers-reduced-motion: reduce) {
+  .backToTop {
+    transition: opacity 0.01s;
+  }
+  .backToTop:active {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Responsive: collapse to single column under 900px.
+   ============================================================ */
+@media (max-width: 900px) {
+  .header {
+    gap: 4px;
+    padding: 0 8px;
+  }
+  .wordmark {
+    flex: 1;
+    text-align: center;
+  }
+  .desktopOnly {
+    display: none;
+  }
+  .mobileOnly {
+    display: flex;
+  }
+  .contentWrap,
+  .contentWrap.post,
+  .contentWrap.post:has([data-testid="toc"]) {
+    display: block;
+    max-width: 100%;
+    padding: 0 18px;
+  }
+  .sidebar {
+    display: none;
+  }
+  .main {
+    padding: 0 0 48px;
+  }
+  .backToTop {
+    right: 16px;
+    bottom: 20px;
+  }
+}

@@ -1,0 +1,85 @@
+# GitHub Pages 배포 워크플로 — read0more 블로그 (Next.js static export)
+#
+# ┌─ 필요한 Repository Settings ──────────────────────────────────────────┐
+# │  Settings > Pages > Source: GitHub Actions   ← 최초 1회 수동 활성화 필수 │
+# │    (기본 GITHUB_TOKEN으로는 자동 생성 불가. 미설정 시 배포 단계 403/404) │
+# │                                                                       │
+# │  Secrets    (Settings > Secrets and variables > Actions > Secrets)   │
+# │    BASE_PATH                        프로젝트 페이지용 basePath        │
+# │                                     (예: /blog). 루트 도메인이면 생략.│
+# │    NEXT_PUBLIC_GISCUS_REPO          giscus 댓글 저장소  (owner/repo) │
+# │    NEXT_PUBLIC_GISCUS_REPO_ID       giscus repo ID                   │
+# │    NEXT_PUBLIC_GISCUS_CATEGORY_ID   giscus 카테고리 ID               │
+# └───────────────────────────────────────────────────────────────────────┘
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+# GitHub Pages 배포에 필요한 최소 권한
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시 배포 방지: 진행 중인 배포는 취소하지 않고 대기(in-progress 유지)
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Pages
+        # Pages는 저장소 Settings > Pages > Source: GitHub Actions 에서 1회 수동 활성화 필요.
+        # 기본 GITHUB_TOKEN으로는 사이트 자동 생성(enablement)이 불가하므로(admin/PAT만 가능)
+        # enablement 옵션을 제거한다. 수동 활성화 후엔 기존 사이트를 읽기만 하면 된다.
+        uses: actions/configure-pages@v6
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (static export)
+        run: npm run build
+        env:
+          # 프로젝트 페이지 basePath — 루트 배포 시 빈 값. CI 빌드시 주입.
+          BASE_PATH: ${{ secrets.BASE_PATH }}
+          # giscus 댓글 — 미설정 시 빌드는 통과하되 댓글 위젯 비활성화
+          NEXT_PUBLIC_GISCUS_REPO: ${{ secrets.NEXT_PUBLIC_GISCUS_REPO }}
+          NEXT_PUBLIC_GISCUS_REPO_ID: ${{ secrets.NEXT_PUBLIC_GISCUS_REPO_ID }}
+          NEXT_PUBLIC_GISCUS_CATEGORY_ID: ${{ secrets.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
+
+      - name: Add .nojekyll
+        # Jekyll 처리를 비활성화해 _next/ 등 언더스코어 경로가 서빙되도록 함
+        run: touch out/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: out/
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

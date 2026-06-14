@@ -1,0 +1,64 @@
+/* ============================================================
+   Comments(giscus) — 디자인 read0more.dc.html 의 댓글 섹션
+   ============================================================ */
+
+.section {
+  margin-top: 56px;
+  padding-top: 30px;
+  border-top: var(--hairline) solid var(--separator);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.heading {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--label);
+}
+.badge {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--label-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* 로그인/안내 박스 */
+.loginBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--fill-quaternary);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 22px;
+}
+.loginText {
+  font-size: 14px;
+  color: var(--label-secondary);
+  line-height: 1.45;
+  flex: 1;
+}
+
+/* giscus 가 마운트되는 컨테이너 */
+.giscusMount {
+  min-height: 40px;
+}
+
+/* env 미설정 시 안내 플레이스홀더 */
+.placeholder {
+  font-size: 14px;
+  color: var(--label-tertiary);
+  line-height: 1.6;
+  padding: 14px 16px;
+  background: var(--fill-quaternary);
+  border-radius: 12px;
+}
