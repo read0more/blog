@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Post } from "@/lib/types";
 import { categoryColor } from "@/lib/categories";
@@ -15,6 +15,30 @@ interface ArticleClientProps {
 }
 
 const COPY_ICON = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>`;
+
+/**
+ * 본문 HTML. activeId(scroll-spy) 변경으로 ArticleClient 가 리렌더돼도
+ * 이 컴포넌트는 props(html)가 그대로면 리렌더되지 않는다.
+ * → React 가 dangerouslySetInnerHTML 을 다시 적용해 enhance(코드 헤더)된 DOM 을
+ *   지우고 heading 노드를 detach 시키는 문제를 막는다(목차 고정 버그의 근본 원인).
+ */
+const Prose = memo(function Prose({
+  html,
+  innerRef,
+}: {
+  html: string;
+  innerRef: React.Ref<HTMLDivElement>;
+}) {
+  return (
+    <div
+      ref={innerRef}
+      className={styles.prose}
+      data-testid="article-body"
+      // 본문은 빌드타임에 신뢰된 .md 로부터 렌더된 HTML.
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+});
 
 /**
  * 글 상세 레이아웃 + 인터랙션.
@@ -100,12 +124,14 @@ export function ArticleClient({ post }: ArticleClientProps) {
     const root = bodyRef.current;
     if (!root) return;
 
-    const headings = toc
-      .map((t) => root.querySelector<HTMLElement>(`#${CSS.escape(t.id)}`))
-      .filter((el): el is HTMLElement => el !== null);
-    if (!headings.length) return;
-
     const recompute = () => {
+      // heading 노드는 매번 새로 조회한다. 한 번 캡처해 두면 본문 DOM 이 교체될 때
+      // detach 되어 getBoundingClientRect 가 모두 0 → 항상 마지막이 활성되는 버그가 생긴다.
+      const headings = toc
+        .map((t) => root.querySelector<HTMLElement>(`#${CSS.escape(t.id)}`))
+        .filter((el): el is HTMLElement => el !== null);
+      if (!headings.length) return;
+
       // 헤더(57px) + 여유를 둔 기준선보다 위에 있는 마지막 heading 이 활성.
       const lineY = 96;
       let current = headings[0].id;
@@ -151,13 +177,7 @@ export function ArticleClient({ post }: ArticleClientProps) {
 
         {showToc && <MobileToc items={toc} activeId={activeId} />}
 
-        <div
-          ref={bodyRef}
-          className={styles.prose}
-          data-testid="article-body"
-          // 본문은 빌드타임에 신뢰된 .md 로부터 렌더된 HTML.
-          dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-        />
+        <Prose html={post.contentHtml} innerRef={bodyRef} />
 
         <Comments />
       </article>
