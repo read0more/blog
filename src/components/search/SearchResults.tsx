@@ -54,15 +54,18 @@ interface EmptyStateProps {
 }
 
 /** 결과 없음 — "OOO"에 대한 결과가 없습니다 + (데스크톱) 카테고리 칩. */
-export function EmptyState({ query, categories, showChips, onSelect }: EmptyStateProps) {
+export function EmptyState({
+  query,
+  categories,
+  showChips,
+  onSelect,
+}: EmptyStateProps) {
   return (
     <div
       className={showChips ? styles.empty : styles.mobileEmpty}
       data-testid="search-empty"
     >
-      <div className={styles.emptyTitle}>
-        “{query}”에 대한 결과가 없습니다
-      </div>
+      <div className={styles.emptyTitle}>“{query}”에 대한 결과가 없습니다</div>
       <div className={styles.emptyDesc}>
         {showChips
           ? "다른 키워드로 검색하거나 카테고리를 둘러보세요."

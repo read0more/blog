@@ -9,21 +9,22 @@
   /* ---- Shadows (soft, low-opacity — used sparingly) ---- */
   --shadow-card: 0 2px 3px rgba(0, 0, 0, 0.03);
   --shadow-control: 0 3px 8px rgba(0, 0, 0, 0.12);
-  --shadow-thumb: 0 3px 8px rgba(0, 0, 0, 0.15), 0 1px 1px rgba(0, 0, 0, 0.16);  /* switch / slider knob */
+  --shadow-thumb:
+    0 3px 8px rgba(0, 0, 0, 0.15), 0 1px 1px rgba(0, 0, 0, 0.16); /* switch / slider knob */
   --shadow-popover: 0 12px 32px rgba(0, 0, 0, 0.18);
   --shadow-sheet: 0 -1px 12px rgba(0, 0, 0, 0.12);
   --shadow-fab: 0 6px 16px rgba(0, 0, 0, 0.22);
 
   /* ---- Materials (backdrop blur) ---- */
   /* Apply --blur-* with a matching translucent --material-* background. */
-  --blur-thin: blur(20px) saturate(180%);    /* @kind other */
+  --blur-thin: blur(20px) saturate(180%); /* @kind other */
   --blur-regular: blur(30px) saturate(180%); /* @kind other */
-  --blur-thick: blur(50px) saturate(180%);   /* @kind other */
+  --blur-thick: blur(50px) saturate(180%); /* @kind other */
 
   --material-thin-light: rgba(255, 255, 255, 0.7);
   --material-regular-light: rgba(255, 255, 255, 0.8);
   --material-thick-light: rgba(255, 255, 255, 0.92);
-  --material-chrome-light: rgba(249, 249, 249, 0.94);  /* nav/tab bar */
+  --material-chrome-light: rgba(249, 249, 249, 0.94); /* nav/tab bar */
 
   --material-thin-dark: rgba(37, 37, 37, 0.7);
   --material-regular-dark: rgba(30, 30, 30, 0.8);
@@ -42,14 +43,14 @@
   /* ---- Motion ---- */
   /* iOS easing: a gentle spring-like ease; standard durations are short. */
   --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1); /* @kind other */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);         /* @kind other */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);  /* @kind other */
-  --dur-fast: 0.2s;   /* @kind other */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* @kind other */
+  --dur-fast: 0.2s; /* @kind other */
   --dur-medium: 0.3s; /* @kind other */
-  --dur-slow: 0.4s;   /* @kind other */
+  --dur-slow: 0.4s; /* @kind other */
   /* Press feedback: gentle dim + 0.96 scale is the house style */
   --press-scale: 0.96; /* @kind other */
-  --press-dim: 0.4;    /* @kind other */
+  --press-dim: 0.4; /* @kind other */
 }
 
 :root[data-theme="dark"],
@@ -60,4 +61,3 @@
   --material-chrome: var(--material-chrome-dark);
   --scrim: rgba(0, 0, 0, 0.5);
 }
-

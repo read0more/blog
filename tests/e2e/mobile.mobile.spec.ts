@@ -14,9 +14,7 @@ test.describe("모바일", () => {
     await page.getByTestId("header-hamburger").click();
     await expect(mobileSidebar).toBeVisible();
     // "전체 글" 행이 보인다.
-    await expect(
-      mobileSidebar.getByTestId("sidebar-all"),
-    ).toBeVisible();
+    await expect(mobileSidebar.getByTestId("sidebar-all")).toBeVisible();
 
     // 닫기 버튼.
     await page.getByTestId("sidebar-mobile-close").click();
@@ -67,7 +65,9 @@ test.describe("모바일", () => {
     // 초기 숨김 → 400px 초과 스크롤(여유 있게 600) → 노출.
     await expect.poll(opacity).toBe(0);
     await page.evaluate(() => window.scrollTo(0, 600));
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(400);
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThan(400);
     await expect.poll(opacity).toBe(1);
 
     // 클릭 → 최상단 복귀.

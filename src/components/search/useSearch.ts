@@ -17,7 +17,9 @@ export function useSearch() {
   const [query, setQuery] = useState("");
   const [docs, setDocs] = useState<SearchDoc[] | null>(null);
   const [results, setResults] = useState<SearchResult[]>([]);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const fetchedRef = useRef(false);
 
   /** 인덱스를 한 번만 받아온다. 검색이 처음 열릴 때 호출. */

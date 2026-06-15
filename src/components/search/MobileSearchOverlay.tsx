@@ -14,8 +14,20 @@ interface MobileSearchOverlayProps {
 }
 
 /** 모바일 전체화면 검색 오버레이 — 유휴 안내 / 결과 / 결과 없음. */
-export function MobileSearchOverlay({ search, categories, onClose }: MobileSearchOverlayProps) {
-  const { query, setQuery, ensureIndex, results, hasQuery, hasResults, isEmpty } = search;
+export function MobileSearchOverlay({
+  search,
+  categories,
+  onClose,
+}: MobileSearchOverlayProps) {
+  const {
+    query,
+    setQuery,
+    ensureIndex,
+    results,
+    hasQuery,
+    hasResults,
+    isEmpty,
+  } = search;
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

@@ -5,7 +5,15 @@ import styles from "./NotFoundView.module.css";
 /** 최근 글 행의 우측 chevron 아이콘. */
 function ChevronRight() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--label-tertiary)" strokeWidth="2.2" strokeLinecap="round">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="var(--label-tertiary)"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+    >
       <path d="m9 18 6-6-6-6" />
     </svg>
   );
@@ -32,7 +40,11 @@ export function NotFoundView({ recentPosts }: NotFoundViewProps) {
       </p>
 
       <div className={styles.homeButtonWrap}>
-        <Link href="/" className={styles.homeButton} data-testid="not-found-home">
+        <Link
+          href="/"
+          className={styles.homeButton}
+          data-testid="not-found-home"
+        >
           홈으로 돌아가기
         </Link>
       </div>

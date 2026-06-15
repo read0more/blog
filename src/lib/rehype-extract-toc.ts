@@ -14,7 +14,8 @@ export function rehypeExtractToc(toc: TocItem[]) {
   return (tree: Root) => {
     visit(tree, "element", (node: Element) => {
       if (node.tagName !== "h2" && node.tagName !== "h3") return;
-      const id = typeof node.properties?.id === "string" ? node.properties.id : "";
+      const id =
+        typeof node.properties?.id === "string" ? node.properties.id : "";
       if (!id) return;
       toc.push({
         text: toString(node),

@@ -24,12 +24,12 @@
   --sys-brown: #a2845e;
 
   /* ---- System grays · Light ---- */
-  --gray: #8e8e93;     /* systemGray  */
-  --gray-02: #aeaeb2;  /* systemGray2 */
-  --gray-03: #c7c7cc;  /* systemGray3 */
-  --gray-04: #d1d1d6;  /* systemGray4 */
-  --gray-05: #e5e5ea;  /* systemGray5 */
-  --gray-06: #f2f2f7;  /* systemGray6 */
+  --gray: #8e8e93; /* systemGray  */
+  --gray-02: #aeaeb2; /* systemGray2 */
+  --gray-03: #c7c7cc; /* systemGray3 */
+  --gray-04: #d1d1d6; /* systemGray4 */
+  --gray-05: #e5e5ea; /* systemGray5 */
+  --gray-06: #f2f2f7; /* systemGray6 */
 
   /* ---- Semantic · Light ---- */
   /* Labels — note the 3C3C43 base hue Apple uses for non-primary text */
@@ -116,4 +116,3 @@
   --tint-pressed: #3d9bff;
   --on-tint: #ffffff;
 }
-

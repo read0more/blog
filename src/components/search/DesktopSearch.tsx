@@ -15,8 +15,16 @@ interface DesktopSearchProps {
 
 /** 데스크톱 헤더 검색박스 + 결과 패널(560px). */
 export function DesktopSearch({ search, categories }: DesktopSearchProps) {
-  const { query, setQuery, clear, ensureIndex, results, hasQuery, hasResults, isEmpty } =
-    search;
+  const {
+    query,
+    setQuery,
+    clear,
+    ensureIndex,
+    results,
+    hasQuery,
+    hasResults,
+    isEmpty,
+  } = search;
   const pathname = usePathname();
 
   // 라우트 이동 시 검색어 초기화(결과 클릭 후 패널이 남지 않도록).
@@ -51,7 +59,15 @@ export function DesktopSearch({ search, categories }: DesktopSearchProps) {
             onClick={clear}
             data-testid="search-clear"
           >
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round">
+            <svg
+              width="9"
+              height="9"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="3"
+              strokeLinecap="round"
+            >
               <path d="M5 5l14 14M19 5L5 19" />
             </svg>
           </button>

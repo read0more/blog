@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("글 상세", () => {
-  test("본문 블록이 렌더된다(제목/heading/문단/코드/인용/리스트)", async ({ page }) => {
+  test("본문 블록이 렌더된다(제목/heading/문단/코드/인용/리스트)", async ({
+    page,
+  }) => {
     await page.goto("/posts/use-effect-deps/");
     await expect(page.getByTestId("article-title")).toHaveText(
       "useEffect 의존성 배열, 다시 생각하기",
@@ -37,13 +39,17 @@ test.describe("글 상세", () => {
     await expect(page.locator('[data-testid^="toc-item-"]')).toHaveCount(4);
   });
 
-  test("TOC 클릭 — 해당 heading으로 스크롤되고 해시가 갱신된다", async ({ page }) => {
+  test("TOC 클릭 — 해당 heading으로 스크롤되고 해시가 갱신된다", async ({
+    page,
+  }) => {
     await page.goto("/posts/use-effect-deps/");
     // 두 번째 heading(문서 중간)을 기준으로 검증한다. 마지막 heading 은 페이지
     // 끝이라 끝까지 스크롤해도 상단에 닿지 못하므로 안착 위치 검증에 부적합.
     const target = page.getByTestId("article-body").locator("h2").nth(1);
 
-    const before = await target.evaluate((el) => el.getBoundingClientRect().top);
+    const before = await target.evaluate(
+      (el) => el.getBoundingClientRect().top,
+    );
     expect(before).toBeGreaterThan(400);
 
     const tocItems = page.locator('[data-testid^="toc-item-"]');
@@ -62,14 +68,20 @@ test.describe("글 상세", () => {
       .toBeLessThan(120);
   });
 
-  test("scroll-spy — 아래로 스크롤하면 active 항목이 갱신된다", async ({ page }) => {
+  test("scroll-spy — 아래로 스크롤하면 active 항목이 갱신된다", async ({
+    page,
+  }) => {
     await page.goto("/posts/use-effect-deps/");
     // 초기 active = 첫 항목.
     const items = page.locator('[data-testid^="toc-item-"]');
     await expect(items.first()).toHaveAttribute("aria-current", "true");
 
     // 마지막 heading 위치로 스크롤.
-    await page.getByTestId("article-body").locator("h2").last().scrollIntoViewIfNeeded();
+    await page
+      .getByTestId("article-body")
+      .locator("h2")
+      .last()
+      .scrollIntoViewIfNeeded();
     await page.mouse.wheel(0, 200);
     await page.waitForTimeout(300);
     // 더 이상 첫 항목이 active 가 아니다(아래 항목으로 이동).
@@ -82,7 +94,9 @@ test.describe("글 상세", () => {
     await expect(page.getByTestId("toc")).toHaveCount(0);
   });
 
-  test("giscus 안내 박스 — env 미설정 시 placeholder가 보인다", async ({ page }) => {
+  test("giscus 안내 박스 — env 미설정 시 placeholder가 보인다", async ({
+    page,
+  }) => {
     await page.goto("/posts/use-effect-deps/");
     await expect(page.getByTestId("comments")).toBeVisible();
     await expect(page.getByTestId("comments")).toContainText("GitHub 로그인");

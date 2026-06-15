@@ -24,7 +24,10 @@ export interface RenderedMarkdown {
  * (코드 토큰은 검색 노이즈가 크고 읽는 시간 계산에도 부적절).
  */
 function extractPlainText(markdown: string): string {
-  const tree = unified().use(remarkParse).use(remarkGfm).parse(markdown) as MdastRoot;
+  const tree = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .parse(markdown) as MdastRoot;
   const parts: string[] = [];
   visit(tree, "text", (node) => {
     parts.push(node.value);
@@ -37,7 +40,9 @@ function extractPlainText(markdown: string): string {
  * remark-parse → gfm → rehype → slug → autolink → pretty-code(shiki) → stringify.
  * rehype-slug 직후 TOC 를 추출해 anchor id 와 정확히 일치시킨다.
  */
-export async function renderMarkdown(markdown: string): Promise<RenderedMarkdown> {
+export async function renderMarkdown(
+  markdown: string,
+): Promise<RenderedMarkdown> {
   const toc: TocItem[] = [];
 
   const file = await unified()

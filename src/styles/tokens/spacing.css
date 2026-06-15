@@ -11,7 +11,7 @@
   --space-2: 4px;
   --space-3: 8px;
   --space-4: 12px;
-  --space-5: 16px;   /* standard screen edge margin */
+  --space-5: 16px; /* standard screen edge margin */
   --space-6: 20px;
   --space-7: 24px;
   --space-8: 32px;
@@ -24,13 +24,13 @@
   --inset-list: 16px;
 
   /* ---- Corner radii (continuous / "squircle" feel) ---- */
-  --radius-xs: 6px;    /* small chips, segmented thumbs */
+  --radius-xs: 6px; /* small chips, segmented thumbs */
   --radius-sm: 8px;
-  --radius-md: 10px;   /* buttons, alerts inner */
-  --radius-lg: 12px;   /* search field, cards */
-  --radius-xl: 14px;   /* alerts, action sheets */
-  --radius-2xl: 20px;  /* large sheets, widgets (small) */
-  --radius-3xl: 38px;  /* device / app-icon superellipse */
+  --radius-md: 10px; /* buttons, alerts inner */
+  --radius-lg: 12px; /* search field, cards */
+  --radius-xl: 14px; /* alerts, action sheets */
+  --radius-2xl: 20px; /* large sheets, widgets (small) */
+  --radius-3xl: 38px; /* device / app-icon superellipse */
   --radius-card: 10px;
   --radius-sheet: 10px;
   --radius-full: 9999px;
@@ -39,13 +39,13 @@
   --radius-app-icon: 22.37%;
 
   /* ---- Control / chrome heights ---- */
-  --control-h: 50px;        /* full-width primary button / form field */
-  --control-h-sm: 34px;     /* small/compact button */
-  --hit-target: 44px;       /* minimum tappable size */
+  --control-h: 50px; /* full-width primary button / form field */
+  --control-h-sm: 34px; /* small/compact button */
+  --hit-target: 44px; /* minimum tappable size */
   --nav-bar-h: 44px;
-  --nav-bar-large-h: 96px;  /* large-title nav bar */
+  --nav-bar-large-h: 96px; /* large-title nav bar */
   --tab-bar-h: 49px;
-  --status-bar-h: 47px;     /* iPhone 13/14 notch class */
+  --status-bar-h: 47px; /* iPhone 13/14 notch class */
   --home-indicator-h: 34px;
   --switch-w: 51px;
   --switch-h: 31px;
@@ -54,6 +54,6 @@
   --slider-knob: 28px;
 
   /* ---- Border widths ---- */
-  --hairline: 0.5px;   /* iOS separators render as a physical hairline */
+  --hairline: 0.5px; /* iOS separators render as a physical hairline */
   --border: 1px;
 }

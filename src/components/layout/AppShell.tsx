@@ -48,8 +48,13 @@ export function AppShell({ categories, totalCount, children }: AppShellProps) {
   }, []);
   const scrollToTop = () => {
     // prefers-reduced-motion: 감소 모션 선호 시 즉시 이동, 아니면 smooth scroll.
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: 0, behavior: prefersReduced ? "instant" : "smooth" });
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    window.scrollTo({
+      top: 0,
+      behavior: prefersReduced ? "instant" : "smooth",
+    });
   };
 
   return (
@@ -66,7 +71,11 @@ export function AppShell({ categories, totalCount, children }: AppShellProps) {
           <HamburgerIcon />
         </button>
 
-        <Link href="/" className={styles.wordmark} data-testid="header-wordmark">
+        <Link
+          href="/"
+          className={styles.wordmark}
+          data-testid="header-wordmark"
+        >
           read0more
         </Link>
 
@@ -153,7 +162,17 @@ export function AppShell({ categories, totalCount, children }: AppShellProps) {
         data-testid="back-to-top"
       >
         {/* Chevron up */}
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
           <path d="M18 15l-6-6-6 6" />
         </svg>
       </button>

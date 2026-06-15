@@ -26,10 +26,6 @@ export default async function CategoryPage({
   }
 
   return (
-    <PostList
-      title={name}
-      subtitle={`${posts.length}개의 글`}
-      posts={posts}
-    />
+    <PostList title={name} subtitle={`${posts.length}개의 글`} posts={posts} />
   );
 }

@@ -12,10 +12,16 @@
 
 :root {
   /* ---- Font families ---- */
-  --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, sans-serif;
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Segoe UI", Roboto, sans-serif;
-  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, "Helvetica Neue", sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-text:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+    "Segoe UI", Roboto, sans-serif;
+  --font-display:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+    "Segoe UI", Roboto, sans-serif;
+  --font-rounded:
+    ui-rounded, "SF Pro Rounded", -apple-system, "Helvetica Neue", sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* ---- Weights ---- */
   --weight-regular: 400;
@@ -72,14 +78,80 @@
 
 /* ---- Convenience text-style classes ---- */
 /* SF switches optical size: ≥20px uses Display, below uses Text. */
-.ios-large-title { font-family: var(--font-display); font-size: var(--type-large-title-size); line-height: var(--type-large-title-line); letter-spacing: var(--type-large-title-tracking); font-weight: var(--weight-bold); }
-.ios-title-1     { font-family: var(--font-display); font-size: var(--type-title1-size); line-height: var(--type-title1-line); letter-spacing: var(--type-title1-tracking); font-weight: var(--weight-bold); }
-.ios-title-2     { font-family: var(--font-display); font-size: var(--type-title2-size); line-height: var(--type-title2-line); letter-spacing: var(--type-title2-tracking); font-weight: var(--weight-bold); }
-.ios-title-3     { font-family: var(--font-display); font-size: var(--type-title3-size); line-height: var(--type-title3-line); letter-spacing: var(--type-title3-tracking); font-weight: var(--weight-semibold); }
-.ios-headline    { font-family: var(--font-text); font-size: var(--type-headline-size); line-height: var(--type-headline-line); letter-spacing: var(--type-headline-tracking); font-weight: var(--weight-semibold); }
-.ios-body        { font-family: var(--font-text); font-size: var(--type-body-size); line-height: var(--type-body-line); letter-spacing: var(--type-body-tracking); font-weight: var(--weight-regular); }
-.ios-callout     { font-family: var(--font-text); font-size: var(--type-callout-size); line-height: var(--type-callout-line); letter-spacing: var(--type-callout-tracking); font-weight: var(--weight-regular); }
-.ios-subheadline { font-family: var(--font-text); font-size: var(--type-subheadline-size); line-height: var(--type-subheadline-line); letter-spacing: var(--type-subheadline-tracking); font-weight: var(--weight-regular); }
-.ios-footnote    { font-family: var(--font-text); font-size: var(--type-footnote-size); line-height: var(--type-footnote-line); letter-spacing: var(--type-footnote-tracking); font-weight: var(--weight-regular); }
-.ios-caption-1   { font-family: var(--font-text); font-size: var(--type-caption1-size); line-height: var(--type-caption1-line); letter-spacing: var(--type-caption1-tracking); font-weight: var(--weight-regular); }
-.ios-caption-2   { font-family: var(--font-text); font-size: var(--type-caption2-size); line-height: var(--type-caption2-line); letter-spacing: var(--type-caption2-tracking); font-weight: var(--weight-regular); }
+.ios-large-title {
+  font-family: var(--font-display);
+  font-size: var(--type-large-title-size);
+  line-height: var(--type-large-title-line);
+  letter-spacing: var(--type-large-title-tracking);
+  font-weight: var(--weight-bold);
+}
+.ios-title-1 {
+  font-family: var(--font-display);
+  font-size: var(--type-title1-size);
+  line-height: var(--type-title1-line);
+  letter-spacing: var(--type-title1-tracking);
+  font-weight: var(--weight-bold);
+}
+.ios-title-2 {
+  font-family: var(--font-display);
+  font-size: var(--type-title2-size);
+  line-height: var(--type-title2-line);
+  letter-spacing: var(--type-title2-tracking);
+  font-weight: var(--weight-bold);
+}
+.ios-title-3 {
+  font-family: var(--font-display);
+  font-size: var(--type-title3-size);
+  line-height: var(--type-title3-line);
+  letter-spacing: var(--type-title3-tracking);
+  font-weight: var(--weight-semibold);
+}
+.ios-headline {
+  font-family: var(--font-text);
+  font-size: var(--type-headline-size);
+  line-height: var(--type-headline-line);
+  letter-spacing: var(--type-headline-tracking);
+  font-weight: var(--weight-semibold);
+}
+.ios-body {
+  font-family: var(--font-text);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  letter-spacing: var(--type-body-tracking);
+  font-weight: var(--weight-regular);
+}
+.ios-callout {
+  font-family: var(--font-text);
+  font-size: var(--type-callout-size);
+  line-height: var(--type-callout-line);
+  letter-spacing: var(--type-callout-tracking);
+  font-weight: var(--weight-regular);
+}
+.ios-subheadline {
+  font-family: var(--font-text);
+  font-size: var(--type-subheadline-size);
+  line-height: var(--type-subheadline-line);
+  letter-spacing: var(--type-subheadline-tracking);
+  font-weight: var(--weight-regular);
+}
+.ios-footnote {
+  font-family: var(--font-text);
+  font-size: var(--type-footnote-size);
+  line-height: var(--type-footnote-line);
+  letter-spacing: var(--type-footnote-tracking);
+  font-weight: var(--weight-regular);
+}
+.ios-caption-1 {
+  font-family: var(--font-text);
+  font-size: var(--type-caption1-size);
+  line-height: var(--type-caption1-line);
+  letter-spacing: var(--type-caption1-tracking);
+  font-weight: var(--weight-regular);
+}
+.ios-caption-2 {
+  font-family: var(--font-text);
+  font-size: var(--type-caption2-size);
+  line-height: var(--type-caption2-line);
+  letter-spacing: var(--type-caption2-tracking);
+  font-weight: var(--weight-regular);
+}

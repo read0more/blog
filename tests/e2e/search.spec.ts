@@ -5,7 +5,9 @@ test.describe("검색 (데스크톱)", () => {
     await page.goto("/");
   });
 
-  test("'컨테이너' 검색 — 본문 매칭 1건 + 패널 + 스니펫 하이라이트", async ({ page }) => {
+  test("'컨테이너' 검색 — 본문 매칭 1건 + 패널 + 스니펫 하이라이트", async ({
+    page,
+  }) => {
     await page.getByTestId("search-input").fill("컨테이너");
 
     const panel = page.getByTestId("search-panel");

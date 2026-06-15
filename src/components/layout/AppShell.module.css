@@ -234,7 +234,9 @@
   opacity: 0;
   transform: scale(0.8);
   pointer-events: none;
-  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  transition:
+    opacity 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out);
 }
 .backToTop.backToTopVisible {
   opacity: 1;
