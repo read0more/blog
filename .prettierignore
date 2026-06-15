@@ -1,0 +1,28 @@
+# 빌드 산출물 / 생성물
+out/
+.next/
+build/
+node_modules/
+
+# 빌드 타임 생성 검색 인덱스
+public/search-index.json
+
+# lock 파일
+package-lock.json
+
+# 디자인/테스트 산출물
+.design/
+playwright-report/
+test-results/
+blob-report/
+
+# Next 자동 생성 타입
+next-env.d.ts
+
+# 블로그 글은 저자가 직접 작성/포맷하는 콘텐츠 — Prettier가 본문 코드블록·프론트매터를
+# 임의로 재포맷하지 않도록 제외한다.
+content/
+
+# E2E 고정 픽스처(.md) — 본문 구조(코드블록·heading 수 등)가 테스트 단언과 직결되므로
+# Prettier 재포맷으로 깨지지 않도록 제외한다.
+tests/fixtures/

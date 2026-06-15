@@ -1,4 +1,8 @@
-# GitHub Pages 배포 워크플로 — read0more 블로그 (Next.js static export)
+# CI & 배포 워크플로 — read0more 블로그 (Next.js static export)
+#
+# 품질 게이트(quality + e2e)를 통과해야만 빌드/배포된다.
+#   - PR:        quality + e2e + build(검증만) 실행 → 깨진 코드 머지 차단
+#   - main push: 위 검사 통과 시 build → deploy. 실패하면 배포되지 않음.
 #
 # ┌─ 필요한 Repository Settings ──────────────────────────────────────────┐
 # │  Settings > Pages > Source: GitHub Actions   ← 최초 1회 수동 활성화 필수 │
@@ -12,10 +16,13 @@
 # │    NEXT_PUBLIC_GISCUS_CATEGORY_ID   giscus 카테고리 ID               │
 # └───────────────────────────────────────────────────────────────────────┘
 
-name: Deploy to GitHub Pages
+name: CI & Deploy
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -25,14 +32,15 @@ permissions:
   pages: write
   id-token: write
 
-# 동시 배포 방지: 진행 중인 배포는 취소하지 않고 대기(in-progress 유지)
+# PR은 새 push 시 진행 중 실행을 취소(불필요한 CI 절약).
+# main push는 취소하지 않아 진행 중 배포가 끊기지 않게 한다.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
-    name: Build
+  quality:
+    name: Lint / Type Check / Format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,11 +52,69 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Setup Pages
-        # Pages는 저장소 Settings > Pages > Source: GitHub Actions 에서 1회 수동 활성화 필요.
-        # 기본 GITHUB_TOKEN으로는 사이트 자동 생성(enablement)이 불가하므로(admin/PAT만 가능)
-        # enablement 옵션을 제거한다. 수동 활성화 후엔 기존 사이트를 읽기만 하면 된다.
-        uses: actions/configure-pages@v6
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Format check
+        run: npm run format:check
+
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # 브라우저 캐시로 install 시간 단축 (chromium만 필요 — 두 project 모두 chromium 엔진)
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright (chromium)
+        run: npx playwright install --with-deps chromium
+
+      # webServer가 next build + serve out 을 수행한다(OMIT_DRAFTS 미설정 → draft 포함).
+      - name: Run E2E
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  build:
+    name: Build (static export)
+    needs: [quality, e2e] # 게이트: 두 검사를 통과해야 빌드/배포 진행
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -58,6 +124,7 @@ jobs:
         env:
           # frontmatter draft: true 글을 배포 산출물(out/)·검색 인덱스에서 제외.
           # 로컬 dev/build/E2E 에서는 미설정이라 그대로 노출된다.
+          # 공개 글이 0개면 여기서 빌드 실패 → PR 단계에서 조기 발견.
           OMIT_DRAFTS: "true"
           # 프로젝트 페이지 basePath — 루트 배포 시 빈 값. CI 빌드시 주입.
           BASE_PATH: ${{ secrets.BASE_PATH }}
@@ -66,11 +133,21 @@ jobs:
           NEXT_PUBLIC_GISCUS_REPO_ID: ${{ secrets.NEXT_PUBLIC_GISCUS_REPO_ID }}
           NEXT_PUBLIC_GISCUS_CATEGORY_ID: ${{ secrets.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
 
+      # 아래 Pages 관련 단계는 main push 일 때만 — PR 에서는 빌드 검증까지만 수행한다.
+      - name: Setup Pages
+        # Pages는 저장소 Settings > Pages > Source: GitHub Actions 에서 1회 수동 활성화 필요.
+        # 기본 GITHUB_TOKEN으로는 사이트 자동 생성(enablement)이 불가하므로(admin/PAT만 가능)
+        # enablement 옵션을 제거한다. 수동 활성화 후엔 기존 사이트를 읽기만 하면 된다.
+        if: github.event_name == 'push'
+        uses: actions/configure-pages@v6
+
       - name: Add .nojekyll
         # Jekyll 처리를 비활성화해 _next/ 등 언더스코어 경로가 서빙되도록 함
+        if: github.event_name == 'push'
         run: touch out/.nojekyll
 
       - name: Upload Pages artifact
+        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v5
         with:
           path: out/
@@ -78,7 +155,13 @@ jobs:
   deploy:
     name: Deploy
     needs: build
+    # main 브랜치 push 일 때만 배포(PR 에서는 실행되지 않음)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    # 동시 배포 방지: 진행 중인 배포는 취소하지 않고 대기(in-progress 유지)
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -1,0 +1,11 @@
+# 의존성 자동 업데이트 — CI(deploy.yml)가 생성된 PR을 자동 검증한다.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
