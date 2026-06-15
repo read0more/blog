@@ -4,7 +4,7 @@ import { getCategories, getAllPostMeta } from "@/lib/posts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "read0more",
+  title: "read0more's Blog",
   description: "개인 기술 블로그",
 };
 

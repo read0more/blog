@@ -7,7 +7,7 @@ export default async function Home() {
 
   return (
     <PostList
-      title="최신 글"
+      title="전체 글"
       subtitle={`${posts.length}개의 글 · 최신순`}
       posts={posts}
     />
