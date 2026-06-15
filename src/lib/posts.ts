@@ -12,12 +12,18 @@ import type {
   SearchDoc,
 } from "./types";
 
-const POSTS_DIR = path.join(process.cwd(), "content", "posts");
+// 기본은 content/posts(실제 글). E2E 등에서 POSTS_DIR 로 고정 픽스처 디렉토리를 주입할 수 있다.
+const POSTS_DIR = process.env.POSTS_DIR
+  ? path.resolve(process.env.POSTS_DIR)
+  : path.join(process.cwd(), "content", "posts");
 
 /** 디자인의 카테고리 표시 순서. 목록에 없는 새 카테고리는 뒤에 가나다순으로 붙는다. */
 const CATEGORY_ORDER = ["React", "CSS", "TypeScript", "성능", "빌드도구"];
 
-function frontmatterOf(data: Record<string, unknown>, slug: string): PostFrontmatter {
+function frontmatterOf(
+  data: Record<string, unknown>,
+  slug: string,
+): PostFrontmatter {
   const { title, date, description, category } = data;
   if (
     typeof title !== "string" ||
@@ -30,7 +36,9 @@ function frontmatterOf(data: Record<string, unknown>, slug: string): PostFrontma
     );
   }
   if (typeof data.draft !== "undefined" && typeof data.draft !== "boolean") {
-    throw new Error(`Invalid frontmatter in "${slug}.md": draft must be a boolean.`);
+    throw new Error(
+      `Invalid frontmatter in "${slug}.md": draft must be a boolean.`,
+    );
   }
   return {
     title,
@@ -72,7 +80,9 @@ async function loadAllPosts(): Promise<Post[]> {
       const { html, toc, plainText } = await renderMarkdown(content);
 
       // 읽는 시간은 제목 + 설명 + 본문 plaintext 기준(디자인 plainOf 와 동일 범위).
-      const readingMin = readingMinutes(`${fm.title} ${fm.description} ${plainText}`);
+      const readingMin = readingMinutes(
+        `${fm.title} ${fm.description} ${plainText}`,
+      );
 
       return {
         slug,
@@ -147,7 +157,9 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 /** 특정 카테고리의 글 메타(최신순). */
-export async function getPostsByCategory(category: string): Promise<PostMeta[]> {
+export async function getPostsByCategory(
+  category: string,
+): Promise<PostMeta[]> {
   const posts = await loadAllPosts();
   return posts.filter((p) => p.category === category).map(toMeta);
 }

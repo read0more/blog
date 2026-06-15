@@ -15,7 +15,10 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import { visit } from "unist-util-visit";
 
-const POSTS_DIR = path.join(process.cwd(), "content", "posts");
+// posts.ts 와 동일하게 POSTS_DIR 오버라이드 지원(E2E 고정 픽스처용).
+const POSTS_DIR = process.env.POSTS_DIR
+  ? path.resolve(process.env.POSTS_DIR)
+  : path.join(process.cwd(), "content", "posts");
 const OUT_FILE = path.join(process.cwd(), "public", "search-index.json");
 
 function extractPlainText(markdown) {
@@ -27,7 +30,9 @@ function extractPlainText(markdown) {
 
 function build() {
   if (!fs.existsSync(POSTS_DIR)) {
-    console.warn(`[search-index] no posts dir at ${POSTS_DIR}, writing empty index.`);
+    console.warn(
+      `[search-index] no posts dir at ${POSTS_DIR}, writing empty index.`,
+    );
     fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
     fs.writeFileSync(OUT_FILE, "[]");
     return;

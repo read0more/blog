@@ -1,5 +1,5 @@
 ---
-title: "(테스트용 AI 더미 post) Container Query로 진짜 컴포넌트 반응형 만들기"
+title: "Container Query로 진짜 컴포넌트 반응형 만들기"
 date: "2026-05-09T09:00:00.000Z"
 description: "뷰포트가 아니라 컴포넌트가 놓인 공간에 반응하는 레이아웃. 미디어 쿼리로는 못 풀던 문제를 푼다."
 category: "CSS"

@@ -34,14 +34,16 @@ test.describe("홈", () => {
   });
 
   test("부제에 글 개수·최신순 안내가 있다", async ({ page }) => {
-    await expect(page.getByTestId("list-title")).toHaveText("최신 글");
+    await expect(page.getByTestId("list-title")).toHaveText("전체 글");
     await expect(page.getByTestId("list-subtitle")).toContainText("최신순");
     await expect(page.getByTestId("list-subtitle")).toContainText(
       `${ORDER.length}개의 글`,
     );
   });
 
-  test("카드에 카테고리 색상·날짜·읽는시간 메타가 표시된다", async ({ page }) => {
+  test("카드에 카테고리 색상·날짜·읽는시간 메타가 표시된다", async ({
+    page,
+  }) => {
     const card = page.getByTestId("post-card-use-effect-deps");
     // 카테고리(React) — categoryColor("React") = #5856d6.
     const cat = card.locator("span", { hasText: "React" }).first();

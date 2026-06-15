@@ -1,5 +1,5 @@
 ---
-title: "(테스트용 AI 더미 post) useEffect 의존성 배열, 다시 생각하기"
+title: "useEffect 의존성 배열, 다시 생각하기"
 date: "2026-05-28T09:00:00.000Z"
 description: "effect를 언제 다시 실행할지 결정하는 의존성 배열을 둘러싼 흔한 오해와, 그 오해를 푸는 세 가지 규칙."
 category: "React"

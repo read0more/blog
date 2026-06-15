@@ -30,6 +30,13 @@ dev 모드 500 문제를 우회한다. 데스크톱 테스트는 1280px, 모바�
 `*.mobile.spec.ts`에 분리되어 `mobile` 프로젝트에서 390px로 돈다. 유닛 테스트 러너는
 없으며 E2E가 유일한 테스트 계층이다.
 
+E2E는 **`content/posts`가 아니라 고정 픽스처 `tests/fixtures/posts/`를 빌드 대상으로 삼는다** —
+`playwright.config.ts`의 `webServer.env`가 `POSTS_DIR=tests/fixtures/posts`를 주입한다(`posts.ts`·
+`build-search-index.mjs`가 `POSTS_DIR` 오버라이드를 지원). 덕분에 글 개수/카테고리 수를 단언하는
+테스트가 **실제 글을 추가·수정해도 깨지지 않는다**(실제 글은 `content/posts`에만, 테스트 픽스처는
+`tests/fixtures/posts`에만). 같은 `env`에서 `BASE_PATH`·giscus 값도 비워, 로컬 `.env`와 무관하게
+루트 경로·댓글 placeholder 상태로 결정적으로 빌드한다.
+
 ## 아키텍처
 
 **콘텐츠 → 렌더 → 소비**가 모두 빌드 타임에 일어난다:
@@ -42,14 +49,15 @@ dev 모드 500 문제를 우회한다. 데스크톱 테스트는 1280px, 모바�
   정렬한 뒤 **결과를 모듈 레벨 변수에 캐시**한다(빌드 한 번에 여러 번 호출됨). 모든 페이지
   데이터는 여기의 타입드 접근자(`getAllPostMeta`, `getPostBySlug`, `getCategories` 등)를 거친다.
 - `src/lib/markdown.ts` — unified 파이프라인: `remark-parse → gfm → remark-rehype →
-  rehype-slug → rehype-extract-toc → autolink-headings → rehype-pretty-code(shiki,
-  github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵커 id와 정확히 일치시킨다.
+rehype-slug → rehype-extract-toc → autolink-headings → rehype-pretty-code(shiki,
+github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵커 id와 정확히 일치시킨다.
   검색용 `plainText`(텍스트 노드만, 코드블록 제외)도 함께 만든다.
 - `src/app/`의 라우트: `page.tsx`(홈), `posts/[slug]`, `category/[slug]`, `not-found.tsx`.
   동적 라우트는 모두 `generateStaticParams`를 쓴다. `layout.tsx`는 카테고리 + 글 개수를
   로드해 전체를 `<AppShell>`로 감싸는 서버 컴포넌트다.
 
 **검색**은 서버가 아니라 빌드 타임 JSON 인덱스다:
+
 - `scripts/build-search-index.mjs`가 `predev`/`prebuild`에서 실행되어
   `public/search-index.json`(글마다 title + description + 본문 plaintext)을 쓴다.
   `markdown.ts`의 plaintext 로직과 의도적으로 중복되어 있다 — 스크립트를 가볍게(remark만,

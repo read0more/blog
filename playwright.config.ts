@@ -27,7 +27,10 @@ export default defineConfig({
     {
       // 데스크톱: 모바일 전용 시나리오(*.mobile.spec.ts)는 제외.
       name: "desktop",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 900 } },
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 900 },
+      },
       testIgnore: /\.mobile\.spec\.ts$/,
     },
     {
@@ -50,5 +53,19 @@ export default defineConfig({
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    // E2E 빌드 환경을 결정적으로 고정한다. 로컬 .env(BASE_PATH=/blog, giscus 등)의 영향을
+    // 차단해 어디서 돌리든 동일하게 동작하게 한다.
+    //  - POSTS_DIR: 실제 글(content/posts)이 아니라 고정 픽스처를 빌드 → 실제 글을
+    //    추가/수정해도 테스트 카운트가 깨지지 않는다.
+    //  - BASE_PATH="": 루트 경로(링크/자산)로 빌드(테스트는 / 기준).
+    //  - giscus 빈값: 댓글 placeholder가 보이는 상태(post.spec 기대)로 빌드.
+    env: {
+      POSTS_DIR: "tests/fixtures/posts",
+      BASE_PATH: "",
+      NEXT_PUBLIC_BASE_PATH: "",
+      NEXT_PUBLIC_GISCUS_REPO: "",
+      NEXT_PUBLIC_GISCUS_REPO_ID: "",
+      NEXT_PUBLIC_GISCUS_CATEGORY_ID: "",
+    },
   },
 });
