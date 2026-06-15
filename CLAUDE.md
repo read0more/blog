@@ -15,6 +15,9 @@ npm run dev          # 개발 서버 (predev → 검색 인덱스 빌드 먼저 
 npm run build        # out/ 으로 정적 export (prebuild → 검색 인덱스 빌드 먼저 실행)
 npm run start        # 빌드된 out/ 을 BASE_PATH(기본 /blog) 하위 경로로 로컬 서빙
 npm run lint         # eslint
+npm run type-check   # tsc --noEmit (타입 체크만)
+npm run format       # prettier --write . (전체 포맷 적용)
+npm run format:check # prettier --check . (CI 포맷 검사)
 npm run search-index # public/search-index.json 수동 재생성
 
 npm run test:e2e               # Playwright (out/ 빌드 + :3100 서빙 후 실행)
@@ -79,9 +82,10 @@ enhance된 코드 헤더가 지워지고 TOC가 깨짐). 그리고 스크롤 스
 ## Draft와 배포
 
 - `draft: true` 프론트매터는 **`OMIT_DRAFTS=true`일 때만** 글을 제외한다 — 이 값은 GitHub
-  Actions 배포 빌드(`.github/workflows/deploy.yml`)에서*만* 주입된다. 로컬(`dev`/`build`)과
-  E2E에서는 draft 글도 전부 보인다(미리보기 + 테스트 픽스처용). 필터는 `posts.ts`와
-  `build-search-index.mjs` 양쪽에 있다.
+  Actions 배포 빌드(`.github/workflows/deploy.yml`)에서*만* 주입된다. 로컬(`dev`/`build`)에서는
+  `content/posts`의 draft 글도 그대로 보인다(미리보기용). 필터는 `posts.ts`와
+  `build-search-index.mjs` 양쪽에 있다. (E2E는 `content/posts`가 아니라 별도 고정 픽스처
+  `tests/fixtures/posts`를 빌드한다 — 위 "명령어" 섹션 참조.)
 - 정적 export는 `next/image` 최적화를 못 쓰고(`images.unoptimized: true`), 공개 글이 **0개**면
   사이트 빌드 자체가 실패한다 — non-draft 글을 최소 하나는 유지할 것.
 - 프로젝트 페이지 배포는 빌드 시 `BASE_PATH`(예: `/blog`) 주입이 필요하다. 클라이언트에는
@@ -90,6 +94,25 @@ enhance된 코드 헤더가 지워지고 TOC가 깨짐). 그리고 스크롤 스
   `trailingSlash: true`.
 - 댓글은 giscus, `NEXT_PUBLIC_GISCUS_*` env로 설정한다(`.env.example` 참고). 설정이 없으면
   빌드 실패 대신 플레이스홀더로 폴백한다.
+
+## 품질 게이트 (훅 · CI)
+
+검증은 3단계로 강제된다:
+
+- **pre-commit** (`.husky/pre-commit`) — `lint-staged`가 staged 파일에 `eslint --fix` +
+  `prettier --write`를 돌린다(가벼움).
+- **pre-push** (`.husky/pre-push`) — `npm run build`를 돌린다. `next build`가 타입 체크 +
+  ESLint + 빌드를 한 번에 수행하므로 이 한 단계가 컴파일·타입·린트·빌드를 모두 검증한다.
+- **CI** (`.github/workflows/deploy.yml`) — `lint` · `type-check` · `format:check` · `build` ·
+  E2E가 **모두 통과해야만** GitHub Pages에 배포된다(PR에서도 동일 검사 실행, 배포만 생략).
+
+## 금지 사항 (엄수)
+
+- **git hook을 우회하지 말 것.** 훅/검사가 실패하면 `--no-verify`, `HUSKY=0`, 환경변수로
+  hook을 끄는 등 **어떤 방식으로도 건너뛰지 않는다**. 실패는 신호다 — 원인을 찾아 고친다.
+- **억제 주석으로 오류를 덮지 말 것.** `@ts-ignore`, `@ts-expect-error`, `eslint-disable`
+  (`eslint-disable-next-line` 포함), `// prettier-ignore` 등으로 타입/린트/포맷 오류를
+  숨기는 것을 **엄금**한다. 타입·린트 에러는 근본 원인을 수정해 해소한다.
 
 ## 컨벤션
 
