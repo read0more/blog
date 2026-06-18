@@ -246,8 +246,8 @@ export function ArticleClient({ post }: ArticleClientProps) {
 
         <div className={styles.metaRow}>
           <span>{formatDate(post.date)}</span>
-          <span>·</span>
-          <span>{post.readingMinutes}분 읽기</span>
+          {/* <span>·</span>
+          <span>{post.readingMinutes}분 읽기</span> */}
         </div>
 
         {showToc && (

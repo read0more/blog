@@ -83,14 +83,15 @@
 
 /* 글 상세 컨테이너 폭(dc.html 689-694):
    - TOC 없음 → maxW 900 (짧은 글 가독성: 본문 줄길이 제한)
-   - TOC 있음 → maxW 1140 (본문 + 우측 TOC 188px)
+   - TOC 있음 → maxW 1280 (본문 + 우측 TOC 188px). 1140 이면 좌측 사이드바·우측 TOC 를
+     뺀 본문이 ~600px 로 좁아 갑갑해, 본문이 ~740px 폭을 갖도록 넓혔다.
    우측 TOC(.tocCol, [data-testid="toc"]) 가 실제 렌더될 때만 :has 로 넓힌다.
    본문/TOC 의 내부 2컬럼 분할은 글 상세 컴포넌트(Article)가 담당한다. */
 .contentWrap.post {
   max-width: 900px;
 }
 .contentWrap.post:has([data-testid="toc"]) {
-  max-width: 1140px;
+  max-width: 1280px;
 }
 
 /* Sidebar (sticky) */
