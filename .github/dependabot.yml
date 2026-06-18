@@ -5,6 +5,16 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    open-pull-requests-limit: 5 # 동시에 열리는 PR 수 상한
+    # react 계열은 항상 같은 버전이어야 한다(peer 의존성). 따로 PR로 쪼개지면
+    # 한쪽만 올라가 npm ci 가 ERESOLVE 로 깨진다 — 한 PR로 묶어 함께 업데이트.
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
