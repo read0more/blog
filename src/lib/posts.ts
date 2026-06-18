@@ -56,7 +56,9 @@ function frontmatterOf(
 let cache: Post[] | null = null;
 
 async function loadAllPosts(): Promise<Post[]> {
-  if (cache) return cache;
+  // dev 에서는 캐시를 건너뛰어 md 수정이 새로고침마다 반영되게 한다.
+  // (content/posts 는 webpack 모듈 그래프 밖이라 빌드타임 캐시가 그대로 남으면 변경이 안 보임)
+  if (cache && process.env.NODE_ENV !== "development") return cache;
 
   if (!fs.existsSync(POSTS_DIR)) {
     cache = [];

@@ -12,8 +12,12 @@ import type { NextConfig } from "next";
  */
 const basePath = process.env.BASE_PATH ?? "";
 
+// output: "export" 는 빌드 전용. next dev 에 켜두면 동적 라우트(특히 URL 인코딩되는
+// 한글 카테고리 경로)에서 generateStaticParams "missing param"/500 이 난다 — dev 에서는 끈다.
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
-  output: "export",
+  ...(isDev ? {} : { output: "export" }),
   basePath,
   // assetPrefix 는 basePath 가 있을 때만 명시(빈 값이면 설정하지 않음).
   ...(basePath ? { assetPrefix: `${basePath}/` } : {}),

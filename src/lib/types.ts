@@ -17,7 +17,7 @@ export interface TocItem {
   text: string;
   /** rehype-slug 가 부여한 id (앵커) */
   id: string;
-  /** heading depth (2 = h2, 3 = h3) */
+  /** heading depth (2 = h2, 3 = h3, 4 = h4) */
   depth: number;
 }
 

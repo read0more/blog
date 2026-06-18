@@ -2,16 +2,18 @@
 
 import { useState } from "react";
 import type { TocItem } from "@/lib/types";
-import { handleTocClick } from "./Toc";
+import { handleTocClick, depthClass } from "./Toc";
 import styles from "./Article.module.css";
 
 interface MobileTocProps {
   items: TocItem[];
   activeId: string | null;
+  /** 항목 클릭 시 호출 — active 고정용(scroll-spy 잠금). */
+  onSelect: (id: string) => void;
 }
 
 /** 모바일 목차 — 접이식 토글. 데스크톱에선 우측 TOC 가 대신하므로 숨긴다(CSS). */
-export function MobileToc({ items, activeId }: MobileTocProps) {
+export function MobileToc({ items, activeId, onSelect }: MobileTocProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -46,9 +48,10 @@ export function MobileToc({ items, activeId }: MobileTocProps) {
               href={`#${t.id}`}
               onClick={(e) => {
                 handleTocClick(e, t.id);
+                onSelect(t.id);
                 setOpen(false);
               }}
-              className={`${styles.mobileTocItem} ${t.depth === 3 ? styles.sub : ""} ${
+              className={`${styles.mobileTocItem} ${depthClass(t.depth)} ${
                 activeId === t.id ? styles.active : ""
               }`}
             >

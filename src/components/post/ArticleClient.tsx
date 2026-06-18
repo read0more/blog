@@ -52,6 +52,15 @@ export function ArticleClient({ post }: ArticleClientProps) {
   // TOC 노출 임계값: h2/h3 합산 3개 이상(디자인 hasToc).
   const showToc = toc.length >= 3;
   const [activeId, setActiveId] = useState<string | null>(toc[0]?.id ?? null);
+  // 목차 클릭/해시로 active 를 고른 직후엔 scroll-spy 가 덮어쓰지 못하게 잠근다.
+  // 사용자가 직접 스크롤(휠/터치/스크롤키)하면 해제된다.
+  const lockRef = useRef(false);
+
+  // 목차 항목 클릭(클릭 이벤트 핸들러): active 고정 + 잠금.
+  const selectFromToc = (id: string) => {
+    lockRef.current = true;
+    setActiveId(id);
+  };
 
   // ---- 코드블록 enhance ----
   useEffect(() => {
@@ -124,7 +133,23 @@ export function ArticleClient({ post }: ArticleClientProps) {
     const root = bodyRef.current;
     if (!root) return;
 
+    // 해시로 직접 진입한 경우, 첫 recompute 에서 해당 항목을 강제 active 로 잡고 잠근다.
+    // 안 그러면 브라우저가 앵커(바닥 근처)로 점프한 뒤 scroll-spy 가 마지막 heading 을 잡는다.
+    let pendingHash = (() => {
+      const hash = decodeURIComponent(window.location.hash.slice(1));
+      return hash && toc.some((t) => t.id === hash) ? hash : null;
+    })();
+
     const recompute = () => {
+      if (pendingHash) {
+        const id = pendingHash;
+        pendingHash = null;
+        lockRef.current = true;
+        setActiveId((prev) => (prev === id ? prev : id));
+        return;
+      }
+      // 목차 클릭/해시 선택으로 잠긴 동안엔 active 를 그대로 유지한다.
+      if (lockRef.current) return;
       // heading 노드는 매번 새로 조회한다. 한 번 캡처해 두면 본문 DOM 이 교체될 때
       // detach 되어 getBoundingClientRect 가 모두 0 → 항상 마지막이 활성되는 버그가 생긴다.
       const headings = toc
@@ -132,21 +157,71 @@ export function ArticleClient({ post }: ArticleClientProps) {
         .filter((el): el is HTMLElement => el !== null);
       if (!headings.length) return;
 
-      // 헤더(57px) + 여유를 둔 기준선보다 위에 있는 마지막 heading 이 활성.
+      // 헤더(57px) + 여유를 둔 기준선. 이 선 위로 올라온 마지막 heading 이 활성.
       const lineY = 96;
+      const scrollY = window.scrollY;
+      const maxScroll = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight,
+      );
+
+      // heading 별 활성화 scrollY 임계값(= 절대 top - lineY).
+      const thresholds = headings.map(
+        (h) => h.getBoundingClientRect().top + scrollY - lineY,
+      );
+      // 페이지가 짧아 기준선까지 끌어올릴 수 없는 말단 heading 들은 영원히 활성되지
+      // 않는다(맨 아래로 스크롤해도 직전 heading 에 멈춤). 도달 불가한 임계값들을
+      // [직전 도달 가능 임계값, maxScroll] 구간에 균등 배분해 끝까지 추적되게 한다.
+      const firstUnreachable = thresholds.findIndex((t) => t > maxScroll);
+      if (firstUnreachable !== -1 && maxScroll > 0) {
+        const base =
+          firstUnreachable === 0 ? 0 : thresholds[firstUnreachable - 1];
+        const count = headings.length - firstUnreachable;
+        for (let i = firstUnreachable; i < headings.length; i++) {
+          const ratio = (i - firstUnreachable + 1) / count;
+          thresholds[i] = base + (maxScroll - base) * ratio;
+        }
+      }
+
       let current = headings[0].id;
-      for (const h of headings) {
-        if (h.getBoundingClientRect().top <= lineY) current = h.id;
+      for (let i = 0; i < headings.length; i++) {
+        // -1: 바닥에서의 부동소수/서브픽셀 오차 보정.
+        if (scrollY >= thresholds[i] - 1) current = headings[i].id;
       }
       setActiveId((prev) => (prev === current ? prev : current));
+    };
+
+    // 사용자가 직접 스크롤하면 잠금 해제. recompute 는 부르지 않고 잠금만 풀어,
+    // 뒤이어 발생하는 실제 scroll 이벤트가 자연히 active 를 갱신하게 한다
+    // (바닥에서 무의미한 아래 휠로 active 가 튀는 것을 방지).
+    const unlock = () => {
+      lockRef.current = false;
+    };
+    const SCROLL_KEYS = new Set([
+      "ArrowDown",
+      "ArrowUp",
+      "PageDown",
+      "PageUp",
+      "Home",
+      "End",
+      " ",
+    ]);
+    const onKey = (e: KeyboardEvent) => {
+      if (SCROLL_KEYS.has(e.key)) lockRef.current = false;
     };
 
     recompute();
     window.addEventListener("scroll", recompute, { passive: true });
     window.addEventListener("resize", recompute);
+    window.addEventListener("wheel", unlock, { passive: true });
+    window.addEventListener("touchmove", unlock, { passive: true });
+    window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("scroll", recompute);
       window.removeEventListener("resize", recompute);
+      window.removeEventListener("wheel", unlock);
+      window.removeEventListener("touchmove", unlock);
+      window.removeEventListener("keydown", onKey);
     };
   }, [toc, showToc]);
 
@@ -175,14 +250,18 @@ export function ArticleClient({ post }: ArticleClientProps) {
           <span>{post.readingMinutes}분 읽기</span>
         </div>
 
-        {showToc && <MobileToc items={toc} activeId={activeId} />}
+        {showToc && (
+          <MobileToc items={toc} activeId={activeId} onSelect={selectFromToc} />
+        )}
 
         <Prose html={post.contentHtml} innerRef={bodyRef} />
 
         <Comments />
       </article>
 
-      {showToc && <Toc items={toc} activeId={activeId} />}
+      {showToc && (
+        <Toc items={toc} activeId={activeId} onSelect={selectFromToc} />
+      )}
     </div>
   );
 }
