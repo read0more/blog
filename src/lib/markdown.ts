@@ -2,6 +2,7 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
+import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
@@ -37,7 +38,8 @@ function extractPlainText(markdown: string): string {
 
 /**
  * 빌드타임 마크다운 → HTML 렌더.
- * remark-parse → gfm → rehype → slug → autolink → pretty-code(shiki) → stringify.
+ * remark-parse → gfm → rehype(raw HTML 허용) → raw → slug → autolink → pretty-code(shiki) → stringify.
+ * rehype-raw 가 본문 속 raw HTML(<details> 등)을 실제 엘리먼트로 파싱한다.
  * rehype-slug 직후 TOC 를 추출해 anchor id 와 정확히 일치시킨다.
  */
 export async function renderMarkdown(
@@ -48,7 +50,8 @@ export async function renderMarkdown(
   const file = await unified()
     .use(remarkParse)
     .use(remarkGfm)
-    .use(remarkRehype)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
     .use(rehypeSlug)
     .use(rehypeExtractToc, toc)
     .use(rehypeAutolinkHeadings, {

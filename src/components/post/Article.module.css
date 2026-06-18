@@ -203,6 +203,11 @@
   color: var(--sys-indigo);
 }
 
+/* 접기/펼치기(details/summary) */
+.prose :global(summary) {
+  cursor: pointer;
+}
+
 /* 코드블록 헤더(클라이언트가 삽입) */
 .codeHeader {
   display: flex;
