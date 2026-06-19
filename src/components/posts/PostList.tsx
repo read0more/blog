@@ -44,8 +44,8 @@ export function PostList({ title, subtitle, posts }: PostListProps) {
                 </span>
                 <span className={styles.metaDot}>·</span>
                 <span className={styles.metaText}>{formatDate(p.date)}</span>
-                <span className={styles.metaDot}>·</span>
-                <span className={styles.metaText}>{p.readingMinutes}분</span>
+                {/* <span className={styles.metaDot}>·</span> */}
+                {/* <span className={styles.metaText}>{p.readingMinutes}분</span> */}
               </div>
               <h2 className={styles.cardTitle}>{p.title}</h2>
               <p className={styles.cardDesc}>{p.description}</p>
