@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /**
  * 홈(/) — 글 목록.
  * 원본 글 6개 + QA 목 글(e2e-short-note, 2024-01-01 로 백데이트해 맨 뒤)로 총 7개 카드.
- * 최신순 정렬·메타(카테고리/날짜/읽는시간)·카드 클릭 이동을 검증한다.
+ * 최신순 정렬·메타(카테고리/날짜)·카드 클릭 이동을 검증한다.
  */
 
 // 최신순(원본 6개) + 마지막에 목 글.
@@ -41,17 +41,14 @@ test.describe("홈", () => {
     );
   });
 
-  test("카드에 카테고리 색상·날짜·읽는시간 메타가 표시된다", async ({
-    page,
-  }) => {
+  test("카드에 카테고리 색상·날짜 메타가 표시된다", async ({ page }) => {
     const card = page.getByTestId("post-card-use-effect-deps");
     // 카테고리(React) — categoryColor("React") = #5856d6.
     const cat = card.locator("span", { hasText: "React" }).first();
     await expect(cat).toHaveText("React");
     await expect(cat).toHaveCSS("color", "rgb(88, 86, 214)");
-    // 날짜(YYYY년 …) + 읽는시간(N분)
+    // 날짜(YYYY년 …)
     await expect(card).toContainText("년");
-    await expect(card).toContainText("분");
   });
 
   test("카드 클릭 시 글 상세로 이동한다", async ({ page }) => {
