@@ -61,6 +61,10 @@ export async function renderMarkdown(
     .use(rehypePrettyCode, {
       theme: "github-light",
       keepBackground: true,
+      // 언어 없는 펜스 블록도 figure[data-rehype-pretty-code-figure]로 감싸
+      // 다른 코드블록과 동일한 overflow-x:auto·스타일·복사 헤더를 받게 한다.
+      // block 만 지정해 인라인 코드(`code`)는 건드리지 않는다.
+      defaultLang: { block: "plaintext" },
     })
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(markdown);
