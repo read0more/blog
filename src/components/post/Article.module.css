@@ -161,6 +161,32 @@
   color: var(--tint);
 }
 
+/* ---- 표 (GFM table) ----
+   좁은 화면에서 넘치지 않도록 표 자체를 block + overflow-x 로 가로 스크롤 처리한다
+   (rehype 출력에 래퍼가 없어 표 단독으로 대응). */
+.prose :global(table) {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.prose :global(th),
+.prose :global(td) {
+  border: var(--hairline) solid var(--separator);
+  padding: 9px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+.prose :global(thead) :global(th) {
+  background: var(--bg-secondary);
+  font-weight: var(--weight-bold);
+  color: var(--label);
+}
+
 /* ---- 코드블록 ----
    rehype-pretty-code 가 figure[data-rehype-pretty-code-figure] > pre 를 만든다.
    ArticleBody(client)가 마운트 후 이 figure 를 .codeBlock 래퍼로 감싸고
