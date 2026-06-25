@@ -28,11 +28,20 @@ function frontmatterOf(
   if (
     typeof title !== "string" ||
     typeof date !== "string" ||
-    typeof description !== "string" ||
-    typeof category !== "string"
+    typeof description !== "string"
   ) {
     throw new Error(
-      `Invalid frontmatter in "${slug}.md": title/date/description/category are all required strings.`,
+      `Invalid frontmatter in "${slug}.md": title/date/description are all required strings.`,
+    );
+  }
+  // category 는 문자열 하나 또는 문자열 배열로 쓸 수 있다. 항상 string[] 로 정규화한다.
+  const categories = Array.isArray(category) ? category : [category];
+  if (
+    categories.length === 0 ||
+    !categories.every((c) => typeof c === "string" && c.length > 0)
+  ) {
+    throw new Error(
+      `Invalid frontmatter in "${slug}.md": category must be a non-empty string or an array of non-empty strings.`,
     );
   }
   if (typeof data.draft !== "undefined" && typeof data.draft !== "boolean") {
@@ -44,7 +53,7 @@ function frontmatterOf(
     title,
     date,
     description,
-    category,
+    categories,
     ...(typeof data.draft === "boolean" ? { draft: data.draft } : {}),
   };
 }
@@ -91,7 +100,7 @@ async function loadAllPosts(): Promise<Post[]> {
         title: fm.title,
         date: fm.date,
         description: fm.description,
-        category: fm.category,
+        categories: fm.categories,
         readingMinutes: readingMin,
         contentHtml: html,
         toc,
@@ -109,8 +118,8 @@ async function loadAllPosts(): Promise<Post[]> {
 }
 
 function toMeta(p: Post): PostMeta {
-  const { slug, title, date, description, category, readingMinutes } = p;
-  return { slug, title, date, description, category, readingMinutes };
+  const { slug, title, date, description, categories, readingMinutes } = p;
+  return { slug, title, date, description, categories, readingMinutes };
 }
 
 /** 전체 글 메타(최신순). 목록/홈에서 사용. */
@@ -139,7 +148,10 @@ export async function getCategories(): Promise<Category[]> {
   const posts = await loadAllPosts();
   const counts = new Map<string, number>();
   for (const p of posts) {
-    counts.set(p.category, (counts.get(p.category) ?? 0) + 1);
+    // 글 하나가 여러 카테고리에 속할 수 있으므로 각 카테고리마다 집계한다.
+    for (const name of p.categories) {
+      counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
   }
 
   const names = [...counts.keys()].sort((a, b) => {
@@ -163,7 +175,7 @@ export async function getPostsByCategory(
   category: string,
 ): Promise<PostMeta[]> {
   const posts = await loadAllPosts();
-  return posts.filter((p) => p.category === category).map(toMeta);
+  return posts.filter((p) => p.categories.includes(category)).map(toMeta);
 }
 
 /**
@@ -176,7 +188,7 @@ export async function getSearchDocs(): Promise<SearchDoc[]> {
     slug: p.slug,
     title: p.title,
     description: p.description,
-    category: p.category,
+    categories: p.categories,
     text: `${p.title} ${p.description} ${p.plainText}`,
   }));
 }

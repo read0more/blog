@@ -38,6 +38,9 @@
 .categoryLink:hover {
   text-decoration: underline;
 }
+.metaDot {
+  color: var(--label-tertiary);
+}
 
 .title {
   font-family: var(--font-display);

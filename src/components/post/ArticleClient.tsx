@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useRef, useState } from "react";
+import { Fragment, memo, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Post } from "@/lib/types";
 import { categoryColor } from "@/lib/categories";
@@ -225,19 +225,22 @@ export function ArticleClient({ post }: ArticleClientProps) {
     };
   }, [toc, showToc]);
 
-  const catColor = categoryColor(post.category);
-
   return (
     <div className={`${styles.detailWrap} ${showToc ? "" : styles.noToc}`}>
       <article className={styles.article} data-testid="article">
         <div className={styles.category}>
-          <Link
-            href={`/category/${encodeURIComponent(post.category)}`}
-            className={styles.categoryLink}
-            style={{ color: catColor }}
-          >
-            {post.category}
-          </Link>
+          {post.categories.map((c, i) => (
+            <Fragment key={c}>
+              {i > 0 && <span className={styles.metaDot}>·</span>}
+              <Link
+                href={`/category/${encodeURIComponent(c)}`}
+                className={styles.categoryLink}
+                style={{ color: categoryColor(c) }}
+              >
+                {c}
+              </Link>
+            </Fragment>
+          ))}
         </div>
 
         <h1 className={styles.title} data-testid="article-title">

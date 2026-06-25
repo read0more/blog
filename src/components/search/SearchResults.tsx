@@ -23,11 +23,13 @@ export function ResultList({ results, onSelect }: ResultListProps) {
           onClick={onSelect}
           data-testid={`search-result-${r.slug}`}
         >
-          <div
-            className={styles.resultCategory}
-            style={{ color: categoryColor(r.category) }}
-          >
-            {r.category}
+          <div className={styles.resultCategory}>
+            {r.categories.map((c, i) => (
+              <span key={c}>
+                {i > 0 && <span className={styles.resultCategoryDot}> · </span>}
+                <span style={{ color: categoryColor(c) }}>{c}</span>
+              </span>
+            ))}
           </div>
           <div className={styles.resultTitle}>{r.title}</div>
           <div className={styles.resultSnippet}>

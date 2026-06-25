@@ -49,11 +49,15 @@ function build() {
       const { data, content } = matter(raw);
       if (omitDrafts && data.draft === true) return null;
       const plain = extractPlainText(content);
+      // posts.ts 와 동일하게 category 를 string[] 로 정규화한다(단일 문자열도 허용).
+      const categories = Array.isArray(data.category)
+        ? data.category
+        : [data.category];
       return {
         slug,
         title: data.title,
         description: data.description,
-        category: data.category,
+        categories,
         date: data.date,
         text: `${data.title} ${data.description} ${plain}`,
       };

@@ -10,7 +10,7 @@ export interface SnippetPart {
 export interface SearchResult {
   slug: string;
   title: string;
-  category: string;
+  categories: string[];
   snippet: SnippetPart[];
 }
 
@@ -47,7 +47,7 @@ export function searchDocs(docs: SearchDoc[], query: string): SearchResult[] {
     .map((d) => ({
       slug: d.slug,
       title: d.title,
-      category: d.category,
+      categories: d.categories,
       snippet: makeSnippet(d.text, q),
     }));
 }

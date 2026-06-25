@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import type { PostMeta } from "@/lib/types";
 import { categoryColor } from "@/lib/categories";
@@ -36,12 +37,17 @@ export function PostList({ title, subtitle, posts }: PostListProps) {
               data-testid={`post-card-${p.slug}`}
             >
               <div className={styles.meta}>
-                <span
-                  className={styles.metaCategory}
-                  style={{ color: categoryColor(p.category) }}
-                >
-                  {p.category}
-                </span>
+                {p.categories.map((c, i) => (
+                  <Fragment key={c}>
+                    {i > 0 && <span className={styles.metaDot}>·</span>}
+                    <span
+                      className={styles.metaCategory}
+                      style={{ color: categoryColor(c) }}
+                    >
+                      {c}
+                    </span>
+                  </Fragment>
+                ))}
                 <span className={styles.metaDot}>·</span>
                 <span className={styles.metaText}>{formatDate(p.date)}</span>
                 {/* <span className={styles.metaDot}>·</span> */}
