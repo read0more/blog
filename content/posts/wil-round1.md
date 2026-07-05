@@ -19,7 +19,7 @@ category: "WIL(LOOP:PAK frontend)"
   closure). 심지어 예전에 AI가 의존성 배열을 빠뜨리는 걸 직접 본 적이 있었는데도, 그땐 error로 격상할 생각을 안 하고 "돌아는 가네?" 하고 넘겼었다.
   스캐폴딩을 그대로만 쓴다는 게 곧 "내가 판단하지 않고 있었다"는 뜻이었구나 싶었다.
 - TS config을 두고도 고민했다. 처음엔 "설정도 타입 안전하게 `.ts`로 쓰는 게 당연히 좋지
-  않나" 했는데, lint를 돌려보니 바로 에러가 났다. 해결 자체는 쉬웠다.([내가 확인한 과정](/posts/eslint-flat-config-custom-rule-husky/#ts-config%EC%9D%84-%EC%8B%A4%EC%A0%9C%EB%A1%9C-%EB%8F%8C%EA%B2%8C-%EB%A7%8C%EB%93%9C%EB%8A%94-jiti)) 다른 프레임워크들이 왜 굳이 `.ts`를 안 쓰는지 찾아보면서 생각이 바뀌었다. `.js` + `// @ts-check` 만으로도 자동완성·타입체크가 다 되니, 설정 파일을 `.ts`로 바꾸는 건 결국 불필요하다는 생각이 들어 `.js`로 되돌렸다.
+  않나" 했는데, lint를 돌려보니 바로 에러가 났다. 해결 자체는 쉬웠다.([내가 확인한 과정](/blog/posts/eslint-flat-config-custom-rule-husky/#ts-config%EC%9D%84-%EC%8B%A4%EC%A0%9C%EB%A1%9C-%EB%8F%8C%EA%B2%8C-%EB%A7%8C%EB%93%9C%EB%8A%94-jiti)) 다른 프레임워크들이 왜 굳이 `.ts`를 안 쓰는지 찾아보면서 생각이 바뀌었다. `.js` + `// @ts-check` 만으로도 자동완성·타입체크가 다 되니, 설정 파일을 `.ts`로 바꾸는 건 결국 불필요하다는 생각이 들어 `.js`로 되돌렸다.
 - lint에서 다음과 같은 워닝이 발생했다 `Warning: React version not specified in eslint-plugin-react settings`. 확인해보니 일반적으로는 `settings: { react: { version: "detect" } }`으로 버전을 감지 할 수 있음을 확인하여 처음에는 detect로 시도하였으나 lint시 확인해보니 `TypeError: Error while loading rule 'react/display-name': contextOrFilename.getFilename is not a function` 에러가 발생하였다. 확인해보니 eslint의 deprecated 상태였던 getFilename 메서드가 eslint v10에서 제거되면서 동작하지 않음을 확인했다 [문서](https://eslint.org/blog/2026/02/eslint-v10.0.0-released/). 별 수 없이 "19.2"로 직접 지정하였다.
 
 ## 🤔 아쉬웠던 점

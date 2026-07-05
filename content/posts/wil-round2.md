@@ -5,7 +5,7 @@ description: "2주차를 진행하면서 배운것들"
 category: "WIL(LOOP:PAK frontend)"
 ---
 
-이번 주차의 작업 자체는 별도의 글로 자세히 정리했다 — [비대한 컴포넌트에 대한 리팩토링](/posts/component-props-refactoring-bad-smell/). 여기서는 그 작업을 하면서 새로 배운 것·고민한 것·아쉬웠던 것만 짧게 회고로 남긴다.
+이번 주차의 작업 자체는 별도의 글로 자세히 정리했다 — [비대한 컴포넌트에 대한 리팩토링](/blog/posts/component-props-refactoring-bad-smell/). 여기서는 그 작업을 하면서 새로 배운 것·고민한 것·아쉬웠던 것만 짧게 회고로 남긴다.
 
 ## 🧠 이번 주에 새로 배운 것
 
