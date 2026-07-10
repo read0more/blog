@@ -10,6 +10,7 @@ import rehypeStringify from "rehype-stringify";
 import { visit } from "unist-util-visit";
 import type { Root as MdastRoot } from "mdast";
 import { rehypeExtractToc } from "./rehype-extract-toc";
+import { rehypeFigure } from "./rehype-figure";
 import type { TocItem } from "./types";
 
 export interface RenderedMarkdown {
@@ -52,6 +53,7 @@ export async function renderMarkdown(
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
+    .use(rehypeFigure)
     .use(rehypeSlug)
     .use(rehypeExtractToc, toc)
     .use(rehypeAutolinkHeadings, {

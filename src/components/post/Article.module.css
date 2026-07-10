@@ -117,6 +117,25 @@
   color: rgba(0, 0, 0, 0.86);
 }
 
+/* ---- 본문 이미지 (rehype-figure 가 ![alt](src) → figure>img+figcaption) ---- */
+.prose :global(figure.md-figure) {
+  margin: 28px 0;
+}
+.prose :global(figure.md-figure) :global(img) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+.prose :global(figure.md-figure) :global(figcaption.md-figcaption) {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--label-secondary);
+}
+
 .prose :global(blockquote) {
   margin: 26px 0;
   padding: 6px 0 6px 20px;
