@@ -23,7 +23,7 @@ const { isOpen, selectedOption, getTriggerProps, getListProps, optionItems } = u
 
 ### `optionToKey`를 필수로 강제한 이유
 
-downshift는 key 함수가 optional이고, 없으면 참조 동등성(`===`)으로 선택을 판별한다. 나는 이걸 **필수**로 바꿨다.
+downshift는 [`itemToKey`](https://github.com/downshift-js/downshift/blob/master/src/hooks/useSelect/README.md)를 optional로 두고 기본값을 참조 동등성(`===`)으로 잡아둔다. 그래서 넘기지 않으면 옵션 목록을 다시 받아왔을 때 선택이 풀릴 수 있고, 나는 그 위험 때문에 **필수**로 강제했다.
 
 ```ts
 /** 같은 옵션이 새 객체로 와도 선택이 유지되도록, 참조 동일성(===) 대신 이 키로 비교한다. */
