@@ -16,6 +16,13 @@ test.describe("이미지 라이트박스", () => {
     // PhotoSwipe 는 body 하위에 .pswp 를 붙이고 열린다.
     await expect(page.locator(".pswp")).toBeVisible();
 
+    // 열린 이미지가 실제로 치수를 가져야(0×0 아님) 줌/팬이 가능한 슬라이드로 뜬 것이다.
+    // 로드 전 클릭 가드(load 리스너 → dataset 폴백 → bounding rect 폴백)가 깨지면
+    // naturalWidth/Height 가 0 인 채로 넘어가 이 값이 0 이 된다.
+    const openedImgBox = await page.locator(".pswp__img").boundingBox();
+    expect(openedImgBox?.width).toBeGreaterThan(0);
+    expect(openedImgBox?.height).toBeGreaterThan(0);
+
     // PhotoSwipe 내부의 close()는 `opener.isOpen` 가드를 통과해야 실제로 닫힌다. 이
     // 플래그는 열기 애니메이션(기본 333ms)이 끝나는 시점(openingAnimationEnd)에야
     // true 로 바뀌므로, 애니메이션 도중에 Esc 를 누르거나 닫기 버튼을 클릭해도 close()가
