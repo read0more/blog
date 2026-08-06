@@ -77,6 +77,14 @@ export function useImageLightbox(
         gallery: "figure.md-figure",
         children: "a.pswp-anchor",
         pswpModule: () => import("photoswipe"),
+        // 열자마자 zoom 버튼을 누른 상태(확대)로 시작한다. 넓은 스샷을 fit 로 열면
+        // 글씨가 작아 한 번 더 확대해야 하므로, PhotoSwipe 기본 secondary 공식
+        // (Math.min(1, fit*3) — 사실상 원본 100% 근처)을 초기 줌으로 쓴다.
+        // fit 는 항상 ≤ 1 로 캡되므로 작은 이미지는 그대로 원본 크기로 열린다.
+        // zoom 버튼/더블탭은 반대로 fit(전체 보기)로 토글되고, 확대 상태에서
+        // 드래그(모바일 팬)로 좌우를 훑어 읽는다.
+        initialZoomLevel: (zoomLevel) => Math.min(1, zoomLevel.fit * 3),
+        secondaryZoomLevel: "fit",
       });
 
       // 열 때 img 의 실제 픽셀 치수/원본 src 를 슬라이드 데이터로 넣는다.
