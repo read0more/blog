@@ -96,3 +96,25 @@ html {
     scroll-behavior: auto;
   }
 }
+
+/* 라이트박스(PhotoSwipe) 캡션 — figcaption(alt) 텍스트를 하단 중앙에 표시 */
+.pswp-blog-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  margin: 0 auto;
+  max-width: 80%;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* 각 이미지가 1장짜리 독립 갤러리라 '1 / 1' 카운터는 불필요하므로 숨긴다. */
+.pswp__counter {
+  display: none;
+}

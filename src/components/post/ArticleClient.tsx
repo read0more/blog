@@ -8,6 +8,8 @@ import { formatDate } from "@/lib/format";
 import { Toc } from "./Toc";
 import { MobileToc } from "./MobileToc";
 import { Comments } from "./Comments";
+import "photoswipe/style.css";
+import { useImageLightbox } from "./useImageLightbox";
 import styles from "./Article.module.css";
 
 interface ArticleClientProps {
@@ -61,6 +63,9 @@ export function ArticleClient({ post }: ArticleClientProps) {
     lockRef.current = true;
     setActiveId(id);
   };
+
+  // ---- 본문 이미지 라이트박스 ----
+  useImageLightbox(bodyRef, post.contentHtml);
 
   // ---- 코드블록 enhance ----
   useEffect(() => {

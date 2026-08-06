@@ -128,6 +128,19 @@
   margin: 0 auto;
   border-radius: 10px;
 }
+
+/* 라이트박스 어포던스: JS 가 img 를 a.pswp-anchor 로 감싼 뒤에만 적용된다.
+   호버 시 '확대 가능' 신호(커서/미세 밝기)만 주고, 확대는 클릭할 때 일어난다. */
+.prose :global(figure.md-figure) :global(a.pswp-anchor) {
+  display: block;
+  cursor: zoom-in;
+}
+.prose :global(figure.md-figure) :global(img) {
+  transition: opacity 0.15s ease;
+}
+.prose :global(figure.md-figure) :global(a.pswp-anchor:hover) :global(img) {
+  opacity: 0.92;
+}
 .prose :global(figure.md-figure) :global(figcaption.md-figcaption) {
   margin-top: 10px;
   text-align: center;
