@@ -30,6 +30,7 @@
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
     "next": "16.2.9",
+    "photoswipe": "^5.4.4",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "rehype-autolink-headings": "^7.1.0",
