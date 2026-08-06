@@ -58,12 +58,6 @@ export function useImageLightbox(
         gallery: "figure.md-figure",
         children: "a.pswp-anchor",
         pswpModule: () => import("photoswipe"),
-        // PhotoSwipe 는 열기 애니메이션(기본 333ms)이 끝난 뒤에야 키보드(Esc 등) 리스너를
-        // 바인딩한다(openingAnimationEnd → bindEvents). 그런데 .pswp 루트는 애니메이션
-        // 시작과 동시에 DOM에 붙어 즉시 '보임' 상태가 되므로, 열자마자 Esc를 누르면
-        // 리스너가 아직 안 걸려 있어 무시된다. 여는 애니메이션만 꺼서 이 경합을 없앤다
-        // (닫는 애니메이션은 그대로 유지).
-        showAnimationDuration: 0,
       });
 
       // 열 때 img 의 실제 픽셀 치수/원본 src 를 슬라이드 데이터로 넣는다.

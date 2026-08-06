@@ -127,6 +127,7 @@
   height: auto;
   margin: 0 auto;
   border-radius: 10px;
+  transition: opacity 0.15s ease;
 }
 
 /* 라이트박스 어포던스: JS 가 img 를 a.pswp-anchor 로 감싼 뒤에만 적용된다.
@@ -134,9 +135,6 @@
 .prose :global(figure.md-figure) :global(a.pswp-anchor) {
   display: block;
   cursor: zoom-in;
-}
-.prose :global(figure.md-figure) :global(img) {
-  transition: opacity 0.15s ease;
 }
 .prose :global(figure.md-figure) :global(a.pswp-anchor:hover) :global(img) {
   opacity: 0.92;
