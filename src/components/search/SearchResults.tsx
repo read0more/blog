@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import type { Category } from "@/lib/types";
 import type { SearchResult } from "@/lib/search";
 import { categoryColor } from "@/lib/categories";
 import styles from "./Search.module.css";
@@ -49,42 +48,35 @@ export function ResultList({ results, onSelect }: ResultListProps) {
 
 interface EmptyStateProps {
   query: string;
-  categories: Category[];
-  /** 카테고리 칩 노출 여부(데스크톱 패널만). 모바일은 간단 안내. */
-  showChips: boolean;
+  /** 태그 칩(데스크톱 패널만 넘긴다). 없으면 모바일용 간단 안내. */
+  tags?: string[];
   onSelect?: () => void;
 }
 
-/** 결과 없음 — "OOO"에 대한 결과가 없습니다 + (데스크톱) 카테고리 칩. */
-export function EmptyState({
-  query,
-  categories,
-  showChips,
-  onSelect,
-}: EmptyStateProps) {
+/** 결과 없음 — "OOO"에 대한 결과가 없습니다 + (데스크톱) 태그 칩. */
+export function EmptyState({ query, tags, onSelect }: EmptyStateProps) {
   return (
     <div
-      className={showChips ? styles.empty : styles.mobileEmpty}
+      className={tags ? styles.empty : styles.mobileEmpty}
       data-testid="search-empty"
     >
       <div className={styles.emptyTitle}>“{query}”에 대한 결과가 없습니다</div>
       <div className={styles.emptyDesc}>
-        {showChips
-          ? "다른 키워드로 검색하거나 카테고리를 둘러보세요."
+        {tags
+          ? "다른 키워드로 검색하거나 태그를 둘러보세요."
           : "다른 키워드로 검색해 보세요."}
       </div>
-      {showChips && (
+      {tags && (
         <div className={styles.emptyChips}>
-          {categories.map((c) => (
+          {tags.map((t) => (
             <Link
-              key={c.name}
-              href={`/category/${encodeURIComponent(c.name)}`}
+              key={t}
+              href={`/tag/${encodeURIComponent(t)}`}
               className={styles.emptyChip}
-              style={{ color: c.color }}
               onClick={onSelect}
-              data-testid={`search-empty-chip-${c.name}`}
+              data-testid={`search-empty-chip-${t}`}
             >
-              {c.name}
+              #{t}
             </Link>
           ))}
         </div>

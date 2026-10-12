@@ -148,6 +148,7 @@
   border-radius: 20px;
   border: var(--hairline) solid var(--separator);
   background: var(--bg);
+  color: var(--label-secondary);
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;

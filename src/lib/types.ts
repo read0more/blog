@@ -11,6 +11,8 @@ export interface PostFrontmatter {
    * 로드 시점에 항상 string[] 로 정규화된다(글 하나가 여러 카테고리에 속할 수 있음).
    */
   categories: string[];
+  /** frontmatter 의 tags(선택). 없으면 빈 배열로 정규화된다. */
+  tags: string[];
   /** true면 OMIT_DRAFTS 빌드(배포)에서 제외된다. 없으면 공개 글. */
   draft?: boolean;
 }
@@ -33,6 +35,8 @@ export interface PostMeta {
   description: string;
   /** 글이 속한 카테고리들(최소 1개). */
   categories: string[];
+  /** 세부 주제 태그(없으면 빈 배열). /tag/[slug] 로 연결된다. */
+  tags: string[];
   /** 읽는 데 걸리는 시간(분) */
   readingMinutes: number;
 }
@@ -60,6 +64,7 @@ export interface SearchDoc {
   title: string;
   description: string;
   categories: string[];
+  tags: string[];
   /** ISO 날짜(최신순 보장용). search-index.json 에만 포함. */
   date?: string;
   /** 제목 + 설명 + 본문 plaintext (검색 대상 전체) */

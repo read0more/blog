@@ -1,0 +1,30 @@
+/* ============================================================
+   TagChips — #태그 칩. 카테고리만 색을 갖고 태그는 무채색으로 둔다.
+   ============================================================ */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: var(--hairline) solid var(--separator);
+  background: var(--bg);
+  color: var(--label-secondary);
+  text-decoration: none;
+  transition: background 0.12s;
+}
+.chip:hover {
+  background: var(--fill-quaternary);
+  text-decoration: none;
+}
+.chip.active {
+  background: rgba(0, 122, 255, 0.12);
+  border-color: transparent;
+  color: var(--tint);
+  font-weight: 600;
+}

@@ -52,15 +52,20 @@
   color: var(--label);
 }
 
+.metaBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 22px;
+  margin-bottom: 8px;
+  border-bottom: var(--hairline) solid var(--separator);
+}
 .metaRow {
   display: flex;
   align-items: center;
   gap: 9px;
   font-size: 14px;
   color: var(--label-tertiary);
-  padding-bottom: 22px;
-  margin-bottom: 8px;
-  border-bottom: var(--hairline) solid var(--separator);
 }
 
 /* ============================================================
