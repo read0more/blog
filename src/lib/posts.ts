@@ -44,6 +44,16 @@ function frontmatterOf(
       `Invalid frontmatter in "${slug}.md": category must be a non-empty string or an array of non-empty strings.`,
     );
   }
+  // tags 는 선택. 없으면 빈 배열, 있으면 비어 있지 않은 문자열 배열이어야 한다.
+  const tags = data.tags ?? [];
+  if (
+    !Array.isArray(tags) ||
+    !tags.every((t) => typeof t === "string" && t.length > 0)
+  ) {
+    throw new Error(
+      `Invalid frontmatter in "${slug}.md": tags must be an array of non-empty strings.`,
+    );
+  }
   if (typeof data.draft !== "undefined" && typeof data.draft !== "boolean") {
     throw new Error(
       `Invalid frontmatter in "${slug}.md": draft must be a boolean.`,
@@ -54,6 +64,7 @@ function frontmatterOf(
     date,
     description,
     categories,
+    tags,
     ...(typeof data.draft === "boolean" ? { draft: data.draft } : {}),
   };
 }
@@ -101,6 +112,7 @@ async function loadAllPosts(): Promise<Post[]> {
         date: fm.date,
         description: fm.description,
         categories: fm.categories,
+        tags: fm.tags,
         readingMinutes: readingMin,
         contentHtml: html,
         toc,
@@ -118,8 +130,9 @@ async function loadAllPosts(): Promise<Post[]> {
 }
 
 function toMeta(p: Post): PostMeta {
-  const { slug, title, date, description, categories, readingMinutes } = p;
-  return { slug, title, date, description, categories, readingMinutes };
+  const { slug, title, date, description, categories, tags, readingMinutes } =
+    p;
+  return { slug, title, date, description, categories, tags, readingMinutes };
 }
 
 /** 전체 글 메타(최신순). 목록/홈에서 사용. */
@@ -179,6 +192,32 @@ export async function getPostsByCategory(
 }
 
 /**
+ * 주어진 글들에 달린 태그를 distinct 수집한다 — 글 수 내림차순, 동률은 가나다순.
+ * 목록 상단의 태그 줄(홈/카테고리/태그 페이지)에 쓴다.
+ */
+export function tagsOf(posts: PostMeta[]): string[] {
+  const counts = new Map<string, number>();
+  for (const p of posts) {
+    for (const t of p.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
+  }
+  return [...counts.keys()].sort(
+    (a, b) =>
+      (counts.get(b) ?? 0) - (counts.get(a) ?? 0) || a.localeCompare(b, "ko"),
+  );
+}
+
+/** 전체 태그. generateStaticParams 와 검색 빈 결과 칩에서 사용. */
+export async function getAllTags(): Promise<string[]> {
+  return tagsOf(await loadAllPosts());
+}
+
+/** 특정 태그의 글 메타(최신순). */
+export async function getPostsByTag(tag: string): Promise<PostMeta[]> {
+  const posts = await loadAllPosts();
+  return posts.filter((p) => p.tags.includes(tag)).map(toMeta);
+}
+
+/**
  * 검색 인덱스(클라이언트 검색용) — 제목 + 설명 + 본문 plaintext.
  * 빌드타임에 search-index.json 으로 직렬화한다.
  */
@@ -189,6 +228,8 @@ export async function getSearchDocs(): Promise<SearchDoc[]> {
     title: p.title,
     description: p.description,
     categories: p.categories,
-    text: `${p.title} ${p.description} ${p.plainText}`,
+    tags: p.tags,
+    // 태그명으로도 검색되도록 text 끝에 붙인다.
+    text: `${p.title} ${p.description} ${p.plainText} ${p.tags.join(" ")}`,
   }));
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Post } from "@/lib/types";
 import { categoryColor } from "@/lib/categories";
 import { formatDate } from "@/lib/format";
+import { TagChips } from "../posts/TagChips";
 import { Toc } from "./Toc";
 import { MobileToc } from "./MobileToc";
 import { Comments } from "./Comments";
@@ -252,10 +253,13 @@ export function ArticleClient({ post }: ArticleClientProps) {
           {post.title}
         </h1>
 
-        <div className={styles.metaRow}>
-          <span>{formatDate(post.date)}</span>
-          {/* <span>·</span>
-          <span>{post.readingMinutes}분 읽기</span> */}
+        <div className={styles.metaBlock}>
+          <div className={styles.metaRow}>
+            <span>{formatDate(post.date)}</span>
+            {/* <span>·</span>
+            <span>{post.readingMinutes}분 읽기</span> */}
+          </div>
+          <TagChips tags={post.tags} />
         </div>
 
         {showToc && (

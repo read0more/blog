@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Category } from "@/lib/types";
 import { SearchIcon } from "../layout/icons";
 import { ResultList, EmptyState } from "./SearchResults";
 import type { useSearch } from "./useSearch";
@@ -9,14 +8,12 @@ import styles from "./Search.module.css";
 
 interface MobileSearchOverlayProps {
   search: ReturnType<typeof useSearch>;
-  categories: Category[];
   onClose: () => void;
 }
 
 /** 모바일 전체화면 검색 오버레이 — 유휴 안내 / 결과 / 결과 없음. */
 export function MobileSearchOverlay({
   search,
-  categories,
   onClose,
 }: MobileSearchOverlayProps) {
   const {
@@ -63,9 +60,7 @@ export function MobileSearchOverlay({
 
       <div className={styles.mobileBody}>
         {hasResults && <ResultList results={results} onSelect={onClose} />}
-        {isEmpty && (
-          <EmptyState query={query} categories={categories} showChips={false} />
-        )}
+        {isEmpty && <EmptyState query={query} />}
         {!hasQuery && (
           <div className={styles.mobileIdle} data-testid="mobile-search-idle">
             키워드를 입력하면 본문까지 검색합니다.

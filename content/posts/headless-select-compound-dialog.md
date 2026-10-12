@@ -2,7 +2,8 @@
 title: "두 헤드리스 UI — 훅+prop getter Select와 Compound Dialog"
 date: "2026-07-10T13:00:00.000Z"
 description: "두 헤드리스 UI 구현 Select는 훅+prop getter로, Dialog는 Compound로 라이브러리 직접 구현. 그 과정에서 내린 설계 판단과 잡은 실수의 기록."
-category: ["React"]
+category: "루프팩과정"
+tags: ["React"]
 ---
 
 ## Overview

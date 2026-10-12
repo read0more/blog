@@ -53,13 +53,16 @@ function build() {
       const categories = Array.isArray(data.category)
         ? data.category
         : [data.category];
+      // posts.ts 와 동일하게 tags 는 선택(없으면 빈 배열). 태그명으로도 검색되게 text 끝에 붙인다.
+      const tags = data.tags ?? [];
       return {
         slug,
         title: data.title,
         description: data.description,
         categories,
+        tags,
         date: data.date,
-        text: `${data.title} ${data.description} ${plain}`,
+        text: `${data.title} ${data.description} ${plain} ${tags.join(" ")}`,
       };
     })
     .filter(Boolean);

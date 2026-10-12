@@ -3,20 +3,30 @@ import Link from "next/link";
 import type { PostMeta } from "@/lib/types";
 import { categoryColor } from "@/lib/categories";
 import { formatDate } from "@/lib/format";
+import { TagChips } from "./TagChips";
 import styles from "./PostList.module.css";
 
 interface PostListProps {
   title: string;
   subtitle: string;
   posts: PostMeta[];
+  /** 헤더 아래 태그 줄에 보여줄 태그(없으면 줄 자체를 그리지 않는다). */
+  tags?: string[];
+  activeTag?: string;
 }
 
 /**
- * 홈/카테고리 공용 글 목록.
- * 헤더(제목 + 부제) + 글 카드(메타행 / 제목 / 설명).
+ * 홈/카테고리/태그 공용 글 목록.
+ * 헤더(제목 + 부제 + 태그 줄) + 글 카드(메타행 / 제목 / 설명 / 태그).
  * 카드 클릭 시 글 상세(/posts/[slug])로 이동.
  */
-export function PostList({ title, subtitle, posts }: PostListProps) {
+export function PostList({
+  title,
+  subtitle,
+  posts,
+  tags = [],
+  activeTag,
+}: PostListProps) {
   return (
     <div data-testid="post-list">
       <div className={styles.header}>
@@ -26,14 +36,20 @@ export function PostList({ title, subtitle, posts }: PostListProps) {
         <div className={styles.subtitle} data-testid="list-subtitle">
           {subtitle}
         </div>
+        <TagChips
+          tags={tags}
+          activeTag={activeTag}
+          className={styles.headerTags}
+        />
       </div>
 
       <ul className={styles.list}>
         {posts.map((p) => (
-          <li key={p.slug}>
+          // 태그 칩도 링크라 카드 링크 안에 넣으면 <a> 가 중첩된다 — 형제로 둔다.
+          <li key={p.slug} className={styles.card}>
             <Link
               href={`/posts/${p.slug}`}
-              className={styles.card}
+              className={styles.cardLink}
               data-testid={`post-card-${p.slug}`}
             >
               <div className={styles.meta}>
@@ -56,6 +72,7 @@ export function PostList({ title, subtitle, posts }: PostListProps) {
               <h2 className={styles.cardTitle}>{p.title}</h2>
               <p className={styles.cardDesc}>{p.description}</p>
             </Link>
+            <TagChips tags={p.tags} className={styles.cardTags} />
           </li>
         ))}
       </ul>

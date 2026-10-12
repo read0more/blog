@@ -45,24 +45,24 @@ E2E는 **`content/posts`가 아니라 고정 픽스처 `tests/fixtures/posts/`�
 **콘텐츠 → 렌더 → 소비**가 모두 빌드 타임에 일어난다:
 
 - `content/posts/*.md` — 글 하나가 마크다운 파일 하나. YAML 프론트매터
-  (`title`, `date` ISO-8601, `description`, `category`, 선택적 `draft`)를 가진다.
+  (`title`, `date` ISO-8601, `description`, `category`, 선택적 `tags`·`draft`)를 가진다.
   파일명이 slug가 된다.
 - `src/lib/posts.ts` — 단일 진실 공급원(single source of truth). `loadAllPosts()`가 모든
   `.md`를 읽어 프론트매터를 검증(형식 오류 시 throw)하고, 렌더링하고, date 내림차순으로
   정렬한 뒤 **결과를 모듈 레벨 변수에 캐시**한다(빌드 한 번에 여러 번 호출됨). 모든 페이지
-  데이터는 여기의 타입드 접근자(`getAllPostMeta`, `getPostBySlug`, `getCategories` 등)를 거친다.
+  데이터는 여기의 타입드 접근자(`getAllPostMeta`, `getPostBySlug`, `getCategories`, `getAllTags` 등)를 거친다.
 - `src/lib/markdown.ts` — unified 파이프라인: `remark-parse → gfm → remark-rehype →
 rehype-slug → rehype-extract-toc → autolink-headings → rehype-pretty-code(shiki,
 github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵커 id와 정확히 일치시킨다.
   검색용 `plainText`(텍스트 노드만, 코드블록 제외)도 함께 만든다.
-- `src/app/`의 라우트: `page.tsx`(홈), `posts/[slug]`, `category/[slug]`, `not-found.tsx`.
+- `src/app/`의 라우트: `page.tsx`(홈), `posts/[slug]`, `category/[slug]`, `tag/[slug]`, `not-found.tsx`.
   동적 라우트는 모두 `generateStaticParams`를 쓴다. `layout.tsx`는 카테고리 + 글 개수를
   로드해 전체를 `<AppShell>`로 감싸는 서버 컴포넌트다.
 
 **검색**은 서버가 아니라 빌드 타임 JSON 인덱스다:
 
 - `scripts/build-search-index.mjs`가 `predev`/`prebuild`에서 실행되어
-  `public/search-index.json`(글마다 title + description + 본문 plaintext)을 쓴다.
+  `public/search-index.json`(글마다 title + description + 본문 plaintext + 태그명)을 쓴다.
   `markdown.ts`의 plaintext 로직과 의도적으로 중복되어 있다 — 스크립트를 가볍게(remark만,
   shiki 없이) 유지하기 위함이다.
 - 클라이언트(`src/components/search/useSearch.ts` + `src/lib/search.ts`)는 첫 검색 시
@@ -71,6 +71,12 @@ github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵�
 **카테고리**는 수동 설정하지 않는다. 프론트매터에서 distinct하게 수집하며, 표시 순서는
 `posts.ts`의 `CATEGORY_ORDER` 우선 후 한글 정렬, 색상은 이름을 해시해 9색 iOS 팔레트에서
 결정적으로 고른다(`src/lib/categories.ts`).
+
+**카테고리와 태그의 역할 분담**: 카테고리는 사이드바에 나오는 큰 분류(현재 `루프팩과정` 하나)이고,
+세부 주제는 프론트매터 `tags`(선택, 문자열 배열)에 적는다. 태그는 사이드바에 넣지 않고
+`TagChips`(`src/components/posts/TagChips.tsx`)로 목록 상단 태그 줄·글 카드·글 상세에 무채색 칩으로
+보여주며 `/tag/[slug]`로 연결한다. 목록 상단 태그 줄은 `tagsOf(posts)`로 만든다(글 수 내림차순).
+글 카드는 `<li>` 안에 카드 링크와 태그 칩을 형제로 둔다(칩도 링크라 중첩하면 `<a>` 안에 `<a>`가 된다).
 
 **서버 vs 클라이언트 경계**: 렌더링/데이터는 서버 사이드, 인터랙션은 `"use client"`
 컴포넌트로 격리된다. `ArticleClient.tsx`가 글 상세 페이지의 인터랙션(스크롤 스파이 TOC,
@@ -87,7 +93,9 @@ enhance된 코드 헤더가 지워지고 TOC가 깨짐). 그리고 스크롤 스
   `build-search-index.mjs` 양쪽에 있다. (E2E는 `content/posts`가 아니라 별도 고정 픽스처
   `tests/fixtures/posts`를 빌드한다 — 위 "명령어" 섹션 참조.)
 - 정적 export는 `next/image` 최적화를 못 쓰고(`images.unoptimized: true`), 공개 글이 **0개**면
-  사이트 빌드 자체가 실패한다 — non-draft 글을 최소 하나는 유지할 것.
+  사이트 빌드 자체가 실패한다 — non-draft 글을 최소 하나는 유지할 것. 태그도 같다: 공개 글 전체에
+  `tags`가 **하나도 없으면** `/tag/[slug]`의 `generateStaticParams`가 빈 배열이 되어
+  `missing "generateStaticParams()"` 오류로 빌드가 실패한다.
 - 프로젝트 페이지 배포는 빌드 시 `BASE_PATH`(예: `/blog`) 주입이 필요하다. 클라이언트에는
   `NEXT_PUBLIC_BASE_PATH`로 노출되며 **모든 자산/인덱스 fetch 경로 앞에 prefix해야** 한다
   (`useSearch.ts` 참고). 안 하면 GitHub Pages에서 404가 난다. 폴더형 정적 라우팅을 위해

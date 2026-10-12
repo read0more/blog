@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/AppShell";
-import { getCategories, getAllPostMeta } from "@/lib/posts";
+import { getCategories, getAllPostMeta, getAllTags } from "@/lib/posts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,15 +13,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [categories, posts] = await Promise.all([
+  const [categories, posts, tags] = await Promise.all([
     getCategories(),
     getAllPostMeta(),
+    getAllTags(),
   ]);
 
   return (
     <html lang="ko">
       <body>
-        <AppShell categories={categories} totalCount={posts.length}>
+        <AppShell categories={categories} tags={tags} totalCount={posts.length}>
           {children}
         </AppShell>
       </body>

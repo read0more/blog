@@ -28,20 +28,30 @@
   list-style: none;
 }
 
+.headerTags {
+  margin-bottom: 14px;
+}
+
 .card {
-  display: block;
   padding: 22px 12px;
   margin: 0 -12px;
   border-bottom: var(--hairline) solid var(--separator);
-  cursor: pointer;
   border-radius: 12px;
   transition: background 0.15s;
-  text-decoration: none;
-  color: inherit;
 }
 .card:hover {
   background: var(--fill-quaternary);
+}
+.cardLink {
+  display: block;
   text-decoration: none;
+  color: inherit;
+}
+.cardLink:hover {
+  text-decoration: none;
+}
+.cardTags {
+  margin-top: 12px;
 }
 
 .meta {

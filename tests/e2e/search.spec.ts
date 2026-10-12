@@ -24,16 +24,26 @@ test.describe("검색 (데스크톱)", () => {
     await expect(mark).toHaveCSS("background-color", "rgba(0, 122, 255, 0.16)");
   });
 
-  test("결과 없음 — 'graphql' 안내 문구 + 카테고리 칩", async ({ page }) => {
+  test("태그명 검색 — 본문에 없는 'Hooks' 태그로 글이 매칭된다", async ({
+    page,
+  }) => {
+    await page.getByTestId("search-input").fill("Hooks");
+    await expect(page.getByTestId("search-panel")).toContainText("1개의 결과");
+    await expect(
+      page.getByTestId("search-result-use-effect-deps"),
+    ).toBeVisible();
+  });
+
+  test("결과 없음 — 'graphql' 안내 문구 + 태그 칩", async ({ page }) => {
     await page.getByTestId("search-input").fill("graphql");
     const empty = page.getByTestId("search-empty");
     await expect(empty).toBeVisible();
     await expect(empty).toContainText("graphql");
     await expect(empty).toContainText("결과가 없습니다");
-    // 카테고리 칩(6개).
+    // 태그 칩(4개: 렌더링/이미지/Hooks/RSC).
     await expect(
       page.locator('[data-testid^="search-empty-chip-"]'),
-    ).toHaveCount(6);
+    ).toHaveCount(4);
   });
 
   test("지우기 버튼 — 패널이 닫힌다", async ({ page }) => {

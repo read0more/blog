@@ -2,7 +2,8 @@
 title: "기존 과제 폴더를 옮기며 배운 FSD"
 date: "2026-07-31T13:00:00.000Z"
 description: "기술 역할로 나눈 폴더(hooks·services·queries)에서는 '상품 목록 조건이 어디 있나'를 보려면 폴더 세 개를 열어야 했다. 커머스 프로젝트를 Feature-Sliced Design으로 옮기며 손이 멈췄던 자리들 — ProductCard를 위젯으로 올리고, store를 변경 이유대로 쪼개고, Steiger가 잡은 상향 import를 고친 판단의 근거를 정리했다."
-category: ["아키텍처"]
+category: "루프팩과정"
+tags: ["아키텍처"]
 ---
 
 지난 몇 주 붙잡고 있던 커머스 프로젝트를 Feature-Sliced Design(FSD)으로 옮겼다. 이번 글은 폴더를 옮기며 망설였던 자리들을 정리한 것이다.

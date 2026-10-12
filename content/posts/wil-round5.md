@@ -2,7 +2,8 @@
 title: "[WIL] Round5 - 상태의 원본은 어디에 있나"
 date: "2026-07-26T13:00:00.000Z"
 description: "5주차를 진행하면서 배운것들"
-category: "WIL(LOOP:PAK frontend)"
+category: "루프팩과정"
+tags: ["WIL"]
 ---
 
 이번 주 질문은 "어떤 상태 라이브러리를 쓸까"가 아니라 "**이 상태의 원본은 어디에 있나**"였다. 서버가 원본인 값(TanStack Query)·URL이 원본인 값(nuqs)·클라이언트가 원본인 값(Zustand)을 먼저 가른 뒤에야 라이브러리를 골랐다.

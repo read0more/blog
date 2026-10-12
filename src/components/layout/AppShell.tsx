@@ -13,11 +13,18 @@ import styles from "./AppShell.module.css";
 
 interface AppShellProps {
   categories: Category[];
+  /** 검색 빈 결과 화면의 태그 칩용. */
+  tags: string[];
   totalCount: number;
   children: ReactNode;
 }
 
-export function AppShell({ categories, totalCount, children }: AppShellProps) {
+export function AppShell({
+  categories,
+  tags,
+  totalCount,
+  children,
+}: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const closeSidebar = () => setSidebarOpen(false);
@@ -81,7 +88,7 @@ export function AppShell({ categories, totalCount, children }: AppShellProps) {
 
         {/* Desktop search (box + result panel) */}
         <div className={`${styles.headerSearchSlot} ${styles.desktopOnly}`}>
-          <DesktopSearch search={search} categories={categories} />
+          <DesktopSearch search={search} tags={tags} />
         </div>
 
         {/* Mobile search button */}
@@ -146,11 +153,7 @@ export function AppShell({ categories, totalCount, children }: AppShellProps) {
 
       {/* ---- Mobile search overlay ---- */}
       {mobileSearchOpen && (
-        <MobileSearchOverlay
-          search={search}
-          categories={categories}
-          onClose={closeMobileSearch}
-        />
+        <MobileSearchOverlay search={search} onClose={closeMobileSearch} />
       )}
 
       {/* ---- Back to top (플로팅 FAB, 400px 스크롤 후 노출) ---- */}

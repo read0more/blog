@@ -21,7 +21,8 @@ npm run build  # 정적 export (out/)
 title: "글 제목"
 date: "2026-05-09T09:00:00.000Z"
 description: "목록과 검색에 노출되는 한 줄 요약"
-category: "CSS"
+category: "루프팩과정"
+tags: ["React", "리팩토링"]
 ---
 
 본문 시작...
@@ -30,7 +31,8 @@ category: "CSS"
 - `title` — 글 제목
 - `date` — 작성일(ISO 8601). 목록 정렬 기준
 - `description` — 글 목록·검색 결과에 보이는 요약
-- `category` — 카테고리. 새 값을 쓰면 카테고리가 자동으로 생성됩니다
+- `category`: 큰 분류. 사이드바에 표시됩니다. 새 값을 쓰면 카테고리가 자동으로 생성됩니다
+- `tags`: (선택) 세부 주제 태그 배열. 글 카드와 글 상세에 `#태그` 칩으로 보이고 `/tag/태그명` 목록으로 연결됩니다
 - `draft` — (선택) `true`면 **배포 시 제외**되는 초안. 생략하거나 `false`면 공개 글
 
 ### 초안(draft) — 배포에서 제외하기

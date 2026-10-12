@@ -2,7 +2,8 @@
 title: "[WIL] Round6 - 흩어진 코드를 FSD로 기능 단위로 모았다"
 date: "2026-08-02T13:00:00.000Z"
 description: "6주차를 진행하면서 배운것들"
-category: "WIL(LOOP:PAK frontend)"
+category: "루프팩과정"
+tags: ["WIL"]
 ---
 
 커머스 프로젝트를 Feature-Sliced Design으로 옮기며 ProductCard를 위젯으로 올리고 store를 변경 이유대로 쪼갠 판단을 담았다. 여기서는 새로 배운 것·고민한 것·아쉬운 것만 짧게 WIL로 남겼다.

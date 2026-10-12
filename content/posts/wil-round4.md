@@ -2,7 +2,8 @@
 title: "[WIL] Round4 - 두 헤드리스 UI, 그리고 놓친 중첩 Dialog"
 date: "2026-07-12T13:00:00.000Z"
 description: "4주차를 진행하면서 배운것들"
-category: "WIL(LOOP:PAK frontend)"
+category: "루프팩과정"
+tags: ["WIL"]
 ---
 
 이번 주차의 작업 자체는 별도의 글로 자세히 정리했다 — [두 헤드리스 UI — 훅+prop getter Select와 Compound Dialog](/blog/posts/headless-select-compound-dialog/). Select는 훅+prop getter로, Dialog는 Compound로 라이브러리를 참고해 직접 구현했고, 그 과정에서 내린 설계 판단과 잡은 실수를 담았다. 여기서는 새로 배운 것·고민한 것·발제에서 드러난 놓친 것만 짧게 WIL 형식으로 남긴다.

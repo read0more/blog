@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import type { Category } from "@/lib/types";
 import { SearchIcon } from "../layout/icons";
 import { ResultList, EmptyState } from "./SearchResults";
 import type { useSearch } from "./useSearch";
@@ -10,11 +9,11 @@ import styles from "./Search.module.css";
 
 interface DesktopSearchProps {
   search: ReturnType<typeof useSearch>;
-  categories: Category[];
+  tags: string[];
 }
 
 /** 데스크톱 헤더 검색박스 + 결과 패널(560px). */
-export function DesktopSearch({ search, categories }: DesktopSearchProps) {
+export function DesktopSearch({ search, tags }: DesktopSearchProps) {
   const {
     query,
     setQuery,
@@ -86,12 +85,7 @@ export function DesktopSearch({ search, categories }: DesktopSearchProps) {
             <div className={styles.panelBody}>
               {hasResults && <ResultList results={results} onSelect={clear} />}
               {isEmpty && (
-                <EmptyState
-                  query={query}
-                  categories={categories}
-                  showChips
-                  onSelect={clear}
-                />
+                <EmptyState query={query} tags={tags} onSelect={clear} />
               )}
             </div>
           </div>

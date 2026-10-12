@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCategories, getPostsByCategory } from "@/lib/posts";
+import { getCategories, getPostsByCategory, tagsOf } from "@/lib/posts";
 import { PostList } from "@/components/posts/PostList";
 
 /**
@@ -25,7 +25,13 @@ export default async function CategoryPage({
     notFound();
   }
 
+  // 태그 줄에는 이 카테고리 글에 달린 태그만 보여준다.
   return (
-    <PostList title={name} subtitle={`${posts.length}개의 글`} posts={posts} />
+    <PostList
+      title={name}
+      subtitle={`${posts.length}개의 글`}
+      posts={posts}
+      tags={tagsOf(posts)}
+    />
   );
 }
