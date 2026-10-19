@@ -72,7 +72,7 @@ github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵�
 `posts.ts`의 `CATEGORY_ORDER` 우선 후 한글 정렬, 색상은 이름을 해시해 9색 iOS 팔레트에서
 결정적으로 고른다(`src/lib/categories.ts`).
 
-**카테고리와 태그의 역할 분담**: 카테고리는 사이드바에 나오는 큰 분류(현재 `루프팩과정` 하나)이고,
+**카테고리와 태그의 역할 분담**: 카테고리는 사이드바에 나오는 큰 분류(과정 회고는 `루프팩과정`, 개인 견해는 `생각들`)이고,
 세부 주제는 프론트매터 `tags`(선택, 문자열 배열)에 적는다. 태그는 사이드바에 넣지 않고
 `TagChips`(`src/components/posts/TagChips.tsx`)로 목록 상단 태그 줄·글 카드·글 상세에 무채색 칩으로
 보여주며 `/tag/[slug]`로 연결한다. 목록 상단 태그 줄은 `tagsOf(posts)`로 만든다(글 수 내림차순).
