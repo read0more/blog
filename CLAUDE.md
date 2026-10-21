@@ -55,6 +55,11 @@ E2E는 **`content/posts`가 아니라 고정 픽스처 `tests/fixtures/posts/`�
 rehype-slug → rehype-extract-toc → autolink-headings → rehype-pretty-code(shiki,
 github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵커 id와 정확히 일치시킨다.
   검색용 `plainText`(텍스트 노드만, 코드블록 제외)도 함께 만든다.
+- **라이브 코드 블록**: ` ```css live file=styles.css ` 처럼 meta에 `live`가 붙은 **연속** 펜스들은
+  `remark-live-code.ts`가 하나의 `div[data-live-code]`(파일맵 JSON)로 묶고, 클라이언트
+  `useLiveCode.tsx`가 그 자리에 `LiveCode.tsx`(Sandpack `static` 템플릿, iframe 미리보기)를 마운트한다. `file=` 필수,
+  `hidden`은 탭에서 숨김, `view=both|preview|code`는 처음 보기 모드(블록 위 버튼으로 독자가 전환, 패널은
+  `display`로만 숨겨 상태 유지). `rehype-raw`가 hast의 펜스 meta를 버리므로 이 처리는 반드시 remark 단계에 둔다.
 - `src/app/`의 라우트: `page.tsx`(홈), `posts/[slug]`, `category/[slug]`, `tag/[slug]`, `not-found.tsx`.
   동적 라우트는 모두 `generateStaticParams`를 쓴다. `layout.tsx`는 카테고리 + 글 개수를
   로드해 전체를 `<AppShell>`로 감싸는 서버 컴포넌트다.

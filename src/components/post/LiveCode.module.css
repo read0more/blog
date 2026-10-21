@@ -1,0 +1,35 @@
+/* 라이브 코드 블록: 보기 모드 버튼 줄. 코드블록 헤더(.codeHeader)·복사 버튼과 톤을 맞춘다. */
+.liveCode {
+  margin: 24px 0;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.viewButton {
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 9px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  background: var(--fill-quaternary);
+  color: var(--label-secondary);
+  transition:
+    background 0.12s,
+    color 0.12s;
+}
+
+.viewButton:hover {
+  background: var(--fill-tertiary);
+}
+
+.viewButton[aria-pressed="true"] {
+  background: var(--label);
+  color: var(--bg);
+}
