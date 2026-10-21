@@ -11,6 +11,7 @@ import { visit } from "unist-util-visit";
 import type { Root as MdastRoot } from "mdast";
 import { rehypeExtractToc } from "./rehype-extract-toc";
 import { rehypeFigure } from "./rehype-figure";
+import { remarkLiveCode } from "./remark-live-code";
 import type { TocItem } from "./types";
 
 export interface RenderedMarkdown {
@@ -39,8 +40,9 @@ function extractPlainText(markdown: string): string {
 
 /**
  * 빌드타임 마크다운 → HTML 렌더.
- * remark-parse → gfm → rehype(raw HTML 허용) → raw → slug → autolink → pretty-code(shiki) → stringify.
+ * remark-parse → gfm → live-code → rehype(raw HTML 허용) → raw → slug → autolink → pretty-code(shiki) → stringify.
  * rehype-raw 가 본문 속 raw HTML(<details> 등)을 실제 엘리먼트로 파싱한다.
+ * live-code 는 펜스 meta 를 읽어야 해서 rehype-raw(meta 를 버림)보다 앞, remark 단계에 둔다.
  * rehype-slug 직후 TOC 를 추출해 anchor id 와 정확히 일치시킨다.
  */
 export async function renderMarkdown(
@@ -51,6 +53,7 @@ export async function renderMarkdown(
   const file = await unified()
     .use(remarkParse)
     .use(remarkGfm)
+    .use(remarkLiveCode)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeFigure)

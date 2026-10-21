@@ -37,3 +37,33 @@ container-type: inline-size로 컨테이너를 선언하면, 그 안의 요소�
 - 같은 컴포넌트가 여러 폭의 슬롯에 재사용될 때
 - 디자인 시스템의 카드·리스트·미디어 객체
 - 뷰포트 기준 분기가 컴포넌트 단위와 어긋날 때
+
+```html live file=index.html hidden
+<!doctype html>
+<html lang="ko">
+  <head>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <button id="counter" type="button">클릭</button>
+    <p id="count">0번 클릭</p>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
+```
+
+```css live file=styles.css
+body {
+  font-family: system-ui, sans-serif;
+  padding: 16px;
+}
+```
+
+```js live file=script.js
+let count = 0;
+const output = document.querySelector("#count");
+document.querySelector("#counter").addEventListener("click", () => {
+  count += 1;
+  output.textContent = `${count}번 클릭`;
+});
+```
