@@ -8,12 +8,12 @@ draft: true
 
 <!--
   [draft 확인용] 배포 빌드(OMIT_DRAFTS=true)에서는 빠지고 로컬 dev/build 에서만 보인다.
-  라이브 코드 블록 문법: meta 에 live 가 붙은 연속 펜스 = 데모 하나. file= 필수, hidden 은 탭에서 숨김.
+  라이브 코드 블록 문법: meta 에 live 가 붙은 연속 펜스 = 데모 하나. file= 필수, hidden 은 탭에서 숨김, view=both|preview|code 는 처음 보기 모드.
 -->
 
 ## JS가 도는 데모
 
-버튼을 누르면 숫자가 올라갑니다. 오른쪽(좁은 화면에선 아래) 미리보기에서 눌러보고, `script.js` 탭에서 코드를 고치면 바로 반영됩니다.
+버튼을 누르면 숫자가 올라갑니다. 미리보기에서 눌러보고, `script.js` 탭에서 코드를 고치면 바로 반영됩니다. 블록 위 버튼으로 코드 + 결과, 결과만, 코드만 보기를 오갈 수 있습니다.
 
 ```html live file=index.html hidden
 <!doctype html>
@@ -56,9 +56,9 @@ document.querySelector("#counter").addEventListener("click", () => {
 
 ## CSS만 있는 데모
 
-JS 없이 `scroll-snap`만으로 카드가 한 장씩 멈춥니다. 미리보기 안에서 가로로 스크롤해 보세요.
+JS 없이 `scroll-snap`만으로 카드가 한 장씩 멈춥니다. 이 데모는 결과만 보이는 상태로 시작합니다. 미리보기 안에서 가로로 스크롤해 보고, 코드는 위 버튼으로 열어보세요.
 
-```html live file=index.html hidden
+```html live file=index.html hidden view=preview
 <!doctype html>
 <html lang="ko">
   <head>

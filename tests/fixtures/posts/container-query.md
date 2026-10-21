@@ -38,7 +38,7 @@ container-type: inline-size로 컨테이너를 선언하면, 그 안의 요소�
 - 디자인 시스템의 카드·리스트·미디어 객체
 - 뷰포트 기준 분기가 컴포넌트 단위와 어긋날 때
 
-```html live file=index.html hidden
+```html live file=index.html hidden view=preview
 <!doctype html>
 <html lang="ko">
   <head>
