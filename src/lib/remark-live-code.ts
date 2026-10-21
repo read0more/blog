@@ -3,7 +3,7 @@ import type { Paragraph, Root, RootContent } from "mdast";
 /** Sandpack files 형식: 경로 → { code, hidden } */
 export type LiveCodeFiles = Record<string, { code: string; hidden?: boolean }>;
 
-/** 보기 모드: 코드 + 결과 / 결과만 / 코드만 */
+/** 보기 모드: 코드 + 미리보기 / 미리보기 / 코드 */
 export const LIVE_CODE_VIEWS = ["both", "preview", "code"] as const;
 export type LiveCodeView = (typeof LIVE_CODE_VIEWS)[number];
 

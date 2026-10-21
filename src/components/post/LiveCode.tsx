@@ -9,15 +9,15 @@ import type { LiveCodeFiles, LiveCodeView } from "@/lib/remark-live-code";
 import styles from "./LiveCode.module.css";
 
 const VIEW_LABELS: Record<LiveCodeView, string> = {
-  both: "코드 + 결과",
-  preview: "결과",
+  both: "코드 + 미리보기",
+  preview: "미리보기",
   code: "코드",
 };
 
 const PANEL_HEIGHT = 480;
 
 /**
- * 라이브 코드 블록 1개. 상단 버튼으로 코드 + 결과 / 결과만 / 코드만 을 오간다.
+ * 라이브 코드 블록 1개. 상단 버튼으로 코드 + 미리보기 / 미리보기 / 코드 를 오간다.
  * 모드 전환은 패널을 언마운트하지 않고 display 로만 숨긴다 → 미리보기 상태(카운트 등)와
  * 에디터에서 고친 코드가 전환 후에도 유지된다.
  * Sandpack 프리셋에는 모드 전환이 없어 Provider + Editor + Preview 를 직접 조합한다.

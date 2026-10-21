@@ -13,7 +13,7 @@ draft: true
 
 ## JS가 도는 데모
 
-버튼을 누르면 숫자가 올라갑니다. 미리보기에서 눌러보고, `script.js` 탭에서 코드를 고치면 바로 반영됩니다. 블록 위 버튼으로 코드 + 결과, 결과만, 코드만 보기를 오갈 수 있습니다.
+버튼을 누르면 숫자가 올라갑니다. 미리보기에서 눌러보고, `script.js` 탭에서 코드를 고치면 바로 반영됩니다. 블록 위 버튼으로 코드 + 미리보기, 미리보기, 코드 보기를 오갈 수 있습니다.
 
 ```html live file=index.html hidden
 <!doctype html>
@@ -56,7 +56,7 @@ document.querySelector("#counter").addEventListener("click", () => {
 
 ## CSS만 있는 데모
 
-JS 없이 `scroll-snap`만으로 카드가 한 장씩 멈춥니다. 이 데모는 결과만 보이는 상태로 시작합니다. 미리보기 안에서 가로로 스크롤해 보고, 코드는 위 버튼으로 열어보세요.
+JS 없이 `scroll-snap`만으로 카드가 한 장씩 멈춥니다. 이 데모는 미리보기만 보이는 상태로 시작합니다. 미리보기 안에서 가로로 스크롤해 보고, 코드는 위 버튼으로 열어보세요.
 
 ```html live file=index.html hidden view=preview
 <!doctype html>
