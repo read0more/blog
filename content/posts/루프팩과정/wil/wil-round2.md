@@ -2,7 +2,6 @@
 title: "[WIL] Round2 - 비대한 컴포넌트 리팩토링과 판별의 눈"
 date: "2026-06-28T13:00:00.000Z"
 description: "2주차를 진행하면서 배운것들"
-category: "루프팩과정"
 tags: ["WIL"]
 ---
 

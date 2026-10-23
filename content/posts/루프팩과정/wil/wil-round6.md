@@ -2,7 +2,6 @@
 title: "[WIL] Round6 - 흩어진 코드를 FSD로 기능 단위로 모았다"
 date: "2026-08-02T13:00:00.000Z"
 description: "6주차를 진행하면서 배운것들"
-category: "루프팩과정"
 tags: ["WIL"]
 ---
 

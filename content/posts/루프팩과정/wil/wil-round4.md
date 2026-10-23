@@ -2,7 +2,6 @@
 title: "[WIL] Round4 - 두 헤드리스 UI, 그리고 놓친 중첩 Dialog"
 date: "2026-07-12T13:00:00.000Z"
 description: "4주차를 진행하면서 배운것들"
-category: "루프팩과정"
 tags: ["WIL"]
 ---
 

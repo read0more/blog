@@ -1,6 +1,29 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("카테고리", () => {
+  test("중첩 폴더 글은 최상위 카테고리에 표시되고 기존 주소로 열린다", async ({
+    page,
+  }) => {
+    await page.goto("/category/React/");
+    const post = page.getByTestId("post-card-use-effect-deps");
+    await expect(post).toContainText("React");
+    await post.click();
+    await expect(page).toHaveURL(/\/posts\/use-effect-deps\/?$/);
+    await expect(
+      page
+        .getByTestId("article")
+        .getByRole("link", { name: "React", exact: true }),
+    ).toBeVisible();
+
+    await page.getByTestId("search-input").fill("Hooks");
+    const result = page.getByTestId("search-result-use-effect-deps");
+    await expect(result).toContainText("React");
+    await expect(result).toHaveAttribute(
+      "href",
+      /^\/posts\/use-effect-deps\/?$/,
+    );
+  });
+
   test("/category/React — React 글 2개만 표시되고 사이드바가 active", async ({
     page,
   }) => {
@@ -32,7 +55,6 @@ test.describe("카테고리", () => {
   test("새 카테고리 자동 생성 — 'QA메모'가 사이드바에 나타난다", async ({
     page,
   }) => {
-    // e2e-short-note.md(category: QA메모)가 추가되면 사이드바에 자동 생성된다.
     await page.goto("/");
     const row = page
       .getByTestId("sidebar-desktop")

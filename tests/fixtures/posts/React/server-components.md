@@ -2,7 +2,6 @@
 title: "React Server Components 멘탈 모델 한 장 정리"
 date: "2026-04-12T09:00:00.000Z"
 description: "서버에서 렌더되는 컴포넌트가 기존 멘탈 모델을 어떻게 바꾸는지, 경계선 하나로 설명한다."
-category: "React"
 tags: ["RSC", "렌더링"]
 draft: true
 ---

@@ -44,9 +44,11 @@ E2E는 **`content/posts`가 아니라 고정 픽스처 `tests/fixtures/posts/`�
 
 **콘텐츠 → 렌더 → 소비**가 모두 빌드 타임에 일어난다:
 
-- `content/posts/*.md` — 글 하나가 마크다운 파일 하나. YAML 프론트매터
-  (`title`, `date` ISO-8601, `description`, `category`, 선택적 `tags`·`draft`)를 가진다.
-  파일명이 slug가 된다.
+- `content/posts/<카테고리>/**/*.md` — 글 하나가 마크다운 파일 하나. YAML 프론트매터
+  (`title`, `date` ISO-8601, `description`, 선택적 `tags`·`draft`)를 가진다.
+  첫 번째 디렉토리가 대표 카테고리이고 하위 폴더는 정리 용도다. 파일명이 slug가 되므로
+  폴더 이동으로 URL은 바뀌지 않는다. `src/lib/post-files.mjs`가 재귀 탐색과 중복 slug 검증을
+  공유한다. 루트에 놓인 글과 중복 파일명은 초안을 포함해 빌드 오류로 처리한다.
 - `src/lib/posts.ts` — 단일 진실 공급원(single source of truth). `loadAllPosts()`가 모든
   `.md`를 읽어 프론트매터를 검증(형식 오류 시 throw)하고, 렌더링하고, date 내림차순으로
   정렬한 뒤 **결과를 모듈 레벨 변수에 캐시**한다(빌드 한 번에 여러 번 호출됨). 모든 페이지
@@ -73,7 +75,7 @@ github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵�
 - 클라이언트(`src/components/search/useSearch.ts` + `src/lib/search.ts`)는 첫 검색 시
   인덱스를 lazy fetch하고, 120ms 디바운스 후 부분 문자열 매칭 + 스니펫 하이라이트를 한다.
 
-**카테고리**는 수동 설정하지 않는다. 프론트매터에서 distinct하게 수집하며, 표시 순서는
+**카테고리**는 수동 설정하지 않는다. 글이 있는 최상위 디렉토리에서 distinct하게 수집하며, 표시 순서는
 `posts.ts`의 `CATEGORY_ORDER` 우선 후 한글 정렬, 색상은 이름을 해시해 9색 iOS 팔레트에서
 결정적으로 고른다(`src/lib/categories.ts`).
 

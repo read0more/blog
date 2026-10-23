@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { renderMarkdown } from "./markdown";
 import { readingMinutes } from "./reading-time";
 import { categoryColor } from "./categories";
+import { listPostFiles } from "./post-files.mjs";
 import type {
   Post,
   PostMeta,
@@ -24,7 +25,7 @@ function frontmatterOf(
   data: Record<string, unknown>,
   slug: string,
 ): PostFrontmatter {
-  const { title, date, description, category } = data;
+  const { title, date, description } = data;
   if (
     typeof title !== "string" ||
     typeof date !== "string" ||
@@ -32,16 +33,6 @@ function frontmatterOf(
   ) {
     throw new Error(
       `Invalid frontmatter in "${slug}.md": title/date/description are all required strings.`,
-    );
-  }
-  // category 는 문자열 하나 또는 문자열 배열로 쓸 수 있다. 항상 string[] 로 정규화한다.
-  const categories = Array.isArray(category) ? category : [category];
-  if (
-    categories.length === 0 ||
-    !categories.every((c) => typeof c === "string" && c.length > 0)
-  ) {
-    throw new Error(
-      `Invalid frontmatter in "${slug}.md": category must be a non-empty string or an array of non-empty strings.`,
     );
   }
   // tags 는 선택. 없으면 빈 배열, 있으면 비어 있지 않은 문자열 배열이어야 한다.
@@ -63,14 +54,13 @@ function frontmatterOf(
     title,
     date,
     description,
-    categories,
     tags,
     ...(typeof data.draft === "boolean" ? { draft: data.draft } : {}),
   };
 }
 
 /**
- * content/posts/*.md 를 모두 읽어 렌더된 Post[] 를 만든다.
+ * content/posts 의 카테고리 디렉토리 아래 .md 를 모두 읽어 렌더된 Post[] 를 만든다.
  * 빌드 중 여러 번 호출되므로 결과를 모듈 캐시에 보관한다.
  */
 let cache: Post[] | null = null;
@@ -89,12 +79,11 @@ async function loadAllPosts(): Promise<Post[]> {
   // 로컬 dev/build/E2E 에서는 미설정이라 draft 글도 그대로 노출된다.
   const omitDrafts = process.env.OMIT_DRAFTS === "true";
 
-  const files = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".md"));
+  const files = listPostFiles(POSTS_DIR);
 
   const loaded = await Promise.all(
-    files.map(async (file): Promise<Post | null> => {
-      const slug = file.replace(/\.md$/, "");
-      const raw = fs.readFileSync(path.join(POSTS_DIR, file), "utf8");
+    files.map(async ({ filePath, slug, category }): Promise<Post | null> => {
+      const raw = fs.readFileSync(filePath, "utf8");
       const { data, content } = matter(raw);
       const fm = frontmatterOf(data, slug);
       // draft 판정은 렌더 전에 — 제외 대상이면 마크다운 렌더도 건너뛴다.
@@ -111,7 +100,7 @@ async function loadAllPosts(): Promise<Post[]> {
         title: fm.title,
         date: fm.date,
         description: fm.description,
-        categories: fm.categories,
+        categories: [category],
         tags: fm.tags,
         readingMinutes: readingMin,
         contentHtml: html,
@@ -154,14 +143,13 @@ export async function getAllSlugs(): Promise<string[]> {
 }
 
 /**
- * 카테고리 자동 수집 — frontmatter category 를 distinct 수집하고
+ * 카테고리 자동 수집 — 최상위 디렉토리 이름을 distinct 수집하고
  * 글 개수와 결정적 색상을 붙인다. CATEGORY_ORDER 우선, 나머지는 가나다순.
  */
 export async function getCategories(): Promise<Category[]> {
   const posts = await loadAllPosts();
   const counts = new Map<string, number>();
   for (const p of posts) {
-    // 글 하나가 여러 카테고리에 속할 수 있으므로 각 카테고리마다 집계한다.
     for (const name of p.categories) {
       counts.set(name, (counts.get(name) ?? 0) + 1);
     }
