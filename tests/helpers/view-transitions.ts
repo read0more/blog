@@ -60,7 +60,7 @@ export async function observeTransitions(page: Page) {
   });
 }
 
-export async function expectTitleTransition(page: Page, index = 0) {
+export async function expectPostTransition(page: Page, index = 0) {
   await expect
     .poll(() =>
       page.evaluate((i) => window.postTransitions[i]?.finished, index),
@@ -68,12 +68,18 @@ export async function expectTitleTransition(page: Page, index = 0) {
     .toBe(true);
   const record = await page.evaluate((i) => window.postTransitions[i], index);
   expect(record.error).toBeUndefined();
-  expect(record.animations).toEqual(
-    expect.arrayContaining([
-      expect.stringMatching(/^::view-transition-old\(post-title-/),
-      expect.stringMatching(/^::view-transition-new\(post-title-/),
-    ]),
-  );
+  for (const element of ["title", "category", "date"]) {
+    expect(record.animations).toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(
+          new RegExp(`^::view-transition-old\\(post-${element}-`),
+        ),
+        expect.stringMatching(
+          new RegExp(`^::view-transition-new\\(post-${element}-`),
+        ),
+      ]),
+    );
+  }
   expect(record.rootAnimation).toBe("none");
   expect(record.durations.some((duration) => duration > 0)).toBe(true);
 }

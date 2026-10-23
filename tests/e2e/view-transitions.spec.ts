@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test";
 import {
   observeTransitions,
-  expectTitleTransition,
+  expectPostTransition,
   resetTransitions,
 } from "../helpers/view-transitions";
 
 for (const list of ["/", "/category/React/", "/tag/Hooks/"]) {
-  test(`${list}의 제목이 상세와 연결되고 뒤로가기로 복귀한다`, async ({
+  test(`${list}의 제목·카테고리·날짜가 상세와 연결되고 뒤로가기로 복귀한다`, async ({
     page,
   }) => {
     await observeTransitions(page);
@@ -24,21 +24,21 @@ for (const list of ["/", "/category/React/", "/tag/Hooks/"]) {
     await resetTransitions(page);
     await page.getByTestId("post-card-use-effect-deps").click();
     await expect(page.getByTestId("article-title")).toBeVisible();
-    await expectTitleTransition(page);
+    await expectPostTransition(page);
     await page.goBack();
     await expect(page).toHaveURL(list);
     await expect(page.getByTestId("post-list")).toBeVisible();
     // popstate는 즉시 복원될 수 있다. 링크로 돌아갈 때의 역방향 공유 전환을 확인한다.
     await resetTransitions(page);
     await page.getByTestId("post-card-use-effect-deps").click();
-    await expectTitleTransition(page);
+    await expectPostTransition(page);
     const backLink =
       list === "/"
         ? page.getByTestId("header-wordmark")
         : page.getByTestId("article").locator(`a[href="${list}"]`).first();
     await backLink.click();
     await expect(page).toHaveURL(list);
-    await expectTitleTransition(page, 1);
+    await expectPostTransition(page, 1);
     if (list === "/") {
       await page.screenshot({
         path: "test-results/view-transition-desktop.png",
@@ -47,7 +47,9 @@ for (const list of ["/", "/category/React/", "/tag/Hooks/"]) {
   });
 }
 
-test("모션 감소 설정은 제목 전환의 애니메이션을 끈다", async ({ page }) => {
+test("모션 감소 설정은 공유 요소 전환의 애니메이션을 끈다", async ({
+  page,
+}) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await observeTransitions(page);
   await page.goto("/posts/use-effect-deps/");

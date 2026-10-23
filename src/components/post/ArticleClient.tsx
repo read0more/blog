@@ -8,7 +8,7 @@ import { formatDate } from "@/lib/format";
 import { sitePath, getUiTranslator } from "@/lib/i18n";
 import { categoryLabel } from "@/lib/taxonomy.mjs";
 import { TagChips } from "../posts/TagChips";
-import { PostTitleTransition } from "../posts/PostTitleTransition";
+import { PostElementTransition } from "../posts/PostElementTransition";
 import { Toc } from "./Toc";
 import { MobileToc } from "./MobileToc";
 import { Comments } from "./Comments";
@@ -250,29 +250,46 @@ export function ArticleClient({ post }: ArticleClientProps) {
           {post.categories.map((c, i) => (
             <Fragment key={c}>
               {i > 0 && <span className={styles.metaDot}>·</span>}
-              <Link
-                href={sitePath(
-                  post.language,
-                  `/category/${encodeURIComponent(c)}`,
-                )}
-                className={styles.categoryLink}
-                style={{ color: categoryColor(c) }}
+              <PostElementTransition
+                slug={post.slug}
+                language={post.language}
+                element="category"
+                category={c}
               >
-                {categoryLabel(c, post.language)}
-              </Link>
+                <Link
+                  href={sitePath(
+                    post.language,
+                    `/category/${encodeURIComponent(c)}`,
+                  )}
+                  className={styles.categoryLink}
+                  style={{ color: categoryColor(c) }}
+                >
+                  {categoryLabel(c, post.language)}
+                </Link>
+              </PostElementTransition>
             </Fragment>
           ))}
         </div>
 
-        <PostTitleTransition slug={post.slug} language={post.language}>
+        <PostElementTransition
+          slug={post.slug}
+          language={post.language}
+          element="title"
+        >
           <h1 className={styles.title} data-testid="article-title">
             {post.title}
           </h1>
-        </PostTitleTransition>
+        </PostElementTransition>
 
         <div className={styles.metaBlock}>
           <div className={styles.metaRow}>
-            <span>{formatDate(post.date, post.language)}</span>
+            <PostElementTransition
+              slug={post.slug}
+              language={post.language}
+              element="date"
+            >
+              <span>{formatDate(post.date, post.language)}</span>
+            </PostElementTransition>
             {/* <span>·</span>
             <span>{post.readingMinutes}분 읽기</span> */}
           </div>

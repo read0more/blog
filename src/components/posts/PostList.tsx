@@ -6,7 +6,7 @@ import { categoryLabel } from "@/lib/taxonomy.mjs";
 import { categoryColor } from "@/lib/categories";
 import { formatDate } from "@/lib/format";
 import { TagChips } from "./TagChips";
-import { PostTitleTransition } from "./PostTitleTransition";
+import { PostElementTransition } from "./PostElementTransition";
 import styles from "./PostList.module.css";
 
 interface PostListProps {
@@ -68,24 +68,41 @@ export function PostList({
                 {p.categories.map((c, i) => (
                   <Fragment key={c}>
                     {i > 0 && <span className={styles.metaDot}>·</span>}
-                    <span
-                      className={styles.metaCategory}
-                      style={{ color: categoryColor(c) }}
+                    <PostElementTransition
+                      slug={p.slug}
+                      language={language}
+                      element="category"
+                      category={c}
                     >
-                      {categoryLabel(c, language)}
-                    </span>
+                      <span
+                        className={styles.metaCategory}
+                        style={{ color: categoryColor(c) }}
+                      >
+                        {categoryLabel(c, language)}
+                      </span>
+                    </PostElementTransition>
                   </Fragment>
                 ))}
                 <span className={styles.metaDot}>·</span>
-                <span className={styles.metaText}>
-                  {formatDate(p.date, language)}
-                </span>
+                <PostElementTransition
+                  slug={p.slug}
+                  language={language}
+                  element="date"
+                >
+                  <span className={styles.metaText}>
+                    {formatDate(p.date, language)}
+                  </span>
+                </PostElementTransition>
                 {/* <span className={styles.metaDot}>·</span> */}
                 {/* <span className={styles.metaText}>{p.readingMinutes}분</span> */}
               </div>
-              <PostTitleTransition slug={p.slug} language={language}>
+              <PostElementTransition
+                slug={p.slug}
+                language={language}
+                element="title"
+              >
                 <h2 className={styles.cardTitle}>{p.title}</h2>
-              </PostTitleTransition>
+              </PostElementTransition>
               <p className={styles.cardDesc}>{p.description}</p>
             </Link>
             <TagChips

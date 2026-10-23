@@ -1,4 +1,4 @@
-/* 제목만 연결하고 헤더·사이드바·본문의 기본 전체 화면 크로스페이드는 끈다. */
+/* 글의 공유 요소만 연결하고 기본 전체 화면 크로스페이드는 끈다. */
 ::view-transition-group(root),
 ::view-transition-new(root) {
   animation: none;
@@ -8,14 +8,14 @@
   display: none;
 }
 
-::view-transition-group(.post-title),
-::view-transition-old(.post-title),
-::view-transition-new(.post-title) {
+::view-transition-group(.post-element),
+::view-transition-old(.post-element),
+::view-transition-new(.post-element) {
   animation-duration: 240ms;
   animation-timing-function: ease-out;
 }
 
-/* 전환 중에도 제목 외의 링크·버튼을 바로 조작할 수 있게 한다. */
+/* 전환 중에도 공유 요소 외의 링크·버튼을 바로 조작할 수 있게 한다. */
 ::view-transition {
   pointer-events: none;
 }
