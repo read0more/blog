@@ -10,6 +10,7 @@
 @import "../styles/tokens/typography.css";
 @import "../styles/tokens/spacing.css";
 @import "../styles/tokens/effects.css";
+@import "../styles/view-transitions.css";
 
 /* ---- Base reset ---- */
 *,
