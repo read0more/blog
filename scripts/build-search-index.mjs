@@ -9,12 +9,11 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import matter from "gray-matter";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import { visit } from "unist-util-visit";
-import { listPostFiles } from "../src/lib/post-files.mjs";
+import { readPostSources } from "../src/lib/post-files.mjs";
 
 // posts.ts 와 동일하게 POSTS_DIR 오버라이드 지원(E2E 고정 픽스처용).
 const POSTS_DIR = process.env.POSTS_DIR
@@ -42,12 +41,9 @@ function build() {
   // 배포 빌드(OMIT_DRAFTS=true)에서는 draft 글을 검색 인덱스에서도 제외한다.
   const omitDrafts = process.env.OMIT_DRAFTS === "true";
 
-  const files = listPostFiles(POSTS_DIR);
-  const docs = files
-    .map(({ filePath, slug, category }) => {
-      const raw = fs.readFileSync(filePath, "utf8");
-      const { data, content } = matter(raw);
-      if (omitDrafts && data.draft === true) return null;
+  const docs = readPostSources(POSTS_DIR, omitDrafts)
+    .filter((source) => source.language === "ko")
+    .map(({ slug, category, frontmatter: data, content }) => {
       const plain = extractPlainText(content);
       // posts.ts 와 동일하게 tags 는 선택(없으면 빈 배열). 태그명으로도 검색되게 text 끝에 붙인다.
       const tags = data.tags ?? [];
@@ -60,8 +56,7 @@ function build() {
         date: data.date,
         text: `${data.title} ${data.description} ${plain} ${tags.join(" ")}`,
       };
-    })
-    .filter(Boolean);
+    });
 
   // 최신순으로 정렬해두면 클라이언트가 동점 결과를 자연스러운 순서로 보여줄 수 있다.
   docs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

@@ -1,21 +1,28 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAllSlugs, getPostBySlug } from "@/lib/posts";
+import { getAllPostRoutes, getPostBySlug } from "@/lib/posts";
 import { ArticleClient } from "@/components/post/ArticleClient";
 
 /** 모든 글을 정적 생성. */
 export async function generateStaticParams() {
-  const slugs = await getAllSlugs();
-  return slugs.map((slug) => ({ slug }));
+  return getAllPostRoutes();
+}
+
+async function postAtPath(segments: string[]) {
+  if (segments.length === 1) return getPostBySlug(segments[0]);
+  if (segments.length === 2 && segments[1] === "en") {
+    return getPostBySlug(segments[0], "en");
+  }
+  return null;
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const post = await postAtPath(slug);
   if (!post) return { title: "read0more" };
   return {
     title: `${post.title} · read0more`,
@@ -26,11 +33,11 @@ export async function generateMetadata({
 export default async function PostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const post = await postAtPath(slug);
   if (!post) notFound();
 
-  return <ArticleClient post={post} />;
+  return <ArticleClient key={`${post.slug}:${post.language}`} post={post} />;
 }

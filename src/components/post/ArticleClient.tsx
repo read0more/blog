@@ -237,7 +237,11 @@ export function ArticleClient({ post }: ArticleClientProps) {
 
   return (
     <div className={`${styles.detailWrap} ${showToc ? "" : styles.noToc}`}>
-      <article className={styles.article} data-testid="article">
+      <article
+        className={styles.article}
+        data-testid="article"
+        lang={post.language}
+      >
         <div className={styles.category}>
           {post.categories.map((c, i) => (
             <Fragment key={c}>
@@ -251,6 +255,24 @@ export function ArticleClient({ post }: ArticleClientProps) {
               </Link>
             </Fragment>
           ))}
+          {post.hasEnglish && (
+            <Link
+              href={
+                post.language === "ko"
+                  ? `/posts/${post.slug}/en/`
+                  : `/posts/${post.slug}/`
+              }
+              className={styles.languageLink}
+              hrefLang={post.language === "ko" ? "en" : "ko"}
+              lang={post.language === "ko" ? "en" : "ko"}
+              aria-label={
+                post.language === "ko" ? "Read in English" : "한국어로 읽기"
+              }
+              data-testid="post-language-switch"
+            >
+              {post.language === "ko" ? "EN" : "KO"}
+            </Link>
+          )}
         </div>
 
         <h1 className={styles.title} data-testid="article-title">

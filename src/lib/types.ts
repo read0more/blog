@@ -37,7 +37,11 @@ export interface PostMeta {
 }
 
 /** 글 상세 — 메타 + 렌더된 본문 HTML + TOC */
+export type PostLanguage = "ko" | "en";
+
 export interface Post extends PostMeta {
+  language: PostLanguage;
+  hasEnglish: boolean;
   /** 빌드타임에 렌더된 본문 HTML */
   contentHtml: string;
   toc: TocItem[];

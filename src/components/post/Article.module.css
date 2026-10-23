@@ -38,6 +38,29 @@
 .categoryLink:hover {
   text-decoration: underline;
 }
+.languageLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin-left: auto;
+  padding: 0 12px;
+  border: var(--hairline) solid var(--separator);
+  border-radius: 8px;
+  color: var(--label-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.languageLink:hover {
+  background: var(--fill-quaternary);
+  color: var(--label);
+}
+.languageLink:focus-visible {
+  outline: 2px solid var(--tint);
+  outline-offset: 3px;
+}
 .metaDot {
   color: var(--label-tertiary);
 }

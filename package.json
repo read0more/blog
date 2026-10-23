@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:translations": "playwright test --config playwright.translations.config.ts",
     "prepare": "husky"
   },
   "lint-staged": {
