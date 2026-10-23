@@ -1,14 +1,12 @@
-import fs from "node:fs";
 import path from "node:path";
-import matter from "gray-matter";
 import { renderMarkdown } from "./markdown";
 import { readingMinutes } from "./reading-time";
 import { categoryColor } from "./categories";
-import { listPostFiles } from "./post-files.mjs";
+import { readPostSources } from "./post-files.mjs";
 import type {
   Post,
   PostMeta,
-  PostFrontmatter,
+  PostLanguage,
   Category,
   SearchDoc,
 } from "./types";
@@ -21,44 +19,6 @@ const POSTS_DIR = process.env.POSTS_DIR
 /** 디자인의 카테고리 표시 순서. 목록에 없는 새 카테고리는 뒤에 가나다순으로 붙는다. */
 const CATEGORY_ORDER = ["React", "CSS", "TypeScript", "성능", "빌드도구"];
 
-function frontmatterOf(
-  data: Record<string, unknown>,
-  slug: string,
-): PostFrontmatter {
-  const { title, date, description } = data;
-  if (
-    typeof title !== "string" ||
-    typeof date !== "string" ||
-    typeof description !== "string"
-  ) {
-    throw new Error(
-      `Invalid frontmatter in "${slug}.md": title/date/description are all required strings.`,
-    );
-  }
-  // tags 는 선택. 없으면 빈 배열, 있으면 비어 있지 않은 문자열 배열이어야 한다.
-  const tags = data.tags ?? [];
-  if (
-    !Array.isArray(tags) ||
-    !tags.every((t) => typeof t === "string" && t.length > 0)
-  ) {
-    throw new Error(
-      `Invalid frontmatter in "${slug}.md": tags must be an array of non-empty strings.`,
-    );
-  }
-  if (typeof data.draft !== "undefined" && typeof data.draft !== "boolean") {
-    throw new Error(
-      `Invalid frontmatter in "${slug}.md": draft must be a boolean.`,
-    );
-  }
-  return {
-    title,
-    date,
-    description,
-    tags,
-    ...(typeof data.draft === "boolean" ? { draft: data.draft } : {}),
-  };
-}
-
 /**
  * content/posts 의 카테고리 디렉토리 아래 .md 를 모두 읽어 렌더된 Post[] 를 만든다.
  * 빌드 중 여러 번 호출되므로 결과를 모듈 캐시에 보관한다.
@@ -70,52 +30,57 @@ async function loadAllPosts(): Promise<Post[]> {
   // (content/posts 는 webpack 모듈 그래프 밖이라 빌드타임 캐시가 그대로 남으면 변경이 안 보임)
   if (cache && process.env.NODE_ENV !== "development") return cache;
 
-  if (!fs.existsSync(POSTS_DIR)) {
-    cache = [];
-    return cache;
-  }
-
   // 배포(GitHub Actions) 빌드에서만 OMIT_DRAFTS=true 로 draft 글을 제외한다.
   // 로컬 dev/build/E2E 에서는 미설정이라 draft 글도 그대로 노출된다.
   const omitDrafts = process.env.OMIT_DRAFTS === "true";
 
-  const files = listPostFiles(POSTS_DIR);
+  const sources = readPostSources(POSTS_DIR, omitDrafts);
 
   const loaded = await Promise.all(
-    files.map(async ({ filePath, slug, category }): Promise<Post | null> => {
-      const raw = fs.readFileSync(filePath, "utf8");
-      const { data, content } = matter(raw);
-      const fm = frontmatterOf(data, slug);
-      // draft 판정은 렌더 전에 — 제외 대상이면 마크다운 렌더도 건너뛴다.
-      if (omitDrafts && fm.draft) return null;
-      const { html, toc, plainText } = await renderMarkdown(content);
-
-      // 읽는 시간은 제목 + 설명 + 본문 plaintext 기준(디자인 plainOf 와 동일 범위).
-      const readingMin = readingMinutes(
-        `${fm.title} ${fm.description} ${plainText}`,
-      );
-
-      return {
+    sources.map(
+      async ({
         slug,
-        title: fm.title,
-        date: fm.date,
-        description: fm.description,
-        categories: [category],
-        tags: fm.tags,
-        readingMinutes: readingMin,
-        contentHtml: html,
-        toc,
-        plainText,
-      };
-    }),
+        category,
+        language,
+        hasEnglish,
+        frontmatter: fm,
+        content,
+      }): Promise<Post> => {
+        const { html, toc, plainText } = await renderMarkdown(content);
+
+        // 읽는 시간은 제목 + 설명 + 본문 plaintext 기준(디자인 plainOf 와 동일 범위).
+        const readingMin = readingMinutes(
+          `${fm.title} ${fm.description} ${plainText}`,
+        );
+
+        return {
+          slug,
+          language,
+          hasEnglish,
+          title: fm.title,
+          date: fm.date,
+          description: fm.description,
+          categories: [category],
+          tags: fm.tags,
+          readingMinutes: readingMin,
+          contentHtml: html,
+          toc,
+          plainText,
+        };
+      },
+    ),
   );
 
-  const posts = loaded.filter((p): p is Post => p !== null);
+  const posts = loaded;
 
   // 최신순 정렬(date 내림차순).
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   cache = posts;
   return cache;
+}
+
+async function loadOriginalPosts(): Promise<Post[]> {
+  return (await loadAllPosts()).filter((post) => post.language === "ko");
 }
 
 function toMeta(p: Post): PostMeta {
@@ -126,20 +91,28 @@ function toMeta(p: Post): PostMeta {
 
 /** 전체 글 메타(최신순). 목록/홈에서 사용. */
 export async function getAllPostMeta(): Promise<PostMeta[]> {
-  const posts = await loadAllPosts();
+  const posts = await loadOriginalPosts();
   return posts.map(toMeta);
 }
 
 /** slug 로 글 상세(본문 HTML + TOC 포함) 조회. */
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export async function getPostBySlug(
+  slug: string,
+  language: PostLanguage = "ko",
+): Promise<Post | null> {
   const posts = await loadAllPosts();
-  return posts.find((p) => p.slug === slug) ?? null;
+  return (
+    posts.find((post) => post.slug === slug && post.language === language) ??
+    null
+  );
 }
 
 /** generateStaticParams 용 전체 slug. */
-export async function getAllSlugs(): Promise<string[]> {
+export async function getAllPostRoutes(): Promise<{ slug: string[] }[]> {
   const posts = await loadAllPosts();
-  return posts.map((p) => p.slug);
+  return posts.map((post) => ({
+    slug: post.language === "en" ? [post.slug, "en"] : [post.slug],
+  }));
 }
 
 /**
@@ -147,7 +120,7 @@ export async function getAllSlugs(): Promise<string[]> {
  * 글 개수와 결정적 색상을 붙인다. CATEGORY_ORDER 우선, 나머지는 가나다순.
  */
 export async function getCategories(): Promise<Category[]> {
-  const posts = await loadAllPosts();
+  const posts = await loadOriginalPosts();
   const counts = new Map<string, number>();
   for (const p of posts) {
     for (const name of p.categories) {
@@ -175,7 +148,7 @@ export async function getCategories(): Promise<Category[]> {
 export async function getPostsByCategory(
   category: string,
 ): Promise<PostMeta[]> {
-  const posts = await loadAllPosts();
+  const posts = await loadOriginalPosts();
   return posts.filter((p) => p.categories.includes(category)).map(toMeta);
 }
 
@@ -196,12 +169,12 @@ export function tagsOf(posts: PostMeta[]): string[] {
 
 /** 전체 태그. generateStaticParams 와 검색 빈 결과 칩에서 사용. */
 export async function getAllTags(): Promise<string[]> {
-  return tagsOf(await loadAllPosts());
+  return tagsOf(await loadOriginalPosts());
 }
 
 /** 특정 태그의 글 메타(최신순). */
 export async function getPostsByTag(tag: string): Promise<PostMeta[]> {
-  const posts = await loadAllPosts();
+  const posts = await loadOriginalPosts();
   return posts.filter((p) => p.tags.includes(tag)).map(toMeta);
 }
 
@@ -210,7 +183,7 @@ export async function getPostsByTag(tag: string): Promise<PostMeta[]> {
  * 빌드타임에 search-index.json 으로 직렬화한다.
  */
 export async function getSearchDocs(): Promise<SearchDoc[]> {
-  const posts = await loadAllPosts();
+  const posts = await loadOriginalPosts();
   return posts.map((p) => ({
     slug: p.slug,
     title: p.title,

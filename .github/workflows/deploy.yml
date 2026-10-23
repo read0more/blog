@@ -94,6 +94,9 @@ jobs:
       - name: Run E2E
         run: npm run test:e2e
 
+      - name: Test English demo (desktop and mobile)
+        run: npm run test:translations
+
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7

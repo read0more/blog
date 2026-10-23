@@ -22,6 +22,7 @@ npm run search-index # public/search-index.json 수동 재생성
 
 npm run test:e2e               # Playwright (out/ 빌드 + :3100 서빙 후 실행)
 npm run test:e2e:ui            # Playwright UI 모드
+npm run test:translations      # 실제 live-code-demo 번역, /blog 경로, 데스크톱·모바일 검증
 npx playwright test tests/e2e/search.spec.ts          # 단일 spec 파일
 npx playwright test -g "검색"                          # 제목 패턴으로 실행
 npx playwright test --project=desktop                  # 데스크톱만 (모바일 = --project=mobile)
@@ -49,8 +50,10 @@ E2E는 **`content/posts`가 아니라 고정 픽스처 `tests/fixtures/posts/`�
   첫 번째 디렉토리가 대표 카테고리이고 하위 폴더는 정리 용도다. 파일명이 slug가 되므로
   폴더 이동으로 URL은 바뀌지 않는다. `src/lib/post-files.mjs`가 재귀 탐색과 중복 slug 검증을
   공유한다. 루트에 놓인 글과 중복 파일명은 초안을 포함해 빌드 오류로 처리한다.
-- `src/lib/posts.ts` — 단일 진실 공급원(single source of truth). `loadAllPosts()`가 모든
-  `.md`를 읽어 프론트매터를 검증(형식 오류 시 throw)하고, 렌더링하고, date 내림차순으로
+- `src/lib/post-files.mjs` — 파일 탐색·원문/번역 연결·프론트매터 검증·초안 제외를 공유한다.
+  `.en.md`는 인접한 원문에 연결하며 제목·설명·본문만 번역하고 작성일·태그·카테고리를 상속한다.
+- `src/lib/posts.ts` — `loadAllPosts()`가 원문과 사용 가능한 영어 번역을
+  렌더링하고, date 내림차순으로
   정렬한 뒤 **결과를 모듈 레벨 변수에 캐시**한다(빌드 한 번에 여러 번 호출됨). 모든 페이지
   데이터는 여기의 타입드 접근자(`getAllPostMeta`, `getPostBySlug`, `getCategories`, `getAllTags` 등)를 거친다.
 - `src/lib/markdown.ts` — unified 파이프라인: `remark-parse → gfm → remark-rehype →
@@ -62,9 +65,13 @@ github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵�
   `useLiveCode.tsx`가 그 자리에 `LiveCode.tsx`(Sandpack `static` 템플릿, iframe 미리보기)를 마운트한다. `file=` 필수,
   `hidden`은 탭에서 숨김, `view=both|preview|code`는 처음 보기 모드(블록 위 버튼으로 독자가 전환, 패널은
   `display`로만 숨겨 상태 유지). `rehype-raw`가 hast의 펜스 meta를 버리므로 이 처리는 반드시 remark 단계에 둔다.
-- `src/app/`의 라우트: `page.tsx`(홈), `posts/[slug]`, `category/[slug]`, `tag/[slug]`, `not-found.tsx`.
+- `src/app/`의 라우트: `page.tsx`(홈), `posts/[...slug]`, `category/[slug]`, `tag/[slug]`, `not-found.tsx`.
   동적 라우트는 모두 `generateStaticParams`를 쓴다. `layout.tsx`는 카테고리 + 글 개수를
   로드해 전체를 `<AppShell>`로 감싸는 서버 컴포넌트다.
+  글은 `/posts/<slug>/`와 `/posts/<slug>/en/`만 허용한다. 두 언어를 한 catch-all 라우트에서
+  생성해 공개 영어 번역이 0개여도 정적 빌드가 된다. 글 상세는 언어별로 key를 부여해
+  전환 시 목차·라이브 코드 등의 클라이언트 상태를 초기화한다.
+  목록·카테고리·태그·검색은 한국어 원문만 집계하고, 번역이 있을 때만 EN/KO 링크를 표시한다.
 
 **검색**은 서버가 아니라 빌드 타임 JSON 인덱스다:
 
@@ -96,9 +103,12 @@ enhance된 코드 헤더가 지워지고 TOC가 깨짐). 그리고 스크롤 스
 
 - `draft: true` 프론트매터는 **`OMIT_DRAFTS=true`일 때만** 글을 제외한다 — 이 값은 GitHub
   Actions 배포 빌드(`.github/workflows/deploy.yml`)에서*만* 주입된다. 로컬(`dev`/`build`)에서는
-  `content/posts`의 draft 글도 그대로 보인다(미리보기용). 필터는 `posts.ts`와
-  `build-search-index.mjs` 양쪽에 있다. (E2E는 `content/posts`가 아니라 별도 고정 픽스처
+  `content/posts`의 draft 글도 그대로 보인다(미리보기용). 필터는 `post-files.mjs`의
+  `readPostSources`를 통해 페이지와 검색에 동일하게 적용된다. 번역 초안은 번역만 제외하고
+  원문 초안은 원문과 번역 모두 제외한다. (일반 E2E는 `content/posts`가 아니라 별도 고정 픽스처
   `tests/fixtures/posts`를 빌드한다 — 위 "명령어" 섹션 참조.)
+  `test:translations`는 실제 `content/posts`의 `live-code-demo`와 영어 번역을 로컬 미리보기
+  규칙으로 빌드한다. 일반 E2E와 동일한 `.next`/`out`을 사용하므로 순서대로 실행한다.
 - 정적 export는 `next/image` 최적화를 못 쓰고(`images.unoptimized: true`), 공개 글이 **0개**면
   사이트 빌드 자체가 실패한다 — non-draft 글을 최소 하나는 유지할 것. 태그도 같다: 공개 글 전체에
   `tags`가 **하나도 없으면** `/tag/[slug]`의 `generateStaticParams`가 빈 배열이 되어

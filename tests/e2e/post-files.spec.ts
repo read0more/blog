@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { listPostFiles } from "../../src/lib/post-files.mjs";
+import { listPostFiles, readPostSources } from "../../src/lib/post-files.mjs";
 
 const indexScript = path.resolve("scripts/build-search-index.mjs");
 let workspace: string;
@@ -38,6 +38,96 @@ function buildSearchIndex(omitDrafts = false) {
     },
   });
 }
+
+function writeTranslation(draft = false) {
+  const filePath = path.join(postsDir, "React/nested/example.en.md");
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(
+    filePath,
+    `---\ntitle: "English title"\ndescription: "English description"\ndraft: ${draft}\n---\n\nEnglish body\n`,
+  );
+}
+
+test("인접한 영어 번역은 같은 글로 묶이고 원문의 분류·태그·작성일을 상속한다", () => {
+  writePost("React/nested/example.md");
+  writeTranslation();
+  expect(listPostFiles(postsDir)).toHaveLength(1);
+  const sources = readPostSources(postsDir);
+  expect(sources).toHaveLength(2);
+  expect(sources[0]).toMatchObject({ language: "ko", hasEnglish: true });
+  expect(sources[1]).toMatchObject({
+    slug: "example",
+    language: "en",
+    category: "React",
+    hasEnglish: true,
+    frontmatter: {
+      title: "English title",
+      description: "English description",
+      date: "2026-08-01",
+      tags: ["Hooks"],
+    },
+    content: expect.stringContaining("English body"),
+  });
+
+  expect(buildSearchIndex().status).toBe(0);
+  const index = JSON.parse(
+    fs.readFileSync(path.join(workspace, "public/search-index.json"), "utf8"),
+  );
+  expect(index).toHaveLength(1);
+  expect(index[0]).toMatchObject({ slug: "example", title: "테스트 글" });
+  expect(index[0].text).not.toContain("English body");
+});
+
+for (const originalDraft of [false, true]) {
+  for (const translationDraft of [false, true]) {
+    test(`초안 공개 규칙: 원문=${originalDraft}, 번역=${translationDraft}`, () => {
+      writePost("React/nested/example.md", originalDraft);
+      writeTranslation(translationDraft);
+      expect(
+        readPostSources(postsDir).map((source) => source.language),
+      ).toEqual(["ko", "en"]);
+      const published = readPostSources(postsDir, true);
+      expect(published.map((source) => source.language)).toEqual(
+        originalDraft ? [] : translationDraft ? ["ko"] : ["ko", "en"],
+      );
+      if (!originalDraft)
+        expect(published[0].hasEnglish).toBe(!translationDraft);
+      expect(buildSearchIndex(true).status).toBe(0);
+      expect(
+        JSON.parse(
+          fs.readFileSync(
+            path.join(workspace, "public/search-index.json"),
+            "utf8",
+          ),
+        ),
+      ).toHaveLength(originalDraft ? 0 : 1);
+    });
+  }
+}
+
+test("다른 폴더에 원문이 있어도 인접하지 않은 번역은 오류를 낸다", () => {
+  writePost("React/example.md");
+  writeTranslation();
+  expect(() => listPostFiles(postsDir)).toThrow(
+    /requires an adjacent original/,
+  );
+  expect(buildSearchIndex().status).not.toBe(0);
+});
+
+test("영어 번역의 제목·설명과 draft 타입을 검증한다", () => {
+  writePost("React/nested/example.md");
+  writeTranslation();
+  const filePath = path.join(postsDir, "React/nested/example.en.md");
+  const valid = fs.readFileSync(filePath, "utf8");
+  fs.writeFileSync(filePath, valid.replace('title: "English title"\n', ""));
+  expect(() => readPostSources(postsDir)).toThrow(
+    /example.en.md.*title\/description/,
+  );
+  fs.writeFileSync(filePath, valid.replace("draft: false", 'draft: "false"'));
+  expect(() => readPostSources(postsDir, true)).toThrow(
+    /draft must be a boolean/,
+  );
+});
 
 test("중첩 폴더와 폴더 이동은 카테고리만 결정하고 slug는 유지한다", () => {
   writePost("루프팩과정/wil/round1.md");
