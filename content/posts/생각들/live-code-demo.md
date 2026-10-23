@@ -2,7 +2,6 @@
 title: "라이브 코드 블록 미리보기"
 date: "2026-10-21T09:00:00.000Z"
 description: "본문 코드 블록이 블로그 안에서 바로 실행되는지 확인하는 draft 글입니다."
-category: "생각들"
 draft: true
 ---
 

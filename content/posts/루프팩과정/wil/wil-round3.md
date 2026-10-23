@@ -2,7 +2,6 @@
 title: "[WIL] Round3 - 리뷰가 놓친 것과 발제 피드백으로 메운 빈틈"
 date: "2026-07-05T13:00:00.000Z"
 description: "3주차를 진행하면서 배운것들"
-category: "루프팩과정"
 tags: ["WIL"]
 ---
 

@@ -2,7 +2,6 @@
 title: "[WIL] Round1 - 코드 리뷰 & AI 협업 환경 구축"
 date: "2026-06-18T13:00:00.000Z"
 description: "1주차를 진행하면서 배운것들"
-category: "루프팩과정"
 tags: ["WIL"]
 ---
 

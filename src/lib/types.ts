@@ -6,11 +6,6 @@ export interface PostFrontmatter {
   /** ISO 8601 문자열 */
   date: string;
   description: string;
-  /**
-   * frontmatter 의 category 는 문자열 하나 또는 문자열 배열로 쓸 수 있고,
-   * 로드 시점에 항상 string[] 로 정규화된다(글 하나가 여러 카테고리에 속할 수 있음).
-   */
-  categories: string[];
   /** frontmatter 의 tags(선택). 없으면 빈 배열로 정규화된다. */
   tags: string[];
   /** true면 OMIT_DRAFTS 빌드(배포)에서 제외된다. 없으면 공개 글. */
@@ -33,7 +28,7 @@ export interface PostMeta {
   title: string;
   date: string;
   description: string;
-  /** 글이 속한 카테고리들(최소 1개). */
+  /** posts 바로 아래 디렉토리에서 얻은 대표 카테고리 하나. */
   categories: string[];
   /** 세부 주제 태그(없으면 빈 배열). /tag/[slug] 로 연결된다. */
   tags: string[];

@@ -2,7 +2,6 @@
 title: "성능 최적화, 그리고 트레이드오프"
 date: "2026-08-06T09:00:00.000Z"
 description: "hero 이미지 하나가 LCP의 93%(7,904ms)를 먹고 있었다. next/image로 7.5MB를 130kB로 줄이고, 동적 metadata가 slow API를 기다리는 비용을 서버 호출 계수와 크롤러 TTFB로 재보며, 무엇을 바꾸고 무엇을 안 바꿨는지 근거와 함께 정리했다."
-category: "루프팩과정"
 tags: ["Next.js"]
 ---
 
