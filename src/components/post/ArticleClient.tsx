@@ -261,24 +261,6 @@ export function ArticleClient({ post }: ArticleClientProps) {
               </Link>
             </Fragment>
           ))}
-          {post.hasEnglish && (
-            <Link
-              href={
-                post.language === "ko"
-                  ? `/en/posts/${post.slug}/`
-                  : `/posts/${post.slug}/`
-              }
-              className={styles.languageLink}
-              hrefLang={post.language === "ko" ? "en" : "ko"}
-              lang={post.language === "ko" ? "en" : "ko"}
-              aria-label={
-                post.language === "ko" ? "Read in English" : "한국어로 읽기"
-              }
-              data-testid="post-language-switch"
-            >
-              {post.language === "ko" ? "EN" : "KO"}
-            </Link>
-          )}
         </div>
 
         <h1 className={styles.title} data-testid="article-title">

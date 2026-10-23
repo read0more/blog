@@ -6,13 +6,49 @@ export function sitePath(language: PostLanguage, pathname = "/"): string {
   return language === "en" ? `/en${pathname}` : pathname;
 }
 
-export function languageFromPath(pathname: string): PostLanguage {
+function withoutBasePath(pathname: string): string {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-  const localPath =
-    basePath && (pathname === basePath || pathname.startsWith(`${basePath}/`))
-      ? pathname.slice(basePath.length)
-      : pathname;
+  return basePath &&
+    (pathname === basePath || pathname.startsWith(`${basePath}/`))
+    ? pathname.slice(basePath.length)
+    : pathname;
+}
+
+export function languageFromPath(pathname: string): PostLanguage {
+  const localPath = withoutBasePath(pathname);
   return localPath === "/en" || localPath.startsWith("/en/") ? "en" : "ko";
+}
+
+export function languageSwitchTarget(
+  language: PostLanguage,
+  pathname: string,
+  originalSlugs: readonly string[],
+  translatedSlugs: readonly string[],
+) {
+  const targetLanguage: PostLanguage = language === "ko" ? "en" : "ko";
+  const prefix = sitePath(language, "/posts/");
+  const localPath = withoutBasePath(pathname);
+  const segment = localPath.startsWith(prefix)
+    ? localPath.slice(prefix.length).replace(/\/$/, "")
+    : "";
+  let slug = "";
+  try {
+    if (!segment.includes("/")) slug = decodeURIComponent(segment);
+  } catch {
+    slug = "";
+  }
+  const isPost = originalSlugs.includes(slug);
+  const hasCounterpart =
+    isPost && (language === "en" || translatedSlugs.includes(slug));
+  return {
+    language: targetLanguage,
+    href: hasCounterpart
+      ? sitePath(targetLanguage, `/posts/${encodeURIComponent(slug)}/`)
+      : sitePath(targetLanguage),
+    label: getUiTranslator(targetLanguage)(
+      isPost && !hasCounterpart ? "languageHome" : "languageName",
+    ),
+  };
 }
 
 const translators = {

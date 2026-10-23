@@ -35,7 +35,12 @@
     "recentPosts": "최근 글",
     "legacyTitle": "영어 글의 주소가 변경되었습니다",
     "legacyContinue": "영어 글로 이동",
-    "englishHome": "영어 홈"
+    "englishHome": "영어 홈",
+    "languageName": "한국어",
+    "languageHome": "한국어 홈",
+    "translationUnavailable": "영어 번역이 없습니다",
+    "translationUnavailableMessage": "이 글은 현재 한국어로만 제공됩니다.",
+    "readOriginal": "한국어 원문 읽기"
   },
   "taxonomy": {
     "categories": {

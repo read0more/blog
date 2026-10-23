@@ -19,7 +19,7 @@ test("모바일에서 언어 홈·메뉴·검색을 거쳐 글을 열고 원문�
   await overlay.getByRole("textbox").fill("counter");
   await overlay.getByRole("link", { name: /Live Code Block Preview/ }).click();
   await expect(page).toHaveURL("/blog/en/posts/live-code-demo/");
-  await page.getByRole("link", { name: "한국어로 읽기", exact: true }).click();
+  await page.getByRole("link", { name: "한국어", exact: true }).click();
   await expect(page).toHaveURL("/blog/posts/live-code-demo/");
   await expect(page.locator("html")).toHaveAttribute("lang", "ko");
 });

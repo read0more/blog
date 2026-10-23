@@ -10,8 +10,9 @@ export async function SiteLayout({
   children: ReactNode;
   language: PostLanguage;
 }) {
-  const [posts, tags, categories] = await Promise.all([
-    getAllPostMeta(language),
+  const [originals, translations, tags, categories] = await Promise.all([
+    getAllPostMeta("ko"),
+    getAllPostMeta("en"),
     getAllTags(language),
     getCategories(language),
   ]);
@@ -20,9 +21,13 @@ export async function SiteLayout({
       <body>
         <AppShell
           language={language}
+          originalSlugs={originals.map((post) => post.slug)}
+          translatedSlugs={translations.map((post) => post.slug)}
           categories={categories}
           tags={tags}
-          totalCount={posts.length}
+          totalCount={
+            language === "ko" ? originals.length : translations.length
+          }
         >
           {children}
         </AppShell>

@@ -7,6 +7,7 @@ const postsDir = path.resolve(process.env.POSTS_DIR ?? "content/posts");
 const basePath = process.env.BASE_PATH ?? "";
 const sources = readPostSources(postsDir, process.env.OMIT_DRAFTS === "true");
 const english = sources.filter((source) => source.language === "en");
+const originals = sources.filter((source) => source.language === "ko");
 const englishHome = fs.readFileSync("out/en/index.html", "utf8");
 assert.match(englishHome, /<html[^>]*lang="en"/);
 assert.match(englishHome, /All posts/);
@@ -55,7 +56,19 @@ for (const language of ["ko", "en"]) {
 
 for (const file of listPostFiles(postsDir)) {
   if (!english.some((source) => source.slug === file.slug)) {
-    assert.equal(fs.existsSync(`out/en/posts/${file.slug}/index.html`), false);
+    const englishPath = `out/en/posts/${file.slug}/index.html`;
+    if (originals.some((source) => source.slug === file.slug)) {
+      const notice = fs.readFileSync(englishPath, "utf8");
+      assert.match(notice, /<html[^>]*lang="en"/);
+      assert.match(notice, /data-testid="translation-unavailable"/);
+      assert.match(notice, /<meta name="robots" content="noindex/);
+      assert.doesNotMatch(notice, /<article\b/);
+      assert.ok(
+        notice.includes(`${basePath}/posts/${encodeURIComponent(file.slug)}/`),
+      );
+    } else {
+      assert.equal(fs.existsSync(englishPath), false);
+    }
     assert.equal(fs.existsSync(`out/posts/${file.slug}/en/index.html`), false);
   }
 }

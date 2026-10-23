@@ -4,9 +4,7 @@ test("글 언어 전환은 정적 페이지 이동·새로고침과 라이브 �
   page,
 }) => {
   await page.goto("/blog/posts/live-code-demo/");
-  await page
-    .getByRole("link", { name: "Read in English", exact: true })
-    .click();
+  await page.getByRole("link", { name: "English", exact: true }).click();
   await expect(page).toHaveURL("/blog/en/posts/live-code-demo/");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await page.reload();
@@ -22,7 +20,7 @@ test("글 언어 전환은 정적 페이지 이동·새로고침과 라이브 �
   await demo.getByRole("button", { name: "Preview", exact: true }).click();
   await expect(preview).toBeVisible();
 
-  await page.getByRole("link", { name: "한국어로 읽기", exact: true }).click();
+  await page.getByRole("link", { name: "한국어", exact: true }).click();
   await expect(page).toHaveURL("/blog/posts/live-code-demo/");
   await expect(page.locator("html")).toHaveAttribute("lang", "ko");
 });

@@ -6,6 +6,8 @@ import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { PostList } from "@/components/posts/PostList";
 import { ArticleClient } from "@/components/post/ArticleClient";
+import { LanguageSwitch } from "@/components/layout/LanguageSwitch";
+import { TranslationUnavailable } from "@/components/post/TranslationUnavailable";
 import { MobileSearchOverlay } from "@/components/search/MobileSearchOverlay";
 import { useSearch } from "@/components/search/useSearch";
 import type { Post, PostMeta } from "@/lib/types";
@@ -53,23 +55,60 @@ test("영어 글이 없으면 빈 상태 안내를 보여주고 글 링크는 �
   expect(screen.queryByRole("link")).not.toBeInTheDocument();
 });
 
-test("번역이 있는 글에만 영어로 읽기 링크를 제공한다", () => {
+test("글의 언어 전환은 헤더 하나만 제공하고 같은 글을 가리킨다", () => {
   const post: Post = {
     ...article,
     language: "ko",
-    hasEnglish: false,
+    hasEnglish: true,
     contentHtml: "<p>원문</p>",
     plainText: "원문",
     toc: [],
   };
-  const { rerender } = render(<ArticleClient post={post} />);
+  render(
+    <>
+      <LanguageSwitch
+        language="ko"
+        pathname="/posts/example/"
+        originalSlugs={["example"]}
+        translatedSlugs={["example"]}
+      />
+      <ArticleClient post={post} />
+    </>,
+  );
+  expect(screen.getAllByRole("link", { name: "English" })).toHaveLength(1);
   expect(
-    screen.queryByRole("link", { name: "Read in English" }),
+    screen.queryByRole("link", { name: /^(EN|KO)$/ }),
   ).not.toBeInTheDocument();
-  rerender(<ArticleClient post={{ ...post, hasEnglish: true }} />);
   expect(
-    screen.getByRole("link", { name: "Read in English" }).getAttribute("href"),
+    screen.getByRole("link", { name: "English" }).getAttribute("href"),
   ).toMatch(/^\/en\/posts\/example\/?$/);
+});
+
+test("번역 없는 글의 헤더는 영어 홈으로 이동함을 명시한다", () => {
+  render(
+    <LanguageSwitch
+      language="ko"
+      pathname="/posts/example/"
+      originalSlugs={["example"]}
+      translatedSlugs={[]}
+    />,
+  );
+  expect(
+    screen.getByRole("link", { name: "English home" }).getAttribute("href"),
+  ).toMatch(/^\/en\/?$/);
+});
+
+test("영어 번역이 없으면 짧은 안내와 한국어 원문 링크를 제공한다", () => {
+  render(<TranslationUnavailable slug="example" />);
+  expect(
+    screen.getByRole("heading", { name: "English translation unavailable" }),
+  ).toBeInTheDocument();
+  expect(
+    screen
+      .getByRole("link", { name: "Read the Korean original" })
+      .getAttribute("href"),
+  ).toMatch(/^\/posts\/example\/?$/);
+  expect(screen.queryByRole("article")).not.toBeInTheDocument();
 });
 
 function SearchScreen() {

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import type { Category, PostLanguage } from "@/lib/types";
 import { sitePath, getUiTranslator } from "@/lib/i18n";
 import { SidebarNav } from "./SidebarNav";
+import { LanguageSwitch } from "./LanguageSwitch";
 import { HamburgerIcon, SearchIcon, CloseIcon } from "./icons";
 import { useSearch } from "../search/useSearch";
 import { DesktopSearch } from "../search/DesktopSearch";
@@ -14,6 +15,8 @@ import styles from "./AppShell.module.css";
 
 interface AppShellProps {
   language?: PostLanguage;
+  originalSlugs?: string[];
+  translatedSlugs?: string[];
   categories: Category[];
   /** 검색 빈 결과 화면의 태그 칩용. */
   tags: string[];
@@ -23,6 +26,8 @@ interface AppShellProps {
 
 export function AppShell({
   language = "ko",
+  originalSlugs = [],
+  translatedSlugs = [],
   categories,
   tags,
   totalCount,
@@ -95,15 +100,12 @@ export function AppShell({
           <DesktopSearch search={search} tags={tags} language={language} />
         </div>
 
-        <Link
-          href={language === "ko" ? "/en/" : "/"}
-          className={styles.languageLink}
-          lang={language === "ko" ? "en" : "ko"}
-          hrefLang={language === "ko" ? "en" : "ko"}
-          data-testid="site-language-switch"
-        >
-          {language === "ko" ? "English" : "한국어"}
-        </Link>
+        <LanguageSwitch
+          language={language}
+          pathname={pathname}
+          originalSlugs={originalSlugs}
+          translatedSlugs={translatedSlugs}
+        />
 
         {/* Mobile search button */}
         <button

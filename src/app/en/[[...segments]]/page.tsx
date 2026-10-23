@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleClient } from "@/components/post/ArticleClient";
+import { TranslationUnavailable } from "@/components/post/TranslationUnavailable";
 import { PostList } from "@/components/posts/PostList";
 import {
   getAllPostMeta,
@@ -18,7 +19,7 @@ type PageProps = { params: Promise<{ segments?: string[] }> };
 
 export async function generateStaticParams() {
   const [posts, categories, tags] = await Promise.all([
-    getAllPostMeta("en"),
+    getAllPostMeta("ko"),
     getCategories("en"),
     getAllTags("en"),
   ]);
@@ -37,11 +38,17 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { segments = [] } = await params;
   if (segments.length === 2 && segments[0] === "posts") {
-    const post = await getPostBySlug(segments[1], "en");
+    const name = decodeURIComponent(segments[1]);
+    const post = await getPostBySlug(name, "en");
     if (post)
       return {
         title: `${post.title} · read0more`,
         description: post.description,
+      };
+    if (await getPostBySlug(name, "ko"))
+      return {
+        title: `${getUiTranslator("en")("translationUnavailable")} · read0more`,
+        robots: { index: false },
       };
   }
   if (segments.length === 2 && segments[0] === "category")
@@ -74,7 +81,11 @@ export default async function EnglishPage({ params }: PageProps) {
   const name = decodeURIComponent(encodedName);
   if (kind === "posts") {
     const post = await getPostBySlug(name, "en");
-    if (!post) notFound();
+    if (!post) {
+      if (await getPostBySlug(name, "ko"))
+        return <TranslationUnavailable slug={name} />;
+      notFound();
+    }
     return <ArticleClient key={`${post.slug}:en`} post={post} />;
   }
   if (kind === "category" || kind === "tag") {

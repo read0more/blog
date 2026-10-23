@@ -40,5 +40,10 @@ test.describe("JavaScript 없는 정적 페이지", () => {
       .getByRole("link", { name: "Continue to the English post" })
       .click();
     await expect(page).toHaveURL("/blog/en/posts/live-code-demo/");
+    await page.goto("/blog/en/posts/frontend-future/");
+    await page.getByRole("link", { name: "Read the Korean original" }).click();
+    await expect(page).toHaveURL("/blog/posts/frontend-future/");
+    await page.getByRole("link", { name: "English home" }).click();
+    await expect(page).toHaveURL("/blog/en/");
   });
 });

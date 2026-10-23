@@ -80,6 +80,11 @@ github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵�
   각 루트 레이아웃은 `SiteLayout`에 언어를 전달하여 HTML `lang`과 해당 언어의 사이드바 데이터를 만든다.
   언어 루트 간 이동은 전체 페이지 이동이며, 언어 안에서는 Next 링크를 사용한다.
   영어 주소는 `/en/posts/<slug>/`이고 `/posts/<slug>/en/`는 정적 안내 + 브라우저 이동으로 유지한다.
+  헤더 언어 전환은 현재 글의 원문/번역으로 이동한다. 한국어 전용 글은 "English home"으로
+  표시하여 영어 홈으로 이동한다. 글 본문 쪽에는 별도 언어 전환 버튼을 두지 않는다.
+  영어 글 경로는 공개 원문 slug마다 생성하되, 번역이 없으면 `TranslationUnavailable` 안내와
+  원문 링크만 제공하고 noindex로 처리한다. 이 안내는 영어 목록·분류·검색에 집계하지 않는다.
+  원문 자체가 없거나 초안으로 제외됐으면 안내 페이지도 만들지 않는다.
   HTTP redirect, middleware, cookies/headers 기반 언어 판별은 쓰지 않는다.
   `global-not-found.tsx`를 위해 `experimental.globalNotFound`를 사용한다. 공통 `404.html`은 클라이언트에서
   주소로 언어를 판별하고, no-JS 상태에서도 영어 홈 링크를 제공한다.
@@ -143,7 +148,7 @@ enhance된 코드 헤더가 지워지고 TOC가 깨짐). 그리고 스크롤 스
 ## 품질 게이트 (훅 · CI)
 
 `scripts/verify-static-export.mjs`는 `postbuild`에서 원문·영어 페이지, 영어 홈, 두 검색 인덱스,
-legacy 링크, 초안/미번역 글 제외를 확인한다. 한국어 전용 글을 영어 사이트에 폴백으로 노출하지 않는다.
+legacy 링크, 초안 제외와 미번역 안내 페이지를 확인한다. 한국어 본문을 영어 글로 폴백하지 않는다.
 
 검증은 3단계로 강제된다:
 
