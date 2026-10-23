@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/format";
 import { sitePath, getUiTranslator } from "@/lib/i18n";
 import { categoryLabel } from "@/lib/taxonomy.mjs";
 import { TagChips } from "../posts/TagChips";
+import { PostTitleTransition } from "../posts/PostTitleTransition";
 import { Toc } from "./Toc";
 import { MobileToc } from "./MobileToc";
 import { Comments } from "./Comments";
@@ -263,9 +264,11 @@ export function ArticleClient({ post }: ArticleClientProps) {
           ))}
         </div>
 
-        <h1 className={styles.title} data-testid="article-title">
-          {post.title}
-        </h1>
+        <PostTitleTransition slug={post.slug} language={post.language}>
+          <h1 className={styles.title} data-testid="article-title">
+            {post.title}
+          </h1>
+        </PostTitleTransition>
 
         <div className={styles.metaBlock}>
           <div className={styles.metaRow}>

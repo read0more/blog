@@ -6,6 +6,7 @@ import { categoryLabel } from "@/lib/taxonomy.mjs";
 import { categoryColor } from "@/lib/categories";
 import { formatDate } from "@/lib/format";
 import { TagChips } from "./TagChips";
+import { PostTitleTransition } from "./PostTitleTransition";
 import styles from "./PostList.module.css";
 
 interface PostListProps {
@@ -82,7 +83,9 @@ export function PostList({
                 {/* <span className={styles.metaDot}>·</span> */}
                 {/* <span className={styles.metaText}>{p.readingMinutes}분</span> */}
               </div>
-              <h2 className={styles.cardTitle}>{p.title}</h2>
+              <PostTitleTransition slug={p.slug} language={language}>
+                <h2 className={styles.cardTitle}>{p.title}</h2>
+              </PostTitleTransition>
               <p className={styles.cardDesc}>{p.description}</p>
             </Link>
             <TagChips
