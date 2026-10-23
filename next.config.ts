@@ -17,6 +17,7 @@ const basePath = process.env.BASE_PATH ?? "";
 const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
+  experimental: { globalNotFound: true },
   ...(isDev ? {} : { output: "export" }),
   basePath,
   // assetPrefix 는 basePath 가 있을 때만 명시(빈 값이면 설정하지 않음).

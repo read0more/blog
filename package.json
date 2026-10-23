@@ -4,15 +4,20 @@
   "private": true,
   "scripts": {
     "search-index": "node scripts/build-search-index.mjs",
-    "predev": "node scripts/build-search-index.mjs",
+    "check:messages": "node scripts/verify-messages.mjs",
+    "predev": "npm run check:messages && node scripts/build-search-index.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/build-search-index.mjs",
+    "prebuild": "npm run check:messages && node scripts/build-search-index.mjs",
     "build": "next build",
+    "postbuild": "node scripts/verify-static-export.mjs",
     "start": "node scripts/serve-out.mjs",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:translations": "playwright test --config playwright.translations.config.ts",
@@ -45,10 +50,15 @@
     "remark-rehype": "^11.1.2",
     "shiki": "^4.3.1",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "use-intl": "^4.14.9"
   },
   "devDependencies": {
+    "@formatjs/icu-messageformat-parser": "^3.5.22",
     "@playwright/test": "^1.61.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
     "@types/mdast": "^4.0.4",
     "@types/node": "^26.1.0",
     "@types/react": "^19.0.0",
@@ -57,9 +67,12 @@
     "eslint-config-next": "16.2.9",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
+    "jsdom": "^27.4.0",
     "lint-staged": "^17.0.8",
+    "msw": "^2.15.0",
     "prettier": "^3.9.4",
     "serve": "^14.2.6",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.12"
   }
 }

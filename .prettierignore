@@ -6,6 +6,7 @@ node_modules/
 
 # 빌드 타임 생성 검색 인덱스
 public/search-index.json
+public/search-index.en.json
 
 # lock 파일
 package-lock.json

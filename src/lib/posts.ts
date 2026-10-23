@@ -3,6 +3,7 @@ import { renderMarkdown } from "./markdown";
 import { readingMinutes } from "./reading-time";
 import { categoryColor } from "./categories";
 import { readPostSources } from "./post-files.mjs";
+import { tagLabel } from "./taxonomy.mjs";
 import type {
   Post,
   PostMeta,
@@ -79,8 +80,8 @@ async function loadAllPosts(): Promise<Post[]> {
   return cache;
 }
 
-async function loadOriginalPosts(): Promise<Post[]> {
-  return (await loadAllPosts()).filter((post) => post.language === "ko");
+async function loadPosts(language: PostLanguage): Promise<Post[]> {
+  return (await loadAllPosts()).filter((post) => post.language === language);
 }
 
 function toMeta(p: Post): PostMeta {
@@ -90,8 +91,10 @@ function toMeta(p: Post): PostMeta {
 }
 
 /** 전체 글 메타(최신순). 목록/홈에서 사용. */
-export async function getAllPostMeta(): Promise<PostMeta[]> {
-  const posts = await loadOriginalPosts();
+export async function getAllPostMeta(
+  language: PostLanguage = "ko",
+): Promise<PostMeta[]> {
+  const posts = await loadPosts(language);
   return posts.map(toMeta);
 }
 
@@ -119,8 +122,10 @@ export async function getAllPostRoutes(): Promise<{ slug: string[] }[]> {
  * 카테고리 자동 수집 — 최상위 디렉토리 이름을 distinct 수집하고
  * 글 개수와 결정적 색상을 붙인다. CATEGORY_ORDER 우선, 나머지는 가나다순.
  */
-export async function getCategories(): Promise<Category[]> {
-  const posts = await loadOriginalPosts();
+export async function getCategories(
+  language: PostLanguage = "ko",
+): Promise<Category[]> {
+  const posts = await loadPosts(language);
   const counts = new Map<string, number>();
   for (const p of posts) {
     for (const name of p.categories) {
@@ -147,8 +152,9 @@ export async function getCategories(): Promise<Category[]> {
 /** 특정 카테고리의 글 메타(최신순). */
 export async function getPostsByCategory(
   category: string,
+  language: PostLanguage = "ko",
 ): Promise<PostMeta[]> {
-  const posts = await loadOriginalPosts();
+  const posts = await loadPosts(language);
   return posts.filter((p) => p.categories.includes(category)).map(toMeta);
 }
 
@@ -168,13 +174,18 @@ export function tagsOf(posts: PostMeta[]): string[] {
 }
 
 /** 전체 태그. generateStaticParams 와 검색 빈 결과 칩에서 사용. */
-export async function getAllTags(): Promise<string[]> {
-  return tagsOf(await loadOriginalPosts());
+export async function getAllTags(
+  language: PostLanguage = "ko",
+): Promise<string[]> {
+  return tagsOf(await loadPosts(language));
 }
 
 /** 특정 태그의 글 메타(최신순). */
-export async function getPostsByTag(tag: string): Promise<PostMeta[]> {
-  const posts = await loadOriginalPosts();
+export async function getPostsByTag(
+  tag: string,
+  language: PostLanguage = "ko",
+): Promise<PostMeta[]> {
+  const posts = await loadPosts(language);
   return posts.filter((p) => p.tags.includes(tag)).map(toMeta);
 }
 
@@ -182,8 +193,10 @@ export async function getPostsByTag(tag: string): Promise<PostMeta[]> {
  * 검색 인덱스(클라이언트 검색용) — 제목 + 설명 + 본문 plaintext.
  * 빌드타임에 search-index.json 으로 직렬화한다.
  */
-export async function getSearchDocs(): Promise<SearchDoc[]> {
-  const posts = await loadOriginalPosts();
+export async function getSearchDocs(
+  language: PostLanguage = "ko",
+): Promise<SearchDoc[]> {
+  const posts = await loadPosts(language);
   return posts.map((p) => ({
     slug: p.slug,
     title: p.title,
@@ -191,6 +204,6 @@ export async function getSearchDocs(): Promise<SearchDoc[]> {
     categories: p.categories,
     tags: p.tags,
     // 태그명으로도 검색되도록 text 끝에 붙인다.
-    text: `${p.title} ${p.description} ${p.plainText} ${p.tags.join(" ")}`,
+    text: `${p.title} ${p.description} ${p.plainText} ${p.tags.map((tag) => tagLabel(tag, language)).join(" ")}`,
   }));
 }

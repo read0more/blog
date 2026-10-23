@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { Category } from "@/lib/types";
+import type { Category, PostLanguage } from "@/lib/types";
+import { sitePath, getUiTranslator } from "@/lib/i18n";
+import { categoryLabel } from "@/lib/taxonomy.mjs";
 import styles from "./AppShell.module.css";
 
 interface SidebarNavProps {
+  language?: PostLanguage;
   categories: Category[];
   totalCount: number;
   /** 행 클릭 시 호출(모바일 사이드바 닫기 등). */
@@ -21,6 +24,7 @@ interface SidebarNavProps {
  * 카테고리 slug 는 한글 그대로 허용(PRD §3)하므로 링크는 encodeURIComponent 로 만든다.
  */
 export function SidebarNav({
+  language = "ko",
   categories,
   totalCount,
   onNavigate,
@@ -29,30 +33,35 @@ export function SidebarNav({
   const pathname = usePathname();
 
   // "전체 글"은 홈(/)에서만 active.
-  const homeActive = pathname === "/";
+  const home = sitePath(language);
+  const homeActive = pathname === home || pathname === home.slice(0, -1);
 
   const categoryActive = (name: string) => {
     const slug = encodeURIComponent(name);
     return (
-      pathname === `/category/${slug}` ||
-      pathname === `/category/${slug}/` ||
-      pathname === `/category/${name}` ||
-      pathname === `/category/${name}/`
+      pathname === sitePath(language, `/category/${slug}`) ||
+      pathname === sitePath(language, `/category/${slug}/`) ||
+      pathname === sitePath(language, `/category/${name}`) ||
+      pathname === sitePath(language, `/category/${name}/`)
     );
   };
 
   return (
     <nav>
-      {showHeading && <div className={styles.sidebarHeading}>카테고리</div>}
+      {showHeading && (
+        <div className={styles.sidebarHeading}>
+          {getUiTranslator(language)("categories")}
+        </div>
+      )}
 
       <Link
-        href="/"
+        href={home}
         onClick={onNavigate}
         className={`${styles.catRow} ${homeActive ? styles.active : ""}`}
         data-testid="sidebar-all"
         aria-current={homeActive ? "page" : undefined}
       >
-        <span>전체 글</span>
+        <span>{getUiTranslator(language)("allPosts")}</span>
         <span className={styles.catCount}>{totalCount}</span>
       </Link>
 
@@ -61,7 +70,7 @@ export function SidebarNav({
         return (
           <Link
             key={c.name}
-            href={`/category/${encodeURIComponent(c.name)}`}
+            href={sitePath(language, `/category/${encodeURIComponent(c.name)}`)}
             onClick={onNavigate}
             className={`${styles.catRow} ${active ? styles.active : ""}`}
             data-testid={`sidebar-category-${c.name}`}
@@ -69,7 +78,7 @@ export function SidebarNav({
           >
             <span className={styles.catName}>
               <span className={styles.catDot} style={{ background: c.color }} />
-              {c.name}
+              {categoryLabel(c.name, language)}
             </span>
             <span className={styles.catCount}>{c.count}</span>
           </Link>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllPostRoutes, getPostBySlug } from "@/lib/posts";
 import { ArticleClient } from "@/components/post/ArticleClient";
+import { LegacyEnglishRedirect } from "@/components/post/LegacyEnglishRedirect";
 
 /** 모든 글을 정적 생성. */
 export async function generateStaticParams() {
@@ -27,6 +28,7 @@ export async function generateMetadata({
   return {
     title: `${post.title} · read0more`,
     description: post.description,
+    ...(post.language === "en" ? { robots: { index: false } } : {}),
   };
 }
 
@@ -38,6 +40,7 @@ export default async function PostPage({
   const { slug } = await params;
   const post = await postAtPath(slug);
   if (!post) notFound();
+  if (post.language === "en") return <LegacyEnglishRedirect slug={post.slug} />;
 
   return <ArticleClient key={`${post.slug}:${post.language}`} post={post} />;
 }

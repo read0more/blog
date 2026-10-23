@@ -5,6 +5,8 @@ import Link from "next/link";
 import type { Post } from "@/lib/types";
 import { categoryColor } from "@/lib/categories";
 import { formatDate } from "@/lib/format";
+import { sitePath, getUiTranslator } from "@/lib/i18n";
+import { categoryLabel } from "@/lib/taxonomy.mjs";
 import { TagChips } from "../posts/TagChips";
 import { Toc } from "./Toc";
 import { MobileToc } from "./MobileToc";
@@ -51,6 +53,7 @@ const Prose = memo(function Prose({
  * - scroll-spy(현재 heading 추적) → 우측/모바일 TOC active.
  */
 export function ArticleClient({ post }: ArticleClientProps) {
+  const translate = getUiTranslator(post.language);
   const bodyRef = useRef<HTMLDivElement>(null);
   const { toc } = post;
   // TOC 노출 임계값: h2/h3 합산 3개 이상(디자인 hasToc).
@@ -70,7 +73,7 @@ export function ArticleClient({ post }: ArticleClientProps) {
   useImageLightbox(bodyRef, post.contentHtml);
 
   // ---- 라이브 코드 블록(Sandpack) ----
-  useLiveCode(bodyRef, post.contentHtml);
+  useLiveCode(bodyRef, post.contentHtml, post.language);
 
   // ---- 코드블록 enhance ----
   useEffect(() => {
@@ -105,7 +108,7 @@ export function ArticleClient({ post }: ArticleClientProps) {
       const setLabel = (text: string) => {
         button.innerHTML = `${COPY_ICON}<span>${text}</span>`;
       };
-      setLabel("복사");
+      setLabel(translate("copy"));
 
       let timer: ReturnType<typeof setTimeout> | undefined;
       const onClick = () => {
@@ -115,11 +118,11 @@ export function ArticleClient({ post }: ArticleClientProps) {
           /* clipboard 미지원 환경은 조용히 무시 */
         }
         button.classList.add(styles.copied);
-        setLabel("복사됨");
+        setLabel(translate("copied"));
         if (timer) clearTimeout(timer);
         timer = setTimeout(() => {
           button.classList.remove(styles.copied);
-          setLabel("복사");
+          setLabel(translate("copy"));
         }, 1500);
       };
       button.addEventListener("click", onClick);
@@ -135,7 +138,7 @@ export function ArticleClient({ post }: ArticleClientProps) {
     });
 
     return () => cleanups.forEach((fn) => fn());
-  }, [post.contentHtml]);
+  }, [post.contentHtml, translate]);
 
   // ---- scroll-spy ----
   useEffect(() => {
@@ -247,11 +250,14 @@ export function ArticleClient({ post }: ArticleClientProps) {
             <Fragment key={c}>
               {i > 0 && <span className={styles.metaDot}>·</span>}
               <Link
-                href={`/category/${encodeURIComponent(c)}`}
+                href={sitePath(
+                  post.language,
+                  `/category/${encodeURIComponent(c)}`,
+                )}
                 className={styles.categoryLink}
                 style={{ color: categoryColor(c) }}
               >
-                {c}
+                {categoryLabel(c, post.language)}
               </Link>
             </Fragment>
           ))}
@@ -259,7 +265,7 @@ export function ArticleClient({ post }: ArticleClientProps) {
             <Link
               href={
                 post.language === "ko"
-                  ? `/posts/${post.slug}/en/`
+                  ? `/en/posts/${post.slug}/`
                   : `/posts/${post.slug}/`
               }
               className={styles.languageLink}
@@ -281,24 +287,34 @@ export function ArticleClient({ post }: ArticleClientProps) {
 
         <div className={styles.metaBlock}>
           <div className={styles.metaRow}>
-            <span>{formatDate(post.date)}</span>
+            <span>{formatDate(post.date, post.language)}</span>
             {/* <span>·</span>
             <span>{post.readingMinutes}분 읽기</span> */}
           </div>
-          <TagChips tags={post.tags} />
+          <TagChips tags={post.tags} language={post.language} />
         </div>
 
         {showToc && (
-          <MobileToc items={toc} activeId={activeId} onSelect={selectFromToc} />
+          <MobileToc
+            items={toc}
+            activeId={activeId}
+            onSelect={selectFromToc}
+            language={post.language}
+          />
         )}
 
         <Prose html={post.contentHtml} innerRef={bodyRef} />
 
-        <Comments />
+        <Comments language={post.language} />
       </article>
 
       {showToc && (
-        <Toc items={toc} activeId={activeId} onSelect={selectFromToc} />
+        <Toc
+          items={toc}
+          activeId={activeId}
+          onSelect={selectFromToc}
+          language={post.language}
+        />
       )}
     </div>
   );

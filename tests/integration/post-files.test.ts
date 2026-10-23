@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, beforeEach, afterEach } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -9,12 +9,12 @@ const indexScript = path.resolve("scripts/build-search-index.mjs");
 let workspace: string;
 let postsDir: string;
 
-test.beforeEach(() => {
+beforeEach(() => {
   workspace = fs.mkdtempSync(path.join(os.tmpdir(), "blog-post-files-"));
   postsDir = path.join(workspace, "posts");
 });
 
-test.afterEach(() => {
+afterEach(() => {
   fs.rmSync(workspace, { recursive: true, force: true });
 });
 
@@ -76,6 +76,16 @@ test("인접한 영어 번역은 같은 글로 묶이고 원문의 분류·태�
   expect(index).toHaveLength(1);
   expect(index[0]).toMatchObject({ slug: "example", title: "테스트 글" });
   expect(index[0].text).not.toContain("English body");
+  const englishIndex = JSON.parse(
+    fs.readFileSync(
+      path.join(workspace, "public/search-index.en.json"),
+      "utf8",
+    ),
+  );
+  expect(englishIndex).toEqual([
+    expect.objectContaining({ slug: "example", title: "English title" }),
+  ]);
+  expect(englishIndex[0].text).not.toContain("검색할 본문");
 });
 
 for (const originalDraft of [false, true]) {
@@ -101,6 +111,14 @@ for (const originalDraft of [false, true]) {
           ),
         ),
       ).toHaveLength(originalDraft ? 0 : 1);
+      expect(
+        JSON.parse(
+          fs.readFileSync(
+            path.join(workspace, "public/search-index.en.json"),
+            "utf8",
+          ),
+        ),
+      ).toHaveLength(originalDraft || translationDraft ? 0 : 1);
     });
   }
 }

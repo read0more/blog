@@ -2,18 +2,26 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import type { PostLanguage } from "@/lib/types";
+import { getUiTranslator } from "@/lib/i18n";
 import { SearchIcon } from "../layout/icons";
 import { ResultList, EmptyState } from "./SearchResults";
 import type { useSearch } from "./useSearch";
 import styles from "./Search.module.css";
 
 interface DesktopSearchProps {
+  language?: PostLanguage;
   search: ReturnType<typeof useSearch>;
   tags: string[];
 }
 
 /** 데스크톱 헤더 검색박스 + 결과 패널(560px). */
-export function DesktopSearch({ search, tags }: DesktopSearchProps) {
+export function DesktopSearch({
+  search,
+  tags,
+  language = "ko",
+}: DesktopSearchProps) {
+  const translate = getUiTranslator(language);
   const {
     query,
     setQuery,
@@ -29,10 +37,11 @@ export function DesktopSearch({ search, tags }: DesktopSearchProps) {
   // 라우트 이동 시 검색어 초기화(결과 클릭 후 패널이 남지 않도록).
   useEffect(() => {
     clear();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, clear]);
 
-  const header = hasResults ? `${results.length}개의 결과` : "검색";
+  const header = hasResults
+    ? translate("resultCount", { count: results.length })
+    : translate("search");
 
   return (
     <>
@@ -41,7 +50,7 @@ export function DesktopSearch({ search, tags }: DesktopSearchProps) {
         <input
           type="text"
           className={styles.searchInput}
-          placeholder="제목 · 본문 검색"
+          placeholder={translate("searchPlaceholder")}
           value={query}
           onFocusCapture={ensureIndex}
           onChange={(e) => {
@@ -54,7 +63,7 @@ export function DesktopSearch({ search, tags }: DesktopSearchProps) {
           <button
             type="button"
             className={styles.clearButton}
-            aria-label="지우기"
+            aria-label={translate("clear")}
             onClick={clear}
             data-testid="search-clear"
           >
@@ -83,9 +92,20 @@ export function DesktopSearch({ search, tags }: DesktopSearchProps) {
           <div className={styles.panel} data-testid="search-panel">
             <div className={styles.panelHeader}>{header}</div>
             <div className={styles.panelBody}>
-              {hasResults && <ResultList results={results} onSelect={clear} />}
+              {hasResults && (
+                <ResultList
+                  results={results}
+                  onSelect={clear}
+                  language={language}
+                />
+              )}
               {isEmpty && (
-                <EmptyState query={query} tags={tags} onSelect={clear} />
+                <EmptyState
+                  query={query}
+                  tags={tags}
+                  onSelect={clear}
+                  language={language}
+                />
               )}
             </div>
           </div>

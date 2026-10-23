@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getCategories, getPostsByCategory, tagsOf } from "@/lib/posts";
 import { PostList } from "@/components/posts/PostList";
+import { getUiTranslator } from "@/lib/i18n";
 
 /**
  * 카테고리별 글 목록. 한글 카테고리명을 slug 로 쓴다(PRD §3).
@@ -29,7 +30,7 @@ export default async function CategoryPage({
   return (
     <PostList
       title={name}
-      subtitle={`${posts.length}개의 글`}
+      subtitle={getUiTranslator("ko")("postCount", { count: posts.length })}
       posts={posts}
       tags={tagsOf(posts)}
     />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { SearchDoc } from "@/lib/types";
+import type { SearchDoc, PostLanguage } from "@/lib/types";
 import { searchDocs, type SearchResult } from "@/lib/search";
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -13,7 +13,7 @@ const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
  *
  * (현재는 빌드타임 JSON 인덱스 기반. Pagefind 전환은 후속 과제.)
  */
-export function useSearch() {
+export function useSearch(language: PostLanguage = "ko") {
   const [query, setQuery] = useState("");
   const [docs, setDocs] = useState<SearchDoc[] | null>(null);
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -26,11 +26,11 @@ export function useSearch() {
   const ensureIndex = useCallback(() => {
     if (fetchedRef.current) return;
     fetchedRef.current = true;
-    fetch(`${BASE_PATH}/search-index.json`)
+    fetch(`${BASE_PATH}/search-index${language === "en" ? ".en" : ""}.json`)
       .then((r) => (r.ok ? r.json() : []))
       .then((data: SearchDoc[]) => setDocs(data))
       .catch(() => setDocs([]));
-  }, []);
+  }, [language]);
 
   // query 변경 → 디바운스 후 검색. 빈 입력/미로드는 디바운스 콜백 안에서 비운다
   // (effect 본문에서 직접 setState 하지 않는다).

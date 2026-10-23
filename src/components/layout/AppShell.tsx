@@ -3,7 +3,8 @@
 import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { Category } from "@/lib/types";
+import type { Category, PostLanguage } from "@/lib/types";
+import { sitePath, getUiTranslator } from "@/lib/i18n";
 import { SidebarNav } from "./SidebarNav";
 import { HamburgerIcon, SearchIcon, CloseIcon } from "./icons";
 import { useSearch } from "../search/useSearch";
@@ -12,6 +13,7 @@ import { MobileSearchOverlay } from "../search/MobileSearchOverlay";
 import styles from "./AppShell.module.css";
 
 interface AppShellProps {
+  language?: PostLanguage;
   categories: Category[];
   /** 검색 빈 결과 화면의 태그 칩용. */
   tags: string[];
@@ -20,6 +22,7 @@ interface AppShellProps {
 }
 
 export function AppShell({
+  language = "ko",
   categories,
   tags,
   totalCount,
@@ -29,7 +32,8 @@ export function AppShell({
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const closeSidebar = () => setSidebarOpen(false);
 
-  const search = useSearch();
+  const translate = getUiTranslator(language);
+  const search = useSearch(language);
 
   const openMobileSearch = () => {
     search.clear();
@@ -43,7 +47,7 @@ export function AppShell({
   // 글 상세(/posts/...)는 기본 maxW 900(TOC 없음), 우측 TOC 가 실제 렌더될 때만
   // maxW 1140 으로 넓힌다(CSS :has). dc.html 689-694 명세.
   const pathname = usePathname();
-  const isPost = pathname.startsWith("/posts/");
+  const isPost = pathname.startsWith(sitePath(language, "/posts/"));
   const contentWrapClass = `${styles.contentWrap} ${isPost ? styles.post : ""}`;
 
   // 위로가기 버튼: 400px 이상 스크롤 시 노출.
@@ -71,7 +75,7 @@ export function AppShell({
         <button
           type="button"
           className={`${styles.iconButton} ${styles.mobileOnly}`}
-          aria-label="메뉴"
+          aria-label={translate("menu")}
           onClick={() => setSidebarOpen((v) => !v)}
           data-testid="header-hamburger"
         >
@@ -79,7 +83,7 @@ export function AppShell({
         </button>
 
         <Link
-          href="/"
+          href={sitePath(language)}
           className={styles.wordmark}
           data-testid="header-wordmark"
         >
@@ -88,15 +92,25 @@ export function AppShell({
 
         {/* Desktop search (box + result panel) */}
         <div className={`${styles.headerSearchSlot} ${styles.desktopOnly}`}>
-          <DesktopSearch search={search} tags={tags} />
+          <DesktopSearch search={search} tags={tags} language={language} />
         </div>
+
+        <Link
+          href={language === "ko" ? "/en/" : "/"}
+          className={styles.languageLink}
+          lang={language === "ko" ? "en" : "ko"}
+          hrefLang={language === "ko" ? "en" : "ko"}
+          data-testid="site-language-switch"
+        >
+          {language === "ko" ? "English" : "한국어"}
+        </Link>
 
         {/* Mobile search button */}
         <button
           type="button"
           className={`${styles.iconButton} ${styles.mobileOnly}`}
           style={{ marginLeft: "auto" }}
-          aria-label="검색"
+          aria-label={translate("search")}
           onClick={openMobileSearch}
           data-testid="header-mobile-search"
         >
@@ -107,7 +121,11 @@ export function AppShell({
       {/* ---- Content: sidebar + main ---- */}
       <div className={contentWrapClass} data-testid="content-wrap">
         <aside className={styles.sidebar} data-testid="sidebar-desktop">
-          <SidebarNav categories={categories} totalCount={totalCount} />
+          <SidebarNav
+            categories={categories}
+            totalCount={totalCount}
+            language={language}
+          />
         </aside>
 
         <main className={styles.main} data-testid="main">
@@ -129,12 +147,12 @@ export function AppShell({
       >
         <div className={styles.mobileSidebarHead}>
           <span className={styles.sidebarHeading} style={{ padding: 0 }}>
-            카테고리
+            {translate("categories")}
           </span>
           <button
             type="button"
             className={styles.closeButton}
-            aria-label="닫기"
+            aria-label={translate("close")}
             onClick={closeSidebar}
             data-testid="sidebar-mobile-close"
           >
@@ -143,6 +161,7 @@ export function AppShell({
         </div>
         <div className={styles.mobileSidebarBody}>
           <SidebarNav
+            language={language}
             categories={categories}
             totalCount={totalCount}
             onNavigate={closeSidebar}
@@ -153,7 +172,11 @@ export function AppShell({
 
       {/* ---- Mobile search overlay ---- */}
       {mobileSearchOpen && (
-        <MobileSearchOverlay search={search} onClose={closeMobileSearch} />
+        <MobileSearchOverlay
+          search={search}
+          onClose={closeMobileSearch}
+          language={language}
+        />
       )}
 
       {/* ---- Back to top (플로팅 FAB, 400px 스크롤 후 노출) ---- */}
@@ -161,7 +184,7 @@ export function AppShell({
         type="button"
         className={`${styles.backToTop} ${showBackTop ? styles.backToTopVisible : ""}`}
         onClick={scrollToTop}
-        aria-label="맨 위로"
+        aria-label={translate("backTop")}
         data-testid="back-to-top"
       >
         {/* Chevron up */}

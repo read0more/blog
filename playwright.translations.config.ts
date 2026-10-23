@@ -5,11 +5,7 @@ export default defineConfig({
   ...base,
   testDir: "./tests/translations",
   use: { ...base.use, baseURL: "http://localhost:3101" },
-  projects: base.projects?.map((project) => ({
-    ...project,
-    testMatch: /\.spec\.ts$/,
-    testIgnore: [],
-  })),
+  projects: base.projects,
   webServer: {
     command: "npm run build && node scripts/serve-out.mjs",
     url: "http://localhost:3101/blog/",

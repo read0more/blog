@@ -1,21 +1,26 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { PostLanguage } from "@/lib/types";
+import { getUiTranslator } from "@/lib/i18n";
 import { SearchIcon } from "../layout/icons";
 import { ResultList, EmptyState } from "./SearchResults";
 import type { useSearch } from "./useSearch";
 import styles from "./Search.module.css";
 
 interface MobileSearchOverlayProps {
+  language?: PostLanguage;
   search: ReturnType<typeof useSearch>;
   onClose: () => void;
 }
 
 /** 모바일 전체화면 검색 오버레이 — 유휴 안내 / 결과 / 결과 없음. */
 export function MobileSearchOverlay({
+  language = "ko",
   search,
   onClose,
 }: MobileSearchOverlayProps) {
+  const translate = getUiTranslator(language);
   const {
     query,
     setQuery,
@@ -30,8 +35,7 @@ export function MobileSearchOverlay({
   useEffect(() => {
     ensureIndex();
     inputRef.current?.focus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ensureIndex]);
 
   return (
     <div className={styles.mobileOverlay} data-testid="mobile-search-overlay">
@@ -42,7 +46,7 @@ export function MobileSearchOverlay({
             ref={inputRef}
             type="text"
             className={styles.mobileInput}
-            placeholder="제목 · 본문 검색"
+            placeholder={translate("searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             data-testid="mobile-search-input"
@@ -54,16 +58,22 @@ export function MobileSearchOverlay({
           onClick={onClose}
           data-testid="mobile-search-cancel"
         >
-          취소
+          {translate("cancel")}
         </button>
       </div>
 
       <div className={styles.mobileBody}>
-        {hasResults && <ResultList results={results} onSelect={onClose} />}
-        {isEmpty && <EmptyState query={query} />}
+        {hasResults && (
+          <ResultList
+            results={results}
+            onSelect={onClose}
+            language={language}
+          />
+        )}
+        {isEmpty && <EmptyState query={query} language={language} />}
         {!hasQuery && (
           <div className={styles.mobileIdle} data-testid="mobile-search-idle">
-            키워드를 입력하면 본문까지 검색합니다.
+            {translate("searchIdle")}
           </div>
         )}
       </div>
