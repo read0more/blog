@@ -22,17 +22,17 @@ npm run check:messages # 번역 키·빈 문구·ICU 구문/변수 일치 검사
 npm run search-index # public/search-index.json 수동 재생성
 
 npm test                       # Vitest 단위 + 통합 테스트 (빌드·브라우저 없이 실행)
-npm run test:unit              # 순수 번역·날짜·검증 로직
+npm run test:unit              # 검색·번역·날짜·검증 순수 로직
 npm run test:integration       # 콘텐츠/검색 파이프라인 + RTL/MSW UI 동작
-npm run test:e2e               # Playwright (out/ 빌드 + :3100 서빙 후 실행)
+npm run test:e2e               # 일반·번역 5개, /blog 픽스처 빌드 1회 + :3100
 npm run test:e2e:ui            # Playwright UI 모드
-npm run test:translations      # 실제 live-code-demo 번역, /blog 경로, 데스크톱·모바일 검증
-npx playwright test tests/e2e/search.spec.ts          # 단일 spec 파일
+npm run test:translations      # 위 E2E 중 번역 폴더 2개만 실행 (로컬용)
+npx playwright test tests/e2e/navigation.spec.ts          # 단일 spec 파일
 npx playwright test -g "검색"                          # 제목 패턴으로 실행
 npx playwright test --project=desktop                  # 데스크톱만 (모바일 = --project=mobile)
 ```
 
-E2E는 개발 서버가 아니라 **실제 정적 빌드 산출물**(`next build && serve out`)을 대상으로
+E2E는 개발 서버가 아니라 **실제 정적 빌드 산출물**(`next build && node scripts/serve-out.mjs`)을 대상으로
 돈다 — 프로덕션과 동일하고, URL 인코딩된 비ASCII(한글) 카테고리 경로에서 발생하는
 dev 모드 500 문제를 우회한다. 데스크톱 테스트는 1280px, 모바일 전용 시나리오는
 `*.mobile.spec.ts`에 분리되어 `mobile` 프로젝트에서 390px로 돈다.
@@ -40,16 +40,16 @@ Vitest는 `tests/unit`의 순수 로직과 `tests/integration`의 Node 파이프
 빌드 없이 실행한다. UI는 jsdom + RTL + user-event, 네트워크 경계는 MSW를 사용한다.
 **통합 테스트로 검증할 수 없는 이유가 없으면 E2E에 추가하지 않는다.** 단순 번역 문자열,
 개수·초안 필터링·검색 결과·컴포넌트 조건부 렌더링은 낮은 계층에서 검증한다.
-영어 E2E는 실제 정적 경로 이동/새로고침, JS 없는 링크 탐색, browser redirect,
-공통 404 복귀, 모바일 CSS로 표시되는 메뉴/검색 흐름에 한정한다.
+영어 E2E는 legacy browser redirect와 모바일 메뉴/검색·언어 이동/새로고침에 한정한다.
+404는 SSR/hydration 통합으로, JS 없는 본문·링크는 정적 산출물 DOM 검사로 확인한다.
 같은 시나리오를 데스크톱/모바일로 무조건 복제하지 않는다.
+기존 44개 각각의 계층 판정·삭제 이유와 미검증 범위는 `docs/testing-strategy.md`를 참고한다.
 
 E2E는 **`content/posts`가 아니라 고정 픽스처 `tests/fixtures/posts/`를 빌드 대상으로 삼는다** —
-`playwright.config.ts`의 `webServer.env`가 `POSTS_DIR=tests/fixtures/posts`를 주입한다(`posts.ts`·
-`build-search-index.mjs`가 `POSTS_DIR` 오버라이드를 지원). 덕분에 글 개수/카테고리 수를 단언하는
-테스트가 **실제 글을 추가·수정해도 깨지지 않는다**(실제 글은 `content/posts`에만, 테스트 픽스처는
-`tests/fixtures/posts`에만). 같은 `env`에서 `BASE_PATH`·giscus 값도 비워, 로컬 `.env`와 무관하게
-루트 경로·댓글 placeholder 상태로 결정적으로 빌드한다.
+`playwright.config.ts`가 `POSTS_DIR=tests/fixtures/posts`, `OMIT_DRAFTS=false`, `BASE_PATH=/blog`를
+주입한다. 실제 글을 수정해도 테스트 데이터는 바뀌지 않는다. 일반·번역 E2E는 이 빌드 하나를
+공유한다. giscus 설정은 비워 외부 댓글 서비스에 의존하지 않는다. `test:translations`는
+같은 설정에서 번역 폴더만 실행하는 로컬 명령이며 CI에서는 중복 실행하지 않는다.
 
 ## 아키텍처
 
@@ -132,8 +132,8 @@ enhance된 코드 헤더가 지워지고 TOC가 깨짐). 그리고 스크롤 스
   `readPostSources`를 통해 페이지와 검색에 동일하게 적용된다. 번역 초안은 번역만 제외하고
   원문 초안은 원문과 번역 모두 제외한다. (일반 E2E는 `content/posts`가 아니라 별도 고정 픽스처
   `tests/fixtures/posts`를 빌드한다 — 위 "명령어" 섹션 참조.)
-  `test:translations`는 실제 `content/posts`의 `live-code-demo`와 영어 번역을 로컬 미리보기
-  규칙으로 빌드한다. 일반 E2E와 동일한 `.next`/`out`을 사용하므로 순서대로 실행한다.
+  `test:translations`도 같은 고정 픽스처를 사용한다. 일반 E2E와 동일한 `.next`/`out`을
+  사용하므로 동시에 실행하지 않는다. 실제 콘텐츠는 배포 빌드와 postbuild 검사가 확인한다.
 - 정적 export는 `next/image` 최적화를 못 쓰고(`images.unoptimized: true`), 공개 글이 **0개**면
   사이트 빌드 자체가 실패한다 — non-draft 글을 최소 하나는 유지할 것. 태그도 같다: 공개 글 전체에
   `tags`가 **하나도 없으면** `/tag/[slug]`의 `generateStaticParams`가 빈 배열이 되어

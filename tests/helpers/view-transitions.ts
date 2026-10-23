@@ -1,9 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
 type TransitionRecord = {
-  animations: string[];
   durations: number[];
-  rootAnimation: string;
   finished: boolean;
   error?: string;
 };
@@ -22,9 +20,7 @@ export async function observeTransitions(page: Page) {
     document.startViewTransition = (...args) => {
       const transition = start(...args);
       const record: TransitionRecord = {
-        animations: [],
         durations: [],
-        rootAnimation: "",
         finished: false,
       };
       window.postTransitions.push(record);
@@ -39,14 +35,9 @@ export async function observeTransitions(page: Page) {
                 effect.pseudoElement?.startsWith("::view-transition"),
               ),
             );
-          record.animations = effects.map((effect) => effect.pseudoElement!);
           record.durations = effects.map((effect) =>
             Number(effect.getComputedTiming().duration),
           );
-          record.rootAnimation = getComputedStyle(
-            document.documentElement,
-            "::view-transition-new(root)",
-          ).animationName;
         },
         (error: Error) => {
           record.error = error.message;
@@ -58,30 +49,6 @@ export async function observeTransitions(page: Page) {
       return transition;
     };
   });
-}
-
-export async function expectPostTransition(page: Page, index = 0) {
-  await expect
-    .poll(() =>
-      page.evaluate((i) => window.postTransitions[i]?.finished, index),
-    )
-    .toBe(true);
-  const record = await page.evaluate((i) => window.postTransitions[i], index);
-  expect(record.error).toBeUndefined();
-  for (const element of ["title", "category", "date"]) {
-    expect(record.animations).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(
-          new RegExp(`^::view-transition-old\\(post-${element}-`),
-        ),
-        expect.stringMatching(
-          new RegExp(`^::view-transition-new\\(post-${element}-`),
-        ),
-      ]),
-    );
-  }
-  expect(record.rootAnimation).toBe("none");
-  expect(record.durations.some((duration) => duration > 0)).toBe(true);
 }
 
 export async function resetTransitions(page: Page) {

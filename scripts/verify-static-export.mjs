@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { JSDOM } from "jsdom";
 import { listPostFiles, readPostSources } from "../src/lib/post-files.mjs";
 
 const postsDir = path.resolve(process.env.POSTS_DIR ?? "content/posts");
@@ -13,6 +14,28 @@ assert.match(englishHome, /<html[^>]*lang="en"/);
 assert.match(englishHome, /All posts/);
 if (!english.length)
   assert.match(englishHome, /English translations are coming soon/);
+
+// JS를 실행하지 않은 실제 export HTML에서 읽기·언어 이동 링크를 확인한다.
+// 문자열 includes는 Next의 직렬화 스크립트만 맞아도 통과할 수 있어 DOM을 사용한다.
+function staticDocument(html) {
+  return new JSDOM(html).window.document;
+}
+function assertLink(document, href) {
+  assert.ok(
+    Array.from(document.querySelectorAll("a")).some(
+      (link) => link.getAttribute("href") === href,
+    ),
+    `Missing static link: ${href}`,
+  );
+}
+assert.equal(
+  staticDocument(englishHome).querySelector("h1")?.textContent,
+  "All posts",
+);
+assertLink(
+  staticDocument(fs.readFileSync("out/index.html", "utf8")),
+  `${basePath}/en/`,
+);
 
 for (const language of ["ko", "en"]) {
   const expected = sources.filter((source) => source.language === language);
@@ -34,6 +57,15 @@ for (const language of ["ko", "en"]) {
     );
     assert.ok(html.includes(`lang="${language}"`));
     if (language === "en") {
+      const document = staticDocument(html);
+      assert.equal(
+        document.querySelector("article h1")?.textContent,
+        source.frontmatter.title,
+      );
+      assertLink(
+        document,
+        `${basePath}/posts/${encodeURIComponent(source.slug)}/`,
+      );
       const legacy = fs.readFileSync(
         `out/posts/${source.slug}/en/index.html`,
         "utf8",
@@ -42,6 +74,10 @@ for (const language of ["ko", "en"]) {
         legacy.includes(
           `${basePath}/en/posts/${encodeURIComponent(source.slug)}/`,
         ),
+      );
+      assertLink(
+        staticDocument(legacy),
+        `${basePath}/en/posts/${encodeURIComponent(source.slug)}/`,
       );
       for (const [kind, names] of [
         ["category", [source.category]],
