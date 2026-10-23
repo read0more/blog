@@ -1,12 +1,15 @@
 import { Fragment } from "react";
 import Link from "next/link";
-import type { PostMeta } from "@/lib/types";
+import type { PostMeta, PostLanguage } from "@/lib/types";
+import { sitePath, getUiTranslator } from "@/lib/i18n";
+import { categoryLabel } from "@/lib/taxonomy.mjs";
 import { categoryColor } from "@/lib/categories";
 import { formatDate } from "@/lib/format";
 import { TagChips } from "./TagChips";
 import styles from "./PostList.module.css";
 
 interface PostListProps {
+  language?: PostLanguage;
   title: string;
   subtitle: string;
   posts: PostMeta[];
@@ -21,6 +24,7 @@ interface PostListProps {
  * 카드 클릭 시 글 상세(/posts/[slug])로 이동.
  */
 export function PostList({
+  language = "ko",
   title,
   subtitle,
   posts,
@@ -37,18 +41,25 @@ export function PostList({
           {subtitle}
         </div>
         <TagChips
+          language={language}
           tags={tags}
           activeTag={activeTag}
           className={styles.headerTags}
         />
       </div>
 
+      {posts.length === 0 && (
+        <p data-testid="posts-empty">
+          {getUiTranslator(language)("emptyPosts")}
+        </p>
+      )}
+
       <ul className={styles.list}>
         {posts.map((p) => (
           // 태그 칩도 링크라 카드 링크 안에 넣으면 <a> 가 중첩된다 — 형제로 둔다.
           <li key={p.slug} className={styles.card}>
             <Link
-              href={`/posts/${p.slug}`}
+              href={sitePath(language, `/posts/${p.slug}`)}
               className={styles.cardLink}
               data-testid={`post-card-${p.slug}`}
             >
@@ -60,19 +71,25 @@ export function PostList({
                       className={styles.metaCategory}
                       style={{ color: categoryColor(c) }}
                     >
-                      {c}
+                      {categoryLabel(c, language)}
                     </span>
                   </Fragment>
                 ))}
                 <span className={styles.metaDot}>·</span>
-                <span className={styles.metaText}>{formatDate(p.date)}</span>
+                <span className={styles.metaText}>
+                  {formatDate(p.date, language)}
+                </span>
                 {/* <span className={styles.metaDot}>·</span> */}
                 {/* <span className={styles.metaText}>{p.readingMinutes}분</span> */}
               </div>
               <h2 className={styles.cardTitle}>{p.title}</h2>
               <p className={styles.cardDesc}>{p.description}</p>
             </Link>
-            <TagChips tags={p.tags} className={styles.cardTags} />
+            <TagChips
+              tags={p.tags}
+              className={styles.cardTags}
+              language={language}
+            />
           </li>
         ))}
       </ul>

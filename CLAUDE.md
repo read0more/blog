@@ -12,14 +12,18 @@ GitHub Actions로 GitHub Pages에 배포한다. 코드 주석은 한국어로 �
 
 ```bash
 npm run dev          # 개발 서버 (predev → 검색 인덱스 빌드 먼저 실행)
-npm run build        # out/ 으로 정적 export (prebuild → 검색 인덱스 빌드 먼저 실행)
+npm run build        # 검색 인덱스 → 정적 export → postbuild 정적 산출물 검증
 npm run start        # 빌드된 out/ 을 BASE_PATH(기본 /blog) 하위 경로로 로컬 서빙
 npm run lint         # eslint
 npm run type-check   # tsc --noEmit (타입 체크만)
 npm run format       # prettier --write . (전체 포맷 적용)
 npm run format:check # prettier --check . (CI 포맷 검사)
+npm run check:messages # 번역 키·빈 문구·ICU 구문/변수 일치 검사 (predev/prebuild 자동 실행)
 npm run search-index # public/search-index.json 수동 재생성
 
+npm test                       # Vitest 단위 + 통합 테스트 (빌드·브라우저 없이 실행)
+npm run test:unit              # 순수 번역·날짜·검증 로직
+npm run test:integration       # 콘텐츠/검색 파이프라인 + RTL/MSW UI 동작
 npm run test:e2e               # Playwright (out/ 빌드 + :3100 서빙 후 실행)
 npm run test:e2e:ui            # Playwright UI 모드
 npm run test:translations      # 실제 live-code-demo 번역, /blog 경로, 데스크톱·모바일 검증
@@ -31,8 +35,14 @@ npx playwright test --project=desktop                  # 데스크톱만 (모바
 E2E는 개발 서버가 아니라 **실제 정적 빌드 산출물**(`next build && serve out`)을 대상으로
 돈다 — 프로덕션과 동일하고, URL 인코딩된 비ASCII(한글) 카테고리 경로에서 발생하는
 dev 모드 500 문제를 우회한다. 데스크톱 테스트는 1280px, 모바일 전용 시나리오는
-`*.mobile.spec.ts`에 분리되어 `mobile` 프로젝트에서 390px로 돈다. 유닛 테스트 러너는
-없으며 E2E가 유일한 테스트 계층이다.
+`*.mobile.spec.ts`에 분리되어 `mobile` 프로젝트에서 390px로 돈다.
+Vitest는 `tests/unit`의 순수 로직과 `tests/integration`의 Node 파이프라인·RTL 통합 테스트를
+빌드 없이 실행한다. UI는 jsdom + RTL + user-event, 네트워크 경계는 MSW를 사용한다.
+**통합 테스트로 검증할 수 없는 이유가 없으면 E2E에 추가하지 않는다.** 단순 번역 문자열,
+개수·초안 필터링·검색 결과·컴포넌트 조건부 렌더링은 낮은 계층에서 검증한다.
+영어 E2E는 실제 정적 경로 이동/새로고침, JS 없는 링크 탐색, browser redirect,
+공통 404 복귀, 모바일 CSS로 표시되는 메뉴/검색 흐름에 한정한다.
+같은 시나리오를 데스크톱/모바일로 무조건 복제하지 않는다.
 
 E2E는 **`content/posts`가 아니라 고정 픽스처 `tests/fixtures/posts/`를 빌드 대상으로 삼는다** —
 `playwright.config.ts`의 `webServer.env`가 `POSTS_DIR=tests/fixtures/posts`를 주입한다(`posts.ts`·
@@ -65,22 +75,37 @@ github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵�
   `useLiveCode.tsx`가 그 자리에 `LiveCode.tsx`(Sandpack `static` 템플릿, iframe 미리보기)를 마운트한다. `file=` 필수,
   `hidden`은 탭에서 숨김, `view=both|preview|code`는 처음 보기 모드(블록 위 버튼으로 독자가 전환, 패널은
   `display`로만 숨겨 상태 유지). `rehype-raw`가 hast의 펜스 meta를 버리므로 이 처리는 반드시 remark 단계에 둔다.
-- `src/app/`의 라우트: `page.tsx`(홈), `posts/[...slug]`, `category/[slug]`, `tag/[slug]`, `not-found.tsx`.
-  동적 라우트는 모두 `generateStaticParams`를 쓴다. `layout.tsx`는 카테고리 + 글 개수를
-  로드해 전체를 `<AppShell>`로 감싸는 서버 컴포넌트다.
-  글은 `/posts/<slug>/`와 `/posts/<slug>/en/`만 허용한다. 두 언어를 한 catch-all 라우트에서
-  생성해 공개 영어 번역이 0개여도 정적 빌드가 된다. 글 상세는 언어별로 key를 부여해
-  전환 시 목차·라이브 코드 등의 클라이언트 상태를 초기화한다.
-  목록·카테고리·태그·검색은 한국어 원문만 집계하고, 번역이 있을 때만 EN/KO 링크를 표시한다.
+- `src/app/(ko)/`는 기존 한국어 URL을 유지하고 `src/app/en/[[...segments]]`는 영어 홈·글·카테고리·태그를
+  정적 생성한다. 영어 홈을 항상 포함하므로 공개 번역이 0개여도 빌드가 된다.
+  각 루트 레이아웃은 `SiteLayout`에 언어를 전달하여 HTML `lang`과 해당 언어의 사이드바 데이터를 만든다.
+  언어 루트 간 이동은 전체 페이지 이동이며, 언어 안에서는 Next 링크를 사용한다.
+  영어 주소는 `/en/posts/<slug>/`이고 `/posts/<slug>/en/`는 정적 안내 + 브라우저 이동으로 유지한다.
+  헤더 언어 전환은 현재 글의 원문/번역으로 이동한다. 한국어 전용 글은 "English home"으로
+  표시하여 영어 홈으로 이동한다. 글 본문 쪽에는 별도 언어 전환 버튼을 두지 않는다.
+  영어 글 경로는 공개 원문 slug마다 생성하되, 번역이 없으면 `TranslationUnavailable` 안내와
+  원문 링크만 제공하고 noindex로 처리한다. 이 안내는 영어 목록·분류·검색에 집계하지 않는다.
+  원문 자체가 없거나 초안으로 제외됐으면 안내 페이지도 만들지 않는다.
+  HTTP redirect, middleware, cookies/headers 기반 언어 판별은 쓰지 않는다.
+  `global-not-found.tsx`를 위해 `experimental.globalNotFound`를 사용한다. 공통 `404.html`은 클라이언트에서
+  주소로 언어를 판별하고, no-JS 상태에서도 영어 홈 링크를 제공한다.
+  글 상세는 언어별 key로 목차·라이브 코드 상태를 초기화한다. 목록·분류·검색은 각 언어의 글만 집계한다.
+  `getAllPostMeta`, `getCategories`, `getAllTags` 등 접근자는 선택적인 언어 인자를 받으며 기본은 한국어다.
+  UI 문구와 카테고리·태그 표시명은 `messages/{ko,en}.json`에서 관리한다.
+  `use-intl/core`의 `createTranslator`를 언어별로 생성하여 `getUiTranslator(language)`로 사용한다.
+  이 함수는 라이브러리 번역기를 반환하며, 문구 선택/보간/복수형 엔진을 직접 구현하지 않는다.
+  정적 라우트에서 언어를 명시하므로 Provider나 요청 설정, 미들웨어는 필요 없다.
+  Node 검색 빌드도 `src/lib/taxonomy.mjs`를 통해 같은 카탈로그와 라이브러리를 사용한다.
+  `createFormatter`가 UTC 기준 날짜를 처리한다. JSON UI 키는 TypeScript로 검사하고,
+  `check:messages`는 모든 카탈로그의 키와 ICU 변수 일치·구문·빈 문구를 검증한다.
 
 **검색**은 서버가 아니라 빌드 타임 JSON 인덱스다:
 
 - `scripts/build-search-index.mjs`가 `predev`/`prebuild`에서 실행되어
-  `public/search-index.json`(글마다 title + description + 본문 plaintext + 태그명)을 쓴다.
+  `public/search-index.json`과 `public/search-index.en.json`(해당 언어의 title + description + 본문 plaintext + 태그 표시명)을 쓴다.
   `markdown.ts`의 plaintext 로직과 의도적으로 중복되어 있다 — 스크립트를 가볍게(remark만,
   shiki 없이) 유지하기 위함이다.
 - 클라이언트(`src/components/search/useSearch.ts` + `src/lib/search.ts`)는 첫 검색 시
-  인덱스를 lazy fetch하고, 120ms 디바운스 후 부분 문자열 매칭 + 스니펫 하이라이트를 한다.
+  해당 언어의 인덱스를 lazy fetch하고, 120ms 디바운스 후 부분 문자열 매칭 + 스니펫 하이라이트를 한다.
 
 **카테고리**는 수동 설정하지 않는다. 글이 있는 최상위 디렉토리에서 distinct하게 수집하며, 표시 순서는
 `posts.ts`의 `CATEGORY_ORDER` 우선 후 한글 정렬, 색상은 이름을 해시해 9색 iOS 팔레트에서
@@ -122,13 +147,16 @@ enhance된 코드 헤더가 지워지고 TOC가 깨짐). 그리고 스크롤 스
 
 ## 품질 게이트 (훅 · CI)
 
+`scripts/verify-static-export.mjs`는 `postbuild`에서 원문·영어 페이지, 영어 홈, 두 검색 인덱스,
+legacy 링크, 초안 제외와 미번역 안내 페이지를 확인한다. 한국어 본문을 영어 글로 폴백하지 않는다.
+
 검증은 3단계로 강제된다:
 
 - **pre-commit** (`.husky/pre-commit`) — `lint-staged`가 staged 파일에 `eslint --fix` +
   `prettier --write`를 돌린다(가벼움).
 - **pre-push** (`.husky/pre-push`) — `npm run build`를 돌린다. `next build`가 타입 체크 +
   ESLint + 빌드를 한 번에 수행하므로 이 한 단계가 컴파일·타입·린트·빌드를 모두 검증한다.
-- **CI** (`.github/workflows/deploy.yml`) — `lint` · `type-check` · `format:check` · `build` ·
+- **CI** (`.github/workflows/deploy.yml`) — `lint` · `type-check` · `format:check` · `npm test` · `build` ·
   E2E가 **모두 통과해야만** GitHub Pages에 배포된다(PR에서도 동일 검사 실행, 배포만 생략).
 
 ## 금지 사항 (엄수)

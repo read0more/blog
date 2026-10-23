@@ -6,13 +6,9 @@ import {
   SandpackProvider,
 } from "@codesandbox/sandpack-react";
 import type { LiveCodeFiles, LiveCodeView } from "@/lib/remark-live-code";
+import type { PostLanguage } from "@/lib/types";
+import { getUiTranslator } from "@/lib/i18n";
 import styles from "./LiveCode.module.css";
-
-const VIEW_LABELS: Record<LiveCodeView, string> = {
-  both: "코드 + 미리보기",
-  preview: "미리보기",
-  code: "코드",
-};
 
 const PANEL_HEIGHT = 480;
 
@@ -25,10 +21,18 @@ const PANEL_HEIGHT = 480;
 export function LiveCode({
   files,
   initialView,
+  language = "ko",
 }: {
   files: LiveCodeFiles;
   initialView: LiveCodeView;
+  language?: PostLanguage;
 }) {
+  const translate = getUiTranslator(language);
+  const viewLabels: Record<LiveCodeView, string> = {
+    both: translate("codePreview"),
+    preview: translate("preview"),
+    code: translate("code"),
+  };
   const [view, setView] = useState(initialView);
   // 기본 activeFile 은 템플릿 진입점(/index.html)이라, hidden 이어도 탭에 끼어든다.
   // 처음 보이는 파일을 활성으로 지정해 hidden 이 실제로 숨겨지게 한다.
@@ -42,8 +46,12 @@ export function LiveCode({
 
   return (
     <div className={styles.liveCode} data-view={view}>
-      <div className={styles.toolbar} role="group" aria-label="보기 모드">
-        {(Object.keys(VIEW_LABELS) as LiveCodeView[]).map((value) => (
+      <div
+        className={styles.toolbar}
+        role="group"
+        aria-label={translate("viewMode")}
+      >
+        {(Object.keys(viewLabels) as LiveCodeView[]).map((value) => (
           <button
             key={value}
             type="button"
@@ -51,7 +59,7 @@ export function LiveCode({
             aria-pressed={view === value}
             onClick={() => setView(value)}
           >
-            {VIEW_LABELS[value]}
+            {viewLabels[value]}
           </button>
         ))}
       </div>

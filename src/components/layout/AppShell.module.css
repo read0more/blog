@@ -40,6 +40,20 @@
   text-decoration: none;
 }
 
+.languageLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  color: var(--label-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.languageLink:focus-visible {
+  outline: 2px solid var(--tint);
+  outline-offset: 2px;
+}
+
 /* Desktop search box (300x36) — 검색 동작은 Task #7. 여기선 모양/슬롯. */
 .headerSearchSlot {
   margin-left: auto;

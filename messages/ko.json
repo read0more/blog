@@ -1,0 +1,63 @@
+{
+  "ui": {
+    "allPosts": "전체 글",
+    "newest": "최신순",
+    "categories": "카테고리",
+    "menu": "메뉴",
+    "search": "검색",
+    "close": "닫기",
+    "clear": "지우기",
+    "cancel": "취소",
+    "searchPlaceholder": "제목 · 본문 검색",
+    "searchIdle": "키워드를 입력하면 본문까지 검색합니다.",
+    "trySearch": "다른 키워드로 검색해 보세요.",
+    "tryTags": "다른 키워드로 검색하거나 태그를 둘러보세요.",
+    "noResults": "“{query}”에 대한 결과가 없습니다",
+    "postCount": "{count, number}개의 글",
+    "resultCount": "{count, number}개의 결과",
+    "emptyPosts": "아직 공개된 글이 없습니다.",
+    "backTop": "맨 위로",
+    "toc": "이 글의 목차",
+    "mobileToc": "목차",
+    "copy": "복사",
+    "copied": "복사됨",
+    "comments": "댓글",
+    "loginRequired": "댓글을 남기려면 GitHub 로그인이 필요합니다. 익명 열람은 자유입니다.",
+    "commentsPlaceholder": "댓글은 아직 준비 중입니다.",
+    "codePreview": "코드 + 미리보기",
+    "preview": "미리보기",
+    "code": "코드",
+    "viewMode": "보기 모드",
+    "notFoundTitle": "페이지를 찾을 수 없습니다",
+    "notFoundMessage": "주소가 바뀌었거나 삭제된 글일 수 있어요.",
+    "restart": "아래에서 다시 시작해 보세요.",
+    "home": "홈으로 돌아가기",
+    "recentPosts": "최근 글",
+    "legacyTitle": "영어 글의 주소가 변경되었습니다",
+    "legacyContinue": "영어 글로 이동",
+    "englishHome": "영어 홈",
+    "languageName": "한국어",
+    "languageHome": "한국어 홈",
+    "translationUnavailable": "영어 번역이 없습니다",
+    "translationUnavailableMessage": "이 글은 현재 한국어로만 제공됩니다.",
+    "readOriginal": "한국어 원문 읽기"
+  },
+  "taxonomy": {
+    "categories": {
+      "생각들": "생각들",
+      "루프팩과정": "루프팩과정",
+      "성능": "성능",
+      "빌드도구": "빌드도구",
+      "QA메모": "QA메모"
+    },
+    "tags": {
+      "테스트": "테스트",
+      "아키텍처": "아키텍처",
+      "개발문화": "개발문화",
+      "리팩토링": "리팩토링",
+      "빌드도구": "빌드도구",
+      "렌더링": "렌더링",
+      "이미지": "이미지"
+    }
+  }
+}

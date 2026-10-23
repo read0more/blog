@@ -1,9 +1,11 @@
 "use client";
 
-import type { TocItem } from "@/lib/types";
+import type { TocItem, PostLanguage } from "@/lib/types";
+import { getUiTranslator } from "@/lib/i18n";
 import styles from "./Article.module.css";
 
 interface TocProps {
+  language?: PostLanguage;
   items: TocItem[];
   activeId: string | null;
   /** 항목 클릭 시 호출 — active 고정용(scroll-spy 잠금). */
@@ -11,10 +13,10 @@ interface TocProps {
 }
 
 /** 우측 sticky 목차(데스크톱). scroll-spy 로 현재 섹션을 강조. */
-export function Toc({ items, activeId, onSelect }: TocProps) {
+export function Toc({ items, activeId, onSelect, language = "ko" }: TocProps) {
   return (
     <aside className={styles.tocCol} data-testid="toc">
-      <div className={styles.tocLabel}>이 글의 목차</div>
+      <div className={styles.tocLabel}>{getUiTranslator(language)("toc")}</div>
       <div className={styles.tocList}>
         {items.map((t) => (
           <a

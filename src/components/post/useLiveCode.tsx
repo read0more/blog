@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import type { LiveCodeFiles, LiveCodeView } from "@/lib/remark-live-code";
+import type { PostLanguage } from "@/lib/types";
 
 /**
  * 본문 라이브 코드 블록. remark-live-code 가 남긴 div[data-live-code] 마다 LiveCode(Sandpack)를 마운트한다.
@@ -12,6 +13,7 @@ import type { LiveCodeFiles, LiveCodeView } from "@/lib/remark-live-code";
 export function useLiveCode(
   bodyRef: React.RefObject<HTMLDivElement | null>,
   contentHtml: string,
+  language: PostLanguage = "ko",
 ): void {
   useEffect(() => {
     const targets =
@@ -29,7 +31,13 @@ export function useLiveCode(
         // remark-live-code 가 빌드 타임에 값을 검증해 넣는다.
         const initialView = (el.dataset.liveView ?? "both") as LiveCodeView;
         const root = createRoot(el);
-        root.render(<LiveCode files={files} initialView={initialView} />);
+        root.render(
+          <LiveCode
+            files={files}
+            initialView={initialView}
+            language={language}
+          />,
+        );
         roots.push(root);
       });
     })();
@@ -39,5 +47,5 @@ export function useLiveCode(
       // 이펙트 정리(커밋 단계) 중 동기 unmount 는 React 가 경고하므로 다음 틱으로 미룬다.
       setTimeout(() => roots.forEach((root) => root.unmount()));
     };
-  }, [bodyRef, contentHtml]);
+  }, [bodyRef, contentHtml, language]);
 }

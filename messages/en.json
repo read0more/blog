@@ -1,0 +1,63 @@
+{
+  "ui": {
+    "allPosts": "All posts",
+    "newest": "Newest first",
+    "categories": "Categories",
+    "menu": "Menu",
+    "search": "Search",
+    "close": "Close",
+    "clear": "Clear",
+    "cancel": "Cancel",
+    "searchPlaceholder": "Search titles and content",
+    "searchIdle": "Enter a keyword to search titles and content.",
+    "trySearch": "Try another keyword.",
+    "tryTags": "Try another keyword or browse the tags.",
+    "noResults": "No results for “{query}”",
+    "postCount": "{count, plural, one {# post} other {# posts}}",
+    "resultCount": "{count, plural, one {# result} other {# results}}",
+    "emptyPosts": "English translations are coming soon.",
+    "backTop": "Back to top",
+    "toc": "On this page",
+    "mobileToc": "Contents",
+    "copy": "Copy",
+    "copied": "Copied",
+    "comments": "Comments",
+    "loginRequired": "Sign in to GitHub to leave a comment. Anyone can read the discussion.",
+    "commentsPlaceholder": "Comments are not available yet.",
+    "codePreview": "Code + preview",
+    "preview": "Preview",
+    "code": "Code",
+    "viewMode": "View mode",
+    "notFoundTitle": "Page not found",
+    "notFoundMessage": "This page may have moved or been removed.",
+    "restart": "Use the links below to start again.",
+    "home": "Back to home",
+    "recentPosts": "Recent posts",
+    "legacyTitle": "This English post has moved",
+    "legacyContinue": "Continue to the English post",
+    "englishHome": "English home",
+    "languageName": "English",
+    "languageHome": "English home",
+    "translationUnavailable": "English translation unavailable",
+    "translationUnavailableMessage": "This post is currently available only in Korean.",
+    "readOriginal": "Read the Korean original"
+  },
+  "taxonomy": {
+    "categories": {
+      "생각들": "Thoughts",
+      "루프팩과정": "Loop Pack Bootcamp",
+      "성능": "Performance",
+      "빌드도구": "Build Tools",
+      "QA메모": "QA Notes"
+    },
+    "tags": {
+      "테스트": "Testing",
+      "아키텍처": "Architecture",
+      "개발문화": "Developer Culture",
+      "리팩토링": "Refactoring",
+      "빌드도구": "Build Tools",
+      "렌더링": "Rendering",
+      "이미지": "Images"
+    }
+  }
+}

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { PostLanguage } from "@/lib/types";
+import { getUiTranslator } from "@/lib/i18n";
 import styles from "./Comments.module.css";
 
 /** giscus 설정(빌드타임 env). 미설정 시 안내만 표시한다. */
@@ -31,7 +33,8 @@ function GitHubMark() {
  * 대상 repo 의 Discussions 활성화 + giscus 앱 설치 + repo/category ID 가
  * env(NEXT_PUBLIC_GISCUS_*)로 주입돼야 동작한다. 미설정 시 안내만 표시.
  */
-export function Comments() {
+export function Comments({ language = "ko" }: { language?: PostLanguage }) {
+  const translate = getUiTranslator(language);
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,14 +58,14 @@ export function Comments() {
     script.setAttribute("data-input-position", "top");
     script.setAttribute("data-theme", "light");
     script.setAttribute("data-loading", "lazy");
-    script.setAttribute("data-lang", "ko");
+    script.setAttribute("data-lang", language);
     el.appendChild(script);
-  }, []);
+  }, [language]);
 
   return (
     <section className={styles.section} data-testid="comments">
       <div className={styles.head}>
-        <h2 className={styles.heading}>댓글</h2>
+        <h2 className={styles.heading}>{translate("comments")}</h2>
         <span className={styles.badge}>
           <GitHubMark />
           giscus · GitHub Discussions
@@ -70,9 +73,7 @@ export function Comments() {
       </div>
 
       <div className={styles.loginBox}>
-        <div className={styles.loginText}>
-          댓글을 남기려면 GitHub 로그인이 필요합니다. 익명 열람은 자유입니다.
-        </div>
+        <div className={styles.loginText}>{translate("loginRequired")}</div>
       </div>
 
       {isConfigured ? (
@@ -83,8 +84,7 @@ export function Comments() {
         />
       ) : (
         <div className={styles.placeholder} data-testid="giscus-placeholder">
-          댓글(giscus)은 배포 시 대상 저장소의 Discussions 활성화와 giscus 설정
-          (NEXT_PUBLIC_GISCUS_*)이 완료되면 이 자리에 표시됩니다.
+          {translate("commentsPlaceholder")}
         </div>
       )}
     </section>

@@ -14,12 +14,12 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import { visit } from "unist-util-visit";
 import { readPostSources } from "../src/lib/post-files.mjs";
+import { tagLabel } from "../src/lib/taxonomy.mjs";
 
 // posts.ts 와 동일하게 POSTS_DIR 오버라이드 지원(E2E 고정 픽스처용).
 const POSTS_DIR = process.env.POSTS_DIR
   ? path.resolve(process.env.POSTS_DIR)
   : path.join(process.cwd(), "content", "posts");
-const OUT_FILE = path.join(process.cwd(), "public", "search-index.json");
 
 function extractPlainText(markdown) {
   const tree = unified().use(remarkParse).use(remarkGfm).parse(markdown);
@@ -29,41 +29,42 @@ function extractPlainText(markdown) {
 }
 
 function build() {
-  if (!fs.existsSync(POSTS_DIR)) {
-    console.warn(
-      `[search-index] no posts dir at ${POSTS_DIR}, writing empty index.`,
-    );
-    fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
-    fs.writeFileSync(OUT_FILE, "[]");
-    return;
-  }
-
   // 배포 빌드(OMIT_DRAFTS=true)에서는 draft 글을 검색 인덱스에서도 제외한다.
   const omitDrafts = process.env.OMIT_DRAFTS === "true";
 
-  const docs = readPostSources(POSTS_DIR, omitDrafts)
-    .filter((source) => source.language === "ko")
-    .map(({ slug, category, frontmatter: data, content }) => {
-      const plain = extractPlainText(content);
-      // posts.ts 와 동일하게 tags 는 선택(없으면 빈 배열). 태그명으로도 검색되게 text 끝에 붙인다.
-      const tags = data.tags ?? [];
-      return {
-        slug,
-        title: data.title,
-        description: data.description,
-        categories: [category],
-        tags,
-        date: data.date,
-        text: `${data.title} ${data.description} ${plain} ${tags.join(" ")}`,
-      };
-    });
+  const sources = readPostSources(POSTS_DIR, omitDrafts);
+  for (const language of ["ko", "en"]) {
+    const output = path.join(
+      process.cwd(),
+      "public",
+      language === "en" ? "search-index.en.json" : "search-index.json",
+    );
+    const docs = sources
+      .filter((source) => source.language === language)
+      .map(({ slug, category, frontmatter: data, content }) => {
+        const plain = extractPlainText(content);
+        // posts.ts 와 동일하게 tags 는 선택(없으면 빈 배열). 태그명으로도 검색되게 text 끝에 붙인다.
+        const tags = data.tags ?? [];
+        return {
+          slug,
+          title: data.title,
+          description: data.description,
+          categories: [category],
+          tags,
+          date: data.date,
+          text: `${data.title} ${data.description} ${plain} ${tags.map((tag) => tagLabel(tag, language)).join(" ")}`,
+        };
+      });
 
-  // 최신순으로 정렬해두면 클라이언트가 동점 결과를 자연스러운 순서로 보여줄 수 있다.
-  docs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    // 최신순으로 정렬해두면 클라이언트가 동점 결과를 자연스러운 순서로 보여줄 수 있다.
+    docs.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
 
-  fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
-  fs.writeFileSync(OUT_FILE, JSON.stringify(docs));
-  console.log(`[search-index] wrote ${docs.length} docs to ${OUT_FILE}`);
+    fs.mkdirSync(path.dirname(output), { recursive: true });
+    fs.writeFileSync(output, JSON.stringify(docs));
+    console.log(`[search-index] wrote ${docs.length} docs to ${output}`);
+  }
 }
 
 build();

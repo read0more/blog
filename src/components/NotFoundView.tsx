@@ -1,5 +1,6 @@
 import Link from "next/link";
-import type { PostMeta } from "@/lib/types";
+import type { PostMeta, PostLanguage } from "@/lib/types";
+import { sitePath, getUiTranslator } from "@/lib/i18n";
 import styles from "./NotFoundView.module.css";
 
 /** 최근 글 행의 우측 chevron 아이콘. */
@@ -20,6 +21,7 @@ function ChevronRight() {
 }
 
 interface NotFoundViewProps {
+  language?: PostLanguage;
   /** 최근 글(최신순 상위 N개). */
   recentPosts: PostMeta[];
 }
@@ -28,35 +30,39 @@ interface NotFoundViewProps {
  * 404 화면 — 큰 404 + 안내 + 홈 버튼 + 최근 글.
  * 디자인 read0more.dc.html 의 404 블록을 재현한다.
  */
-export function NotFoundView({ recentPosts }: NotFoundViewProps) {
+export function NotFoundView({
+  recentPosts,
+  language = "ko",
+}: NotFoundViewProps) {
+  const translate = getUiTranslator(language);
   return (
     <div className={styles.wrap} data-testid="not-found">
       <div className={styles.code}>404</div>
-      <h1 className={styles.heading}>페이지를 찾을 수 없습니다</h1>
+      <h1 className={styles.heading}>{translate("notFoundTitle")}</h1>
       <p className={styles.message}>
-        주소가 바뀌었거나 삭제된 글일 수 있어요.
+        {translate("notFoundMessage")}
         <br />
-        아래에서 다시 시작해 보세요.
+        {translate("restart")}
       </p>
 
       <div className={styles.homeButtonWrap}>
         <Link
-          href="/"
+          href={sitePath(language)}
           className={styles.homeButton}
           data-testid="not-found-home"
         >
-          홈으로 돌아가기
+          {translate("home")}
         </Link>
       </div>
 
       {recentPosts.length > 0 && (
         <>
-          <div className={styles.recentLabel}>최근 글</div>
+          <div className={styles.recentLabel}>{translate("recentPosts")}</div>
           <div className={styles.recentList}>
             {recentPosts.map((p) => (
               <Link
                 key={p.slug}
-                href={`/posts/${p.slug}`}
+                href={sitePath(language, `/posts/${p.slug}`)}
                 className={styles.recentRow}
                 data-testid={`not-found-recent-${p.slug}`}
               >
