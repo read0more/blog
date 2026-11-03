@@ -203,7 +203,7 @@ test("검색 인덱스도 디렉토리 카테고리, 태그, 초안 제외 규�
       slug: "published",
       categories: ["루프팩과정"],
       tags: ["Hooks"],
-      text: expect.stringContaining("검색할 본문 Hooks"),
+      text: expect.stringContaining("검색할 본문 #Hooks"),
     }),
   ]);
 });
