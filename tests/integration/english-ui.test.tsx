@@ -118,6 +118,7 @@ function SearchScreen() {
     <MobileSearchOverlay
       language="en"
       search={search}
+      tags={["테스트", "렌더링"]}
       onClose={() => setOpen(false)}
     />
   ) : (
@@ -141,6 +142,16 @@ test("영어 검색은 입력에 따라 결과·빈 상태를 바꾸고 취소�
   ).toBeInTheDocument();
   expect(
     screen.queryByRole("link", { name: /English article/ }),
+  ).not.toBeInTheDocument();
+  // # 검색은 칩에 보이는 영어 표시명으로 태그만 고른다.
+  await user.clear(input);
+  await user.type(input, "#TEST");
+  expect(screen.getByRole("link", { name: "#Testing" })).toHaveAttribute(
+    "href",
+    `/en/tag/${encodeURIComponent("테스트")}`,
+  );
+  expect(
+    screen.queryByRole("link", { name: "#Rendering" }),
   ).not.toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "Cancel" }));
   expect(screen.queryByRole("textbox")).not.toBeInTheDocument();

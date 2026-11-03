@@ -52,6 +52,29 @@ test("본문 검색은 결과와 강조를 보여주고 지우면 결과 패널�
   expect(screen.queryByText("1개의 결과")).not.toBeInTheDocument();
 });
 
+test("# 검색은 글 대신 맞는 태그 칩만 보여주고, 맞는 태그가 없으면 결과 없음 안내로 넘어간다", async () => {
+  const user = userEvent.setup();
+  render(<SearchScreen />);
+  const input = screen.getByRole("textbox");
+  await user.type(input, "#hOO");
+  expect(screen.getByRole("link", { name: "#Hooks" })).toHaveAttribute(
+    "href",
+    "/tag/Hooks",
+  );
+  expect(
+    screen.queryByRole("link", { name: "#렌더링" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("link", { name: /의존성 배열/ }),
+  ).not.toBeInTheDocument();
+  await user.clear(input);
+  await user.type(input, "#graphql");
+  expect(
+    await screen.findByText(/#graphql.*결과가 없습니다/),
+  ).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "#렌더링" })).toBeInTheDocument();
+});
+
 test("태그 검색 후 미일치 검색은 이전 결과를 지우고 태그 탐색을 안내한다", async () => {
   const user = userEvent.setup();
   render(<SearchScreen />);
