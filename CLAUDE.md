@@ -74,7 +74,7 @@ github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵�
   `remark-live-code.ts`가 하나의 `div[data-live-code]`(파일맵 JSON)로 묶고, 클라이언트
   `useLiveCode.tsx`가 그 자리에 `LiveCode.tsx`(Sandpack `static` 템플릿, iframe 미리보기)를 마운트한다. `file=` 필수,
   `hidden`은 탭에서 숨김, `view=both|preview|code`는 처음 보기 모드(블록 위 버튼으로 독자가 전환, 패널은
-  `display`로만 숨겨 상태 유지). `rehype-raw`가 hast의 펜스 meta를 버리므로 이 처리는 반드시 remark 단계에 둔다.
+  `display`로만 숨겨 상태 유지), `height=<px>`는 그 블록의 편집기·미리보기 높이(기본 480). `rehype-raw`가 hast의 펜스 meta를 버리므로 이 처리는 반드시 remark 단계에 둔다.
 - `src/app/(ko)/`는 기존 한국어 URL을 유지하고 `src/app/en/[[...segments]]`는 영어 홈·글·카테고리·태그를
   정적 생성한다. 영어 홈을 항상 포함하므로 공개 번역이 0개여도 빌드가 된다.
   각 루트 레이아웃은 `SiteLayout`에 언어를 전달하여 HTML `lang`과 해당 언어의 사이드바 데이터를 만든다.

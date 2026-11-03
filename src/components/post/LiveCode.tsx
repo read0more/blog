@@ -21,10 +21,12 @@ const PANEL_HEIGHT = 480;
 export function LiveCode({
   files,
   initialView,
+  height = PANEL_HEIGHT,
   language = "ko",
 }: {
   files: LiveCodeFiles;
   initialView: LiveCodeView;
+  height?: number;
   language?: PostLanguage;
 }) {
   const translate = getUiTranslator(language);
@@ -38,7 +40,7 @@ export function LiveCode({
   // 처음 보이는 파일을 활성으로 지정해 hidden 이 실제로 숨겨지게 한다.
   const activeFile = Object.keys(files).find((path) => !files[path].hidden);
   const panel = (visible: boolean) => ({
-    height: PANEL_HEIGHT,
+    height,
     flex: "1 1 0",
     overflow: "hidden",
     display: visible ? undefined : "none",

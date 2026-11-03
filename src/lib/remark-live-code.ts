@@ -23,8 +23,10 @@ const isView = (value: string): value is LiveCodeView =>
  * - hidden: 탭에서 숨김(보일러플레이트용).
  * - view=both|preview|code: 처음 보기 모드(기본 both). 묶음 안 아무 펜스에 적어도 된다.
  *   독자는 블록 위 버튼으로 언제든 모드를 바꿀 수 있다.
+ * - height=<px>: 편집기·미리보기 패널 높이(기본 480). 폰 화면 크기 데모처럼 키가 큰 미리보기용.
+ *   view 처럼 묶음 안 아무 펜스에 적어도 된다.
  *
- * 묶인 펜스는 빈 div[data-live-code=<파일맵 JSON>][data-live-view] 로 치환되고, 클라이언트
+ * 묶인 펜스는 빈 div[data-live-code=<파일맵 JSON>][data-live-view][data-live-height] 로 치환되고, 클라이언트
  * (useLiveCode)가 그 자리에 Sandpack(static 템플릿)을 마운트한다.
  * remark 단계에서 처리하는 이유: rehype-raw 가 hast 의 data.meta 를 버려서 rehype 단계에선
  * 펜스 meta 를 읽을 수 없다(hProperties 는 실제 속성이 되므로 살아남는다).
@@ -35,6 +37,7 @@ export function remarkLiveCode() {
     const children: RootContent[] = [];
     let files: LiveCodeFiles = {};
     let view: LiveCodeView = "both";
+    let height: number | undefined;
     let placeholder: Paragraph | null = null;
 
     for (const node of tree.children) {
@@ -51,6 +54,7 @@ export function remarkLiveCode() {
       if (!placeholder) {
         files = {};
         view = "both";
+        height = undefined;
         placeholder = { type: "paragraph", children: [] };
         children.push(placeholder);
       }
@@ -65,6 +69,16 @@ export function remarkLiveCode() {
         view = viewMeta;
       }
 
+      const heightMeta = meta.match(/(?:^|\s)height=(\S+)/)?.[1];
+      if (heightMeta !== undefined) {
+        if (!/^[1-9]\d*$/.test(heightMeta)) {
+          throw new Error(
+            `live 펜스의 height= 는 양의 정수(px)여야 합니다: "${meta}"`,
+          );
+        }
+        height = Number(heightMeta);
+      }
+
       files[`/${file.replace(/^\//, "")}`] = {
         code: node.value,
         ...(hasFlag(meta, "hidden") ? { hidden: true } : {}),
@@ -74,6 +88,7 @@ export function remarkLiveCode() {
         hProperties: {
           dataLiveCode: JSON.stringify(files),
           dataLiveView: view,
+          ...(height ? { dataLiveHeight: height } : {}),
         },
       };
     }

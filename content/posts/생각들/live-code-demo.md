@@ -7,7 +7,7 @@ draft: true
 
 <!--
   [draft 확인용] 배포 빌드(OMIT_DRAFTS=true)에서는 빠지고 로컬 dev/build 에서만 보인다.
-  라이브 코드 블록 문법: meta 에 live 가 붙은 연속 펜스 = 데모 하나. file= 필수, hidden 은 탭에서 숨김, view=both|preview|code 는 처음 보기 모드.
+  라이브 코드 블록 문법: meta 에 live 가 붙은 연속 펜스 = 데모 하나. file= 필수, hidden 은 탭에서 숨김, view=both|preview|code 는 처음 보기 모드, height=<px> 는 패널 높이(기본 480).
 -->
 
 ## JS가 도는 데모
@@ -100,4 +100,22 @@ body {
   font-size: 32px;
   scroll-snap-align: center;
 }
+```
+
+## 키가 큰 미리보기
+
+`height=720`을 붙이면 이 블록만 편집기와 미리보기가 720px이 됩니다. 폰 화면 크기를 가정한 데모에 씁니다. 미리보기 안의 `100dvh`도 이 높이를 따릅니다.
+
+```html live file=index.html view=preview height=720
+<!doctype html>
+<html lang="ko">
+  <body style="margin: 0; font-family: system-ui, sans-serif">
+    <div style="height: 100dvh; display: grid; place-items: center; background: #f2f2f7">
+      <p id="size"></p>
+    </div>
+    <script>
+      document.querySelector("#size").textContent = `100dvh = ${innerHeight}px`;
+    </script>
+  </body>
+</html>
 ```

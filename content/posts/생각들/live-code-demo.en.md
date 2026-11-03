@@ -94,3 +94,21 @@ body {
   scroll-snap-align: center;
 }
 ```
+
+## A Taller Preview
+
+Add `height=720` and only this block's editor and preview become 720px tall. Use it for demos that assume a phone-sized screen. `100dvh` inside the preview follows this height too.
+
+```html live file=index.html view=preview height=720
+<!doctype html>
+<html lang="en">
+  <body style="margin: 0; font-family: system-ui, sans-serif">
+    <div style="height: 100dvh; display: grid; place-items: center; background: #f2f2f7">
+      <p id="size"></p>
+    </div>
+    <script>
+      document.querySelector("#size").textContent = `100dvh = ${innerHeight}px`;
+    </script>
+  </body>
+</html>
+```
