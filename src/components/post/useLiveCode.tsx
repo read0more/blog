@@ -30,11 +30,15 @@ export function useLiveCode(
         const files = JSON.parse(el.dataset.liveCode ?? "{}") as LiveCodeFiles;
         // remark-live-code 가 빌드 타임에 값을 검증해 넣는다.
         const initialView = (el.dataset.liveView ?? "both") as LiveCodeView;
+        const height = el.dataset.liveHeight
+          ? Number(el.dataset.liveHeight)
+          : undefined;
         const root = createRoot(el);
         root.render(
           <LiveCode
             files={files}
             initialView={initialView}
+            height={height}
             language={language}
           />,
         );
