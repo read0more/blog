@@ -4,13 +4,16 @@ import { useEffect, useRef } from "react";
 import type { PostLanguage } from "@/lib/types";
 import { getUiTranslator } from "@/lib/i18n";
 import { SearchIcon } from "../layout/icons";
-import { ResultList, EmptyState } from "./SearchResults";
+import { matchTags } from "@/lib/search";
+import { ResultList, EmptyState, TagChipList } from "./SearchResults";
 import type { useSearch } from "./useSearch";
 import styles from "./Search.module.css";
 
 interface MobileSearchOverlayProps {
   language?: PostLanguage;
   search: ReturnType<typeof useSearch>;
+  /** "#" 태그 검색에서 고를 전체 태그. */
+  tags: string[];
   onClose: () => void;
 }
 
@@ -18,6 +21,7 @@ interface MobileSearchOverlayProps {
 export function MobileSearchOverlay({
   language = "ko",
   search,
+  tags,
   onClose,
 }: MobileSearchOverlayProps) {
   const translate = getUiTranslator(language);
@@ -31,6 +35,8 @@ export function MobileSearchOverlay({
     isEmpty,
   } = search;
   const inputRef = useRef<HTMLInputElement>(null);
+  // "#"으로 시작하면 데스크톱과 같이 맞는 태그 칩을 보여준다.
+  const tagMatches = matchTags(tags, query, language);
 
   useEffect(() => {
     ensureIndex();
@@ -63,14 +69,26 @@ export function MobileSearchOverlay({
       </div>
 
       <div className={styles.mobileBody}>
-        {hasResults && (
-          <ResultList
-            results={results}
-            onSelect={onClose}
-            language={language}
-          />
+        {tagMatches?.length ? (
+          <div className={styles.empty} data-testid="search-tags">
+            <TagChipList
+              tags={tagMatches}
+              onSelect={onClose}
+              language={language}
+            />
+          </div>
+        ) : (
+          <>
+            {hasResults && (
+              <ResultList
+                results={results}
+                onSelect={onClose}
+                language={language}
+              />
+            )}
+            {isEmpty && <EmptyState query={query} language={language} />}
+          </>
         )}
-        {isEmpty && <EmptyState query={query} language={language} />}
         {!hasQuery && (
           <div className={styles.mobileIdle} data-testid="mobile-search-idle">
             {translate("searchIdle")}

@@ -1,4 +1,5 @@
-import type { SearchDoc } from "./types";
+import type { PostLanguage, SearchDoc } from "./types";
+import { tagLabel } from "./taxonomy.mjs";
 
 /** 스니펫 조각 — 일반 텍스트 또는 매칭(하이라이트) 텍스트. */
 export interface SnippetPart {
@@ -40,7 +41,8 @@ export function makeSnippet(plain: string, query: string): SnippetPart[] {
  */
 export function searchDocs(docs: SearchDoc[], query: string): SearchResult[] {
   const q = query.trim();
-  if (!q) return [];
+  // "#"으로 시작하면 글이 아니라 태그 검색이다(matchTags).
+  if (!q || q.startsWith("#")) return [];
   const ql = q.toLowerCase();
   return docs
     .filter((d) => d.text.toLowerCase().includes(ql))
@@ -50,4 +52,21 @@ export function searchDocs(docs: SearchDoc[], query: string): SearchResult[] {
       categories: d.categories,
       snippet: makeSnippet(d.text, q),
     }));
+}
+
+/**
+ * 태그 검색: "#"으로 시작하는 검색어면 칩에 보이는 표시명에 나머지가 포함된 태그를 고른다
+ * (대소문자 무시, "#" 하나면 전체). 태그 검색어가 아니면 null.
+ */
+export function matchTags(
+  tags: string[],
+  query: string,
+  language: PostLanguage = "ko",
+): string[] | null {
+  const q = query.trim();
+  if (!q.startsWith("#")) return null;
+  const ql = q.slice(1).toLowerCase();
+  return tags.filter((tag) =>
+    tagLabel(tag, language).toLowerCase().includes(ql),
+  );
 }

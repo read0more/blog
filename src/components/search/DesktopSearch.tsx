@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import type { PostLanguage } from "@/lib/types";
 import { getUiTranslator } from "@/lib/i18n";
 import { SearchIcon } from "../layout/icons";
-import { ResultList, EmptyState } from "./SearchResults";
+import { matchTags } from "@/lib/search";
+import { ResultList, EmptyState, TagChipList } from "./SearchResults";
 import type { useSearch } from "./useSearch";
 import styles from "./Search.module.css";
 
@@ -33,6 +34,8 @@ export function DesktopSearch({
     isEmpty,
   } = search;
   const pathname = usePathname();
+  // "#"으로 시작하면 글 대신 맞는 태그 칩을 보여준다. 맞는 태그가 없으면 결과 없음 안내로 넘어간다.
+  const tagMatches = matchTags(tags, query, language);
 
   // 라우트 이동 시 검색어 초기화(결과 클릭 후 패널이 남지 않도록).
   useEffect(() => {
@@ -92,20 +95,32 @@ export function DesktopSearch({
           <div className={styles.panel} data-testid="search-panel">
             <div className={styles.panelHeader}>{header}</div>
             <div className={styles.panelBody}>
-              {hasResults && (
-                <ResultList
-                  results={results}
-                  onSelect={clear}
-                  language={language}
-                />
-              )}
-              {isEmpty && (
-                <EmptyState
-                  query={query}
-                  tags={tags}
-                  onSelect={clear}
-                  language={language}
-                />
+              {tagMatches?.length ? (
+                <div className={styles.empty} data-testid="search-tags">
+                  <TagChipList
+                    tags={tagMatches}
+                    onSelect={clear}
+                    language={language}
+                  />
+                </div>
+              ) : (
+                <>
+                  {hasResults && (
+                    <ResultList
+                      results={results}
+                      onSelect={clear}
+                      language={language}
+                    />
+                  )}
+                  {isEmpty && (
+                    <EmptyState
+                      query={query}
+                      tags={tags}
+                      onSelect={clear}
+                      language={language}
+                    />
+                  )}
+                </>
               )}
             </div>
           </div>

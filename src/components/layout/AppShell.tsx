@@ -176,6 +176,7 @@ export function AppShell({
       {mobileSearchOpen && (
         <MobileSearchOverlay
           search={search}
+          tags={tags}
           onClose={closeMobileSearch}
           language={language}
         />

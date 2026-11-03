@@ -44,7 +44,6 @@ function build() {
       .map(({ slug, category, frontmatter: data, content }) => {
         const plain = extractPlainText(content);
         // posts.ts 와 동일하게 tags 는 선택(없으면 빈 배열). 태그명으로도 검색되게 text 끝에 붙인다.
-        // 칩 표기(#React)와 같게 # 을 붙여 "#React" 검색어도 일치시킨다("React" 는 부분 문자열로 계속 일치).
         const tags = data.tags ?? [];
         return {
           slug,
@@ -53,7 +52,7 @@ function build() {
           categories: [category],
           tags,
           date: data.date,
-          text: `${data.title} ${data.description} ${plain} ${tags.map((tag) => `#${tagLabel(tag, language)}`).join(" ")}`,
+          text: `${data.title} ${data.description} ${plain} ${tags.map((tag) => tagLabel(tag, language)).join(" ")}`,
         };
       });
 

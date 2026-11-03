@@ -84,20 +84,35 @@ export function EmptyState({
         {tags ? translate("tryTags") : translate("trySearch")}
       </div>
       {tags && (
-        <div className={styles.emptyChips}>
-          {tags.map((t) => (
-            <Link
-              key={t}
-              href={sitePath(language, `/tag/${encodeURIComponent(t)}`)}
-              className={styles.emptyChip}
-              onClick={onSelect}
-              data-testid={`search-empty-chip-${t}`}
-            >
-              #{tagLabel(t, language)}
-            </Link>
-          ))}
-        </div>
+        <TagChipList tags={tags} onSelect={onSelect} language={language} />
       )}
+    </div>
+  );
+}
+
+/** 태그 칩 줄: 결과 없음 안내와 "#" 태그 검색 결과 공용. */
+export function TagChipList({
+  tags,
+  onSelect,
+  language = "ko",
+}: {
+  tags: string[];
+  onSelect?: () => void;
+  language?: PostLanguage;
+}) {
+  return (
+    <div className={styles.emptyChips}>
+      {tags.map((t) => (
+        <Link
+          key={t}
+          href={sitePath(language, `/tag/${encodeURIComponent(t)}`)}
+          className={styles.emptyChip}
+          onClick={onSelect}
+          data-testid={`search-empty-chip-${t}`}
+        >
+          #{tagLabel(t, language)}
+        </Link>
+      ))}
     </div>
   );
 }
