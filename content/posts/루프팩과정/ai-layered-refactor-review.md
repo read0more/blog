@@ -3,6 +3,7 @@ title: "레이어 분리는 AI에게, 검증은 나에게 — service·hook·UI�
 date: "2026-07-01T13:00:00.000Z"
 description: "536줄짜리 상품 리스트 화면을 레이어로 가르는 일은 AI에게 시키고, 나는 그 결과를 직접 코드 리뷰로 검증했다. 그 과정에서 다시 그은 경계와 잡아낸 버그의 기록."
 tags: ["React", "리팩토링"]
+draft: true
 ---
 
 ## Overview

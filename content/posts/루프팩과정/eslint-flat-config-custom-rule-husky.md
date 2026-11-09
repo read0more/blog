@@ -3,6 +3,7 @@ title: "ESLint flat config을 처음부터 짜면서 알게 된 것들 — TS co
 date: "2026-06-17T22:00:00.000Z"
 description: "스캐폴딩이 만들어 준 flat config을 그대로 두지 않고, TS로 다시 쓰고 커스텀 룰을 붙이고 git hook까지 끼우면서 한 고민들."
 tags: ["빌드도구"]
+draft: true
 ---
 
 ## Overview
