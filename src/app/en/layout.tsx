@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import { siteMetadata } from "@/lib/site";
 import "../globals.css";
 
 export const metadata: Metadata = {
+  ...siteMetadata("en"),
   title: "read0more's Blog — English",
-  description:
-    "Selected articles on frontend development, translated into English.",
 };
 
 export default function EnglishLayout({
