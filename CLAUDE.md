@@ -173,3 +173,11 @@ legacy 링크, 초안 제외와 미번역 안내 페이지를 확인한다. 한�
 - 컴포넌트 스타일은 CSS Modules(`*.module.css`), 전역 토큰은 `src/styles/tokens/`와
   `src/app/globals.css`에 있다.
 - TypeScript는 `strict`. 콘텐츠 파이프라인 공통 타입은 `src/lib/types.ts`.
+
+## 작업 흐름
+
+- 코드 변경(`feat`·`fix`)은 main에 바로 커밋하지 않는다. `issue-creator` 스킬로 이슈를 만들고
+  `<type>/<kebab-case>` 브랜치에서 작업한 뒤 `pr-creator` 스킬로 `Closes #번호` PR을 올린다.
+- 새 기능에는 실제 글 맥락에서 확인할 수 있는 `draft: true` 데모 글을 함께 넣는다. 배포 빌드에서는
+  제외되고 로컬에서만 보인다.
+- 글(`content/posts`)·문서 변경은 main에 바로 커밋한다.
