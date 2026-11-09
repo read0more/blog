@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="744" height="456" viewBox="0 0 744 456" role="img" aria-labelledby="title desc">
+  <title id="title">1편 복습 · 열린 시트의 구조</title>
+  <desc id="desc">보정값이 0px일 때 exit 마커, stage, enter 마커가 위에서부터 각각 100dvh 높이로 쌓입니다. 열린 상태에서는 scroller가 stage와 enter 마커에 걸쳐 있고, 뷰포트에는 시트가 바닥에 붙어 있는 stage가 보입니다.</desc>
+
+  <rect width="744" height="456" rx="14" fill="#f4f7fa"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, Apple SD Gothic Neo, Malgun Gothic, sans-serif">
+    <text x="32" y="50" fill="#192d43" font-size="34" font-weight="700">1편 복습 · 열린 시트의 구조</text>
+    <rect x="574" y="23" width="138" height="38" rx="9" fill="#e4ebf3"/>
+    <text x="643" y="50" fill="#40566d" font-size="23" font-weight="700" text-anchor="middle">보정값 0px</text>
+
+    <g fill="#40566d" font-size="23" text-anchor="end">
+      <text x="103" y="106">0</text>
+      <text x="103" y="214">100dvh</text>
+      <text x="103" y="322">200dvh</text>
+      <text x="103" y="430">300dvh</text>
+    </g>
+    <path d="M113 99h17m-17 108h17m-17 108h17m-17 108h17" stroke="#91a2b3" stroke-width="2"/>
+
+    <rect x="130" y="99" width="302" height="108" fill="#e6ebf0" stroke="#a8b7c7" stroke-width="2"/>
+    <rect x="130" y="207" width="302" height="108" fill="#e0f1ec"/>
+    <rect x="130" y="315" width="302" height="108" fill="#fbe9dc"/>
+    <path d="M130 315h302" stroke="#a8b7c7" stroke-width="2"/>
+
+    <g fill="#253e56" font-size="29" font-weight="700" text-anchor="middle">
+      <text x="281" y="164">exit 마커</text>
+      <text x="281" y="246">stage</text>
+      <text x="281" y="380">enter 마커</text>
+    </g>
+
+    <rect x="130" y="207" width="302" height="216" fill="none" stroke="#2272ba" stroke-width="4"/>
+    <path d="M151 315v-36a19 19 0 0 1 19-19h222a19 19 0 0 1 19 19v36Z" fill="#fff" stroke="#71918c" stroke-width="2"/>
+    <rect x="261" y="267" width="40" height="4" rx="2" fill="#7f9894"/>
+    <text x="281" y="296" fill="#253e56" font-size="25" font-weight="700" text-anchor="middle">시트</text>
+    <rect x="137" y="210" width="288" height="105" fill="none" stroke="#263f56" stroke-width="2.5" stroke-dasharray="7 5"/>
+
+    <rect x="462" y="227" width="25" height="18" fill="none" stroke="#263f56" stroke-width="2.5" stroke-dasharray="5 3"/>
+    <text x="500" y="247" fill="#253e56" font-size="29" font-weight="700">뷰포트</text>
+    <text x="500" y="277" fill="#40566d" font-size="23">100dvh · stage가 보임</text>
+
+    <rect x="462" y="322" width="25" height="18" fill="none" stroke="#2272ba" stroke-width="4"/>
+    <text x="500" y="342" fill="#253e56" font-size="29" font-weight="700">scroller</text>
+    <text x="500" y="372" fill="#40566d" font-size="23">200dvh · stage와 enter</text>
+  </g>
+</svg>

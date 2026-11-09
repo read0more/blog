@@ -10,7 +10,7 @@ tags: ["CSS"]
 > **시리즈 목차**
 >
 > 1. 터치 이벤트 없이 스크롤 스냅으로 여닫기 (이 글)
-> 2. iOS Safari 툴바 뒤에서 시트가 덜 사라질 때 (준비 중)
+> 2. [iOS Safari 툴바 뒤에서 시트가 덜 사라질 때](../css-bottom-sheet-2-ios-safari/)
 > 3. 지도 앱처럼 중간에 멈추고, 스와이프로는 닫히지 않게 (준비 중)
 > 4. 손가락을 따라오는 backdrop과 뒤로 밀리는 시트 (준비 중)
 > 5. 키보드가 시트를 가릴 때 (준비 중)
@@ -1018,4 +1018,4 @@ export function mountSheet(createSheet) {
 
 손가락을 따라 내려오고, 놓으면 붙고, 끝에서 튕기는 동작은 전부 CSS로 만든 scroller가 했습니다. JS는 열 때 스크롤을 한 번 시키고, 사라진 시트를 숨겼을 뿐입니다.
 
-다음 글은 시리즈 2편 "iOS Safari 툴바 뒤에서 시트가 덜 사라질 때"입니다. 이 시트를 iPhone Safari에 올리면 무엇이 어긋나는지, `calc(100lvh - 100svh + 58px)`가 무엇을 보정하는지 정리하려고 합니다.
+다음 글은 시리즈 2편 [iOS Safari 툴바 뒤에서 시트가 덜 사라질 때](../css-bottom-sheet-2-ios-safari/)입니다. 이 시트를 iPhone Safari에 올리면 무엇이 어긋나는지, `calc(100lvh - 100svh + 58px)`가 무엇을 보정하는지 정리했습니다.
