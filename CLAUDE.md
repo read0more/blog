@@ -107,6 +107,12 @@ github-light) → stringify`. **TOC는 `rehype-slug` 직후에 추출**해 앵�
 - 클라이언트(`src/components/search/useSearch.ts` + `src/lib/search.ts`)는 첫 검색 시
   해당 언어의 인덱스를 lazy fetch하고, 120ms 디바운스 후 부분 문자열 매칭 + 스니펫 하이라이트를 한다.
 
+**공유 썸네일(오픈그래프)**도 빌드 타임에 만든다. `src/app/og/[language]/[file]/route.tsx`가 `next/og`의
+`ImageResponse`로 공개 글마다 `/og/<언어>/<slug>.png`(1200×630)와 언어별 기본 카드 `index.png`를 정적 파일로
+굳힌다. 한글 글꼴은 `src/fonts/Pretendard-Bold.otf`를 읽으며 빌드 중 네트워크를 쓰지 않는다. 메타데이터는
+`src/lib/site.ts`의 `siteMetadata`(레이아웃)와 `postMetadata`(글)가 만들고, `metadataBase`에 배포 주소와
+`BASE_PATH`를 넣어 `og:url`·`og:image`를 절대 주소로 낸다. 배포 주소가 바뀌면 `SITE_ORIGIN`만 고친다.
+
 **카테고리**는 수동 설정하지 않는다. 글이 있는 최상위 디렉토리에서 distinct하게 수집하며, 표시 순서는
 `posts.ts`의 `CATEGORY_ORDER` 우선 후 한글 정렬, 색상은 이름을 해시해 9색 iOS 팔레트에서
 결정적으로 고른다(`src/lib/categories.ts`).

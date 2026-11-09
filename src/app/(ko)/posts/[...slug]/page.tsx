@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllPostRoutes, getPostBySlug } from "@/lib/posts";
+import { postMetadata } from "@/lib/site";
 import { ArticleClient } from "@/components/post/ArticleClient";
 import { LegacyEnglishRedirect } from "@/components/post/LegacyEnglishRedirect";
 
@@ -25,11 +26,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await postAtPath(slug);
   if (!post) return { title: "read0more" };
-  return {
-    title: `${post.title} · read0more`,
-    description: post.description,
-    ...(post.language === "en" ? { robots: { index: false } } : {}),
-  };
+  // 옛 영어 주소(/posts/<slug>/en/)는 이동 안내뿐이라 썸네일 없이 noindex만 둔다.
+  if (post.language === "en")
+    return {
+      title: `${post.title} · read0more`,
+      description: post.description,
+      robots: { index: false },
+    };
+  return postMetadata(post);
 }
 
 export default async function PostPage({

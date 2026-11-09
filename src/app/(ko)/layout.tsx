@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import { SITE_NAME, siteMetadata } from "@/lib/site";
 import "../globals.css";
 
 export const metadata: Metadata = {
-  title: "read0more's Blog",
-  description: "개인 기술 블로그",
+  ...siteMetadata("ko"),
+  title: SITE_NAME,
 };
 
 export default async function RootLayout({

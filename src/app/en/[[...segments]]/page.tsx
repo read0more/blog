@@ -14,6 +14,7 @@ import {
 } from "@/lib/posts";
 import { categoryLabel, tagLabel } from "@/lib/taxonomy.mjs";
 import { getUiTranslator } from "@/lib/i18n";
+import { postMetadata } from "@/lib/site";
 
 type PageProps = { params: Promise<{ segments?: string[] }> };
 
@@ -40,11 +41,7 @@ export async function generateMetadata({
   if (segments.length === 2 && segments[0] === "posts") {
     const name = decodeURIComponent(segments[1]);
     const post = await getPostBySlug(name, "en");
-    if (post)
-      return {
-        title: `${post.title} · read0more`,
-        description: post.description,
-      };
+    if (post) return postMetadata(post);
     if (await getPostBySlug(name, "ko"))
       return {
         title: `${getUiTranslator("en")("translationUnavailable")} · read0more`,

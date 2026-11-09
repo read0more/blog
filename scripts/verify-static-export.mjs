@@ -56,8 +56,26 @@ for (const language of ["ko", "en"]) {
       "utf8",
     );
     assert.ok(html.includes(`lang="${language}"`));
+    const document = staticDocument(html);
+    // 공유 미리보기: og:image는 절대 주소이고, 가리키는 PNG가 실제로 export돼 있어야 한다.
+    const ogImage = document
+      .querySelector('meta[property="og:image"]')
+      ?.getAttribute("content");
+    assert.ok(
+      ogImage?.startsWith("https://") &&
+        ogImage.endsWith(
+          `${basePath}/og/${language}/${encodeURIComponent(source.slug)}.png`,
+        ),
+      `Missing og:image: ${language}/${source.slug} (${ogImage})`,
+    );
+    assert.equal(
+      fs
+        .readFileSync(`out/og/${language}/${source.slug}.png`)
+        .subarray(1, 4)
+        .toString(),
+      "PNG",
+    );
     if (language === "en") {
-      const document = staticDocument(html);
       assert.equal(
         document.querySelector("article h1")?.textContent,
         source.frontmatter.title,
@@ -99,6 +117,7 @@ for (const file of listPostFiles(postsDir)) {
       assert.match(notice, /data-testid="translation-unavailable"/);
       assert.match(notice, /<meta name="robots" content="noindex/);
       assert.doesNotMatch(notice, /<article\b/);
+      assert.equal(fs.existsSync(`out/og/en/${file.slug}.png`), false);
       assert.ok(
         notice.includes(`${basePath}/posts/${encodeURIComponent(file.slug)}/`),
       );
@@ -109,6 +128,8 @@ for (const file of listPostFiles(postsDir)) {
   }
 }
 assert.ok(fs.existsSync("out/404.html"));
+assert.ok(fs.existsSync("out/og/ko/index.png"));
+assert.ok(fs.existsSync("out/og/en/index.png"));
 console.log(
   `[static-export] verified ${sources.length} pages, ${english.length} English posts, both indexes and legacy links.`,
 );
