@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>scroller가 보는 구간과 180px 스냅 마커</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+          "Malgun Gothic", sans-serif;
+        color: #193436;
+        background: #fff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      figure {
+        margin: 0;
+        padding: 22px;
+        border: 1px solid #cbd8cf;
+        border-radius: 12px;
+        background: #f7faf6;
+      }
+      figcaption {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: -0.02em;
+      }
+      p {
+        font-size: 14px;
+        line-height: 1.75;
+        margin: 12px 0;
+      }
+      .target-note {
+        padding: 12px 14px;
+        border-left: 3px solid #176b5c;
+        border-radius: 0 8px 8px 0;
+        background: #ecf4e8;
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      button {
+        padding: 9px 12px;
+        border: 1px solid #b9ccc1;
+        border-radius: 8px;
+        background: #fff;
+        color: #193436;
+        font-size: 13px;
+        line-height: 1.5;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #edf5ed;
+        border-color: #176b5c;
+      }
+      button[aria-pressed="true"] {
+        background: #176b5c;
+        color: #fff;
+        border-color: #176b5c;
+      }
+      button:focus-visible,
+      input:focus-visible {
+        outline: 3px solid #b6661f;
+        outline-offset: 3px;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 18px 0;
+      }
+      .model-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 228px;
+        gap: 18px;
+        align-items: start;
+      }
+      .model-pictures {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        align-items: start;
+        gap: 10px;
+        min-width: 0;
+      }
+      svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        font-family: inherit;
+      }
+      .hud {
+        padding: 15px;
+        border: 1px solid #cedcd2;
+        border-radius: 10px;
+        background: #fff;
+      }
+      h4 {
+        font-size: 15px;
+        line-height: 1.5;
+        margin: 0 0 10px;
+      }
+      .phase {
+        color: #5c7373;
+        font-size: 12px;
+        margin: 0 0 16px;
+      }
+      dl {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px 8px;
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      dt {
+        color: #52696a;
+      }
+      dd {
+        margin: 0;
+        font-weight: 700;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      dd.key {
+        font-size: 16px;
+        color: #176b5c;
+      }
+      .result {
+        min-height: 150px;
+        margin: 16px 0 0;
+        padding: 12px;
+        border-radius: 8px;
+        background: #ecf4e8;
+        font-size: 13px;
+      }
+      .result[data-fail="true"] {
+        background: #ffecdf;
+        color: #884423;
+      }
+      .slider {
+        display: block;
+        margin-top: 22px;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .slider output {
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+      input[type="range"] {
+        width: 100%;
+        display: block;
+        accent-color: #176b5c;
+        margin: 14px 0 20px;
+        min-height: 24px;
+        cursor: pointer;
+      }
+      code {
+        font:
+          0.9em ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+      }
+      figure > p:last-child {
+        color: #52696a;
+        font-size: 13px;
+        margin-bottom: 0;
+      }
+      @media (max-width: 760px) {
+        .model-layout {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .hud {
+          grid-row: 1;
+        }
+        dl {
+          grid-template-columns: 1fr auto 1fr auto;
+          column-gap: 16px;
+        }
+        .result {
+          min-height: 70px;
+        }
+      }
+      @media (max-width: 500px) {
+        figure {
+          padding: 14px;
+        }
+        .controls {
+          gap: 7px;
+        }
+        .model-pictures {
+          grid-template-columns: 1fr;
+        }
+        .model-pictures svg {
+          max-width: 360px;
+          margin: auto;
+        }
+        dl {
+          grid-template-columns: 1fr auto;
+        }
+        .result {
+          min-height: 120px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <figure class="model window-model" data-kind="window">
+      <figcaption>내용은 고정하고, scroller가 보는 구간을 내려 보기</figcaption>
+      <p>
+        시트와 마커를 고정한 채 <b>파란 창의 윗변</b>을 옮겨 보는 설명용
+        모형입니다.
+      </p>
+      <p class="target-note">
+        <strong>①은 우리가 원하는 화면입니다.</strong><br />
+        이 모습을 먼저 보여 주기 위해 <strong>스냅을 임시로 끄고</strong>
+        236px만큼 직접 스크롤한 장면입니다.
+        <strong>최종 목표는 스냅을 켠 상태에서도 시트가 180px만 보이는 이 자리에
+          멈추게 하는 것입니다.</strong>
+      </p>
+      <div class="controls" role="group" aria-label="스냅 위치 비교">
+        <button data-window-target="236" aria-pressed="true">
+          ① 우리가 원하는 화면 · 180px</button
+        ><button data-window-target="1036" aria-pressed="false">
+          ② 윗변을 180px 마커까지 · 가정</button
+        ><button data-window-target="800" aria-pressed="false">
+          ③ 실제로 갈 수 있는 끝
+        </button>
+      </div>
+      <div class="model-layout">
+        <div class="model-pictures">
+          <svg
+            viewBox="0 0 395 740"
+            role="img"
+            aria-label="고정된 시트와 180px 마커 위에서, scroller가 읽는 구간의 윗변을 아래로 옮기는 그림"
+          >
+            <text x="20" y="28" font-size="19" font-weight="700">
+              고정된 내용 위에서 창을 이동
+            </text>
+            <g transform="translate(0 80)">
+              <rect x="35" y="0" width="204" height="504" fill="#e7eee2"></rect>
+              <path
+                d="M35 40L239 130M35 140L239 230M100 0L35 300"
+                stroke="#f7f9f0"
+                stroke-width="13"
+              ></path>
+              <text x="45" y="-12" font-size="15">전체 콘텐츠 시작</text>
+              <g data-fixed-content="">
+                <rect
+                  x="48"
+                  y="179.76"
+                  width="178"
+                  height="156.24"
+                  rx="8"
+                  fill="#fffefb"
+                  stroke="#176b5c"
+                  stroke-width="2"
+                ></rect>
+                <path
+                  d="M56 179.76H218Q226 179.76 226 187.76V217.56H48V187.76Q48 179.76 56 179.76"
+                  fill="#ffcf89"
+                ></path>
+                <text x="62" y="203" font-size="16" font-weight="700">
+                  시트 위쪽 180px
+                </text>
+                <path
+                  d="M48 217.56H239"
+                  stroke="#ad4b25"
+                  stroke-width="4"
+                ></path>
+                <circle cx="48" cy="217.56" r="5" fill="#ad4b25"></circle>
+                <text
+                  x="62"
+                  y="240"
+                  font-size="16"
+                  font-weight="700"
+                  fill="#ad4b25"
+                >
+                  180px 마커 · 고정
+                </text>
+                <text x="62" y="270" font-size="16">그 아래의 내용</text>
+                <path
+                  d="M62 290H210M62 310H185"
+                  stroke="#bfcec4"
+                  stroke-width="6"
+                ></path>
+              </g>
+              <rect
+                x="35"
+                y="336"
+                width="204"
+                height="168"
+                fill="#ead7bd"
+              ></rect>
+              <text x="60" y="450" font-size="17">enter 영역</text>
+              <g
+                data-window-frame=""
+                transform="translate(0 49.559999999999995)"
+              >
+                <rect
+                  x="25"
+                  y="0"
+                  width="224"
+                  height="168"
+                  fill="#32689518"
+                ></rect>
+                <rect
+                  x="25"
+                  y="0"
+                  width="224"
+                  height="336"
+                  fill="none"
+                  stroke="#326895"
+                  stroke-width="3"
+                ></rect>
+                <path d="M15 0H253" stroke="#326895" stroke-width="4"></path>
+                <path
+                  d="M15 168H253"
+                  stroke="#326895"
+                  stroke-width="2"
+                  stroke-dasharray="6 4"
+                ></path>
+                <text
+                  x="258"
+                  y="-8"
+                  font-size="16"
+                  font-weight="700"
+                  fill="#326895"
+                >
+                  창 윗변
+                </text>
+                <text x="258" y="12" font-size="15" data-window-top-label="">
+                  236
+                </text>
+                <text x="258" y="163" font-size="16" fill="#326895">
+                  화면 아랫변
+                </text>
+                <text
+                  x="258"
+                  y="184"
+                  font-size="15"
+                  data-window-bottom-label=""
+                >
+                  1036
+                </text>
+              </g>
+              <rect
+                data-window-overflow=""
+                x="25"
+                y="504"
+                width="224"
+                height="0"
+                fill="#e7754945"
+              ></rect>
+              <path
+                d="M15 504H253"
+                stroke="#9a5031"
+                stroke-width="2"
+                stroke-dasharray="4 3"
+              ></path>
+              <text x="258" y="490" font-size="15" fill="#9a5031">
+                콘텐츠 끝
+              </text>
+              <text x="258" y="511" font-size="15" fill="#9a5031">2400</text>
+              <text
+                data-window-overflow-label=""
+                x="45"
+                y="535"
+                font-size="16"
+                fill="#9a5031"
+              ></text>
+            </g>
+            <text x="25" y="684" font-size="15">
+              파란 창: scroller가 읽는 구간 · 높이 1600
+            </text>
+            <text x="25" y="713" font-size="15">
+              그 위 절반만 실제 화면 · 높이 800
+            </text>
+          </svg>
+          <svg
+            viewBox="0 0 300 660"
+            role="img"
+            aria-label="이 창 안에서 실제 화면에 보일 부분"
+          >
+            <defs>
+              <clipPath id="window-crop-6-0">
+                <rect x="25" y="100" width="240" height="400"></rect>
+              </clipPath>
+            </defs>
+            <text x="25" y="28" font-size="19" font-weight="700">
+              이때 화면에 보이는 부분
+            </text>
+            <g clip-path="url(#window-crop-6-0)">
+              <rect
+                x="25"
+                y="100"
+                width="240"
+                height="400"
+                fill="#deeadb"
+              ></rect>
+              <path
+                d="M25 180L265 300M25 350L265 470M100 100L25 500M265 100L190 500"
+                stroke="#f7f9f0"
+                stroke-width="19"
+              ></path>
+              <g transform="translate(35 100) scale(.5)">
+                <g data-window-crop="" transform="translate(0 -236)">
+                  <g transform="translate(0 856)">
+                    <rect
+                      width="440"
+                      height="744"
+                      rx="22"
+                      fill="#fcfffd"
+                      stroke="#176b5c"
+                      stroke-width="3"
+                    ></rect>
+                    <path
+                      d="M22 0H418Q440 0 440 22V180H0V22Q0 0 22 0"
+                      fill="#ffdfb2"
+                    ></path>
+                    <rect
+                      x="190"
+                      y="24"
+                      width="60"
+                      height="7"
+                      rx="4"
+                      fill="#a69077"
+                    ></rect>
+                    <text x="25" y="91" font-size="34" font-weight="700">
+                      주변 장소
+                    </text>
+                    <text x="25" y="144" font-size="25">위쪽 180px</text>
+                    <path
+                      d="M25 260H380M25 340H320M25 420H380M25 500H320M25 580H380M25 660H320"
+                      stroke="#b9cdc2"
+                      stroke-width="12"
+                    ></path>
+                    <path
+                      d="M0 180H440"
+                      stroke="#ad4b25"
+                      stroke-width="5"
+                    ></path>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <rect
+              x="25"
+              y="100"
+              width="240"
+              height="400"
+              fill="none"
+              stroke="#326895"
+              stroke-width="3"
+            ></rect>
+            <text
+              x="25"
+              y="542"
+              font-size="18"
+              font-weight="700"
+              data-window-preview-label=""
+            >
+              위쪽 180px 중 180px 보임
+            </text>
+            <text x="25" y="578" font-size="16" data-window-preview-note="">
+              우리가 원하는 화면
+            </text>
+            <text x="25" y="623" font-size="15">
+              주황색 = 시트의 위쪽 180px
+            </text>
+          </svg>
+        </div>
+        <aside class="hud" aria-label="데모 현재 상태">
+          <h4>현재 상태</h4>
+          <p class="phase">콘텐츠 기준 좌표 · scroll-margin-top: 0</p>
+          <dl>
+            <dt>창 윗변 · scrollTop</dt>
+            <dd data-window-stat="start">236px</dd>
+            <dt>실제 마커 위치</dt>
+            <dd>1036px · 고정</dd>
+            <dt>화면 아랫변</dt>
+            <dd data-window-stat="end">1036px</dd>
+            <dt>전체 보이는 시트</dt>
+            <dd data-window-stat="visible">180px</dd>
+            <dt>위쪽 180px 중 보임</dt>
+            <dd class="key" data-window-stat="orange">180px</dd>
+            <dt>실제 스크롤 범위</dt>
+            <dd data-window-stat="reachable">범위 안</dd>
+          </dl>
+          <p
+            class="result"
+            data-window-result=""
+            aria-live="polite"
+            data-fail="false"
+          >
+            원하는 화면을 먼저 보여 주려고 스냅을 임시로 끄고 scrollTop을
+            236px로 맞춘 장면입니다. 목표는 스냅을 켠 상태에서도 이 자리에
+            멈추게 하는 것입니다.
+          </p>
+        </aside>
+      </div>
+      <label class="slider" for="snap-window-range"
+        >보는 구간의 시작점 · <output for="snap-window-range">236px</output
+        ><input
+          type="range"
+          min="0"
+          max="1036"
+          value="236"
+          aria-label="내용 위에서 scroller가 보는 구간 옮기기"
+          id="snap-window-range"
+      /></label>
+      <p>
+        파란 창은 <b>콘텐츠 중 어디를 보는지</b>를 나타내며, 윗변의 좌표가
+        <code>scrollTop</code>입니다. ②는 스크롤 한계를 넘어 마커까지 이동할 수
+        있다고 가정한 모습입니다.
+      </p>
+    </figure>
+    <script>
+      "use strict";
+      const figure = document.querySelector(".window-model");
+      const pixel = (value) => Math.round(value * 10) / 10 + "px";
+      const stat = Object.fromEntries(
+        [...figure.querySelectorAll("[data-window-stat]")].map((el) => [
+          el.dataset.windowStat,
+          el,
+        ]),
+      );
+      let current = 236,
+        animation;
+      function draw(value) {
+        current = Math.round(value);
+        const end = current + 800;
+        const visible = Math.max(
+          0,
+          Math.min(1600, end) - Math.max(856, current),
+        );
+        const orange = Math.max(
+          0,
+          Math.min(1036, end) - Math.max(856, current),
+        );
+        figure
+          .querySelector("[data-window-frame]")
+          .setAttribute("transform", `translate(0 ${current * 0.21})`);
+        figure
+          .querySelector("[data-window-crop]")
+          .setAttribute("transform", `translate(0 ${-current})`);
+        figure.querySelector("[data-window-top-label]").textContent =
+          String(current);
+        figure.querySelector("[data-window-bottom-label]").textContent =
+          String(end);
+        figure
+          .querySelector("[data-window-overflow]")
+          .setAttribute("height", Math.max(0, current - 800) * 0.21);
+        figure.querySelector("[data-window-overflow-label]").textContent =
+          current > 800 ? `아래로 ${current - 800}px 넘음` : "";
+        const values = {
+          start: pixel(current),
+          end: pixel(end),
+          visible: pixel(visible),
+          orange: pixel(orange),
+          reachable: current <= 800 ? "범위 안" : "범위 밖 · 가정",
+        };
+        for (const [key, el] of Object.entries(stat))
+          el.textContent = values[key];
+        figure.querySelector("[data-window-preview-label]").textContent =
+          `위쪽 180px 중 ${orange}px 보임`;
+        figure.querySelector("[data-window-preview-note]").textContent =
+          current === 1036
+            ? "제목은 창 위에, 아래 내용부터 보임"
+            : current === 236
+              ? "우리가 원하는 화면"
+              : `전체 시트는 ${visible}px 보임`;
+        const result = figure.querySelector("[data-window-result]");
+        result.dataset.fail = String(current > 800);
+        result.textContent =
+          current === 1036
+            ? "창 윗변을 마커에 맞추면 주황색 180px은 창 위에 남고, 그 아래 내용부터 보입니다."
+            : current === 236
+              ? "원하는 화면을 먼저 보여 주려고 스냅을 임시로 끄고 scrollTop을 236px로 맞춘 장면입니다. 목표는 스냅을 켠 상태에서도 이 자리에 멈추게 하는 것입니다."
+              : current === 800
+                ? "scroller의 아랫변이 콘텐츠 끝에 닿았습니다. 실제 스크롤은 여기서 멈추며, 윗변은 아직 마커에 닿지 못했습니다."
+                : current > 800
+                  ? "스크롤 한계를 넘어 이동하는 가정입니다. 주황색 부분이 창 윗변 밖으로 빠져나갑니다."
+                  : "시트와 마커는 제자리에 있고, 파란 창이 보는 구간만 바뀝니다.";
+        figure.querySelector("output").textContent = pixel(current);
+        figure.querySelector("input").value = current;
+        figure
+          .querySelectorAll("[data-window-target]")
+          .forEach((b) =>
+            b.setAttribute(
+              "aria-pressed",
+              String(+b.dataset.windowTarget === current),
+            ),
+          );
+      }
+      figure.querySelectorAll("[data-window-target]").forEach((b) =>
+        b.addEventListener("click", () => {
+          cancelAnimationFrame(animation);
+          const from = current,
+            to = +b.dataset.windowTarget,
+            start = performance.now(),
+            duration = matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? 0
+              : 1600;
+          function tick(now) {
+            const t = duration ? Math.min(1, (now - start) / duration) : 1;
+            draw(from + (to - from) * t * t * (3 - 2 * t));
+            if (t < 1) animation = requestAnimationFrame(tick);
+          }
+          animation = requestAnimationFrame(tick);
+        }),
+      );
+      figure.querySelector("input").addEventListener("input", (event) => {
+        cancelAnimationFrame(animation);
+        draw(+event.target.value);
+      });
+      draw(236);
+
+      // 같은 출처의 블로그 본문에 삽입된 경우, 데모 높이를 본문에 반영한다.
+      function resizeEmbed() {
+        const frame = window.frameElement;
+        if (!frame) return;
+        const height = Math.ceil(figure.getBoundingClientRect().height);
+        if (frame.style.height !== height + "px")
+          frame.style.height = height + "px";
+      }
+      new ResizeObserver(resizeEmbed).observe(figure);
+      resizeEmbed();
+      window.addEventListener(
+        "pagehide",
+        () => cancelAnimationFrame(animation),
+        { once: true },
+      );
+    </script>
+  </body>
+</html>

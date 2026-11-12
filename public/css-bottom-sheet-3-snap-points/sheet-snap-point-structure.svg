@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="744" height="604" viewBox="0 0 744 604" role="img" aria-labelledby="title desc">
+  <title id="title">시트 안의 두 스냅 위치</title>
+  <desc id="desc">같은 높이의 시트를 두 위치에서 비교합니다. 왼쪽은 180px 마커가 뷰포트 하단에 닿아 180px이 보이고, 오른쪽은 55% 마커가 뷰포트 하단에 닿아 시트 높이의 55%가 보입니다.</desc>
+
+  <defs>
+    <clipPath id="viewport">
+      <rect y="138" width="258" height="200"/>
+    </clipPath>
+    <rect id="stage" x="1" width="256" height="200"/>
+    <path id="sheet" d="M24 186V16A16 16 0 0 1 40 0H218A16 16 0 0 1 234 16V186Z"/>
+    <rect id="grabber" x="109" y="9" width="40" height="4" rx="2"/>
+  </defs>
+
+  <rect x="1" y="1" width="742" height="602" rx="12" fill="#f7faf6" stroke="#cbd8cf"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, Apple SD Gothic Neo, Malgun Gothic, sans-serif">
+    <text x="32" y="50" fill="#193436" font-size="28" font-weight="700">시트 안의 두 스냅 위치</text>
+    <g fill="#193436" font-size="24" font-weight="700" text-anchor="middle">
+      <text x="163" y="110">180px 열림</text>
+      <text x="581" y="110">55% 열림</text>
+    </g>
+
+    <!-- 두 컷 모두 뷰포트 800px, 시트 744px, iOS 보정값 0px을 1/4 축척으로 그립니다. -->
+    <g transform="translate(34 0)">
+      <rect y="138" width="258" height="200" fill="#deeadb"/>
+      <use href="#stage" y="279" fill="#edf2ea"/>
+      <use href="#sheet" y="293" fill="#f7faf6" stroke="#9caf9f" stroke-width="2"/>
+      <g clip-path="url(#viewport)">
+        <use href="#stage" y="279" fill="#e7eee2"/>
+        <use href="#sheet" y="293" fill="#fffefb" stroke="#176b5c" stroke-width="2"/>
+      </g>
+      <path d="M40 293H218Q233 293 233 309V338H25V309Q25 293 40 293Z" fill="#ffdfb2"/>
+      <use href="#grabber" y="293" fill="#92aaa0"/>
+      <rect y="138" width="258" height="400" fill="none" stroke="#326895" stroke-width="3"/>
+    </g>
+
+    <g transform="translate(452 0)">
+      <rect y="138" width="258" height="200" fill="#deeadb"/>
+      <use href="#stage" y="221.7" fill="#edf2ea"/>
+      <use href="#sheet" y="235.7" fill="#f7faf6" stroke="#9caf9f" stroke-width="2"/>
+      <g clip-path="url(#viewport)">
+        <use href="#stage" y="221.7" fill="#e7eee2"/>
+        <use href="#sheet" y="235.7" fill="#fffefb" stroke="#176b5c" stroke-width="2"/>
+      </g>
+      <path d="M40 235.7H218Q233 235.7 233 251.7V280.7H25V251.7Q25 235.7 40 235.7Z" fill="#ffdfb2"/>
+      <use href="#grabber" y="235.7" fill="#92aaa0"/>
+      <rect y="138" width="258" height="400" fill="none" stroke="#326895" stroke-width="3"/>
+    </g>
+
+    <path d="M24 338H720" stroke="#326895" stroke-width="2.5" stroke-dasharray="7 5"/>
+    <text x="372" y="325" fill="#193436" font-size="21" font-weight="700" text-anchor="middle">뷰포트 하단</text>
+
+    <g stroke="#ad765c" stroke-width="1.5" stroke-dasharray="4 4">
+      <path d="M58 395.3H268"/>
+      <path d="M476 280.7H686"/>
+    </g>
+    <g fill="#ffdfb2" stroke="#ad765c" stroke-width="2">
+      <circle cx="58" cy="395.3" r="4.5"/>
+      <circle cx="476" cy="280.7" r="4.5"/>
+    </g>
+    <g fill="#ad4b25" stroke="#fff" stroke-width="2.5">
+      <circle cx="58" cy="338" r="7"/>
+      <circle cx="476" cy="338" r="7"/>
+    </g>
+    <g font-size="21">
+      <text x="74" y="325" fill="#ad4b25" font-weight="700">180px 마커</text>
+      <text x="74" y="385" fill="#52696a">55% 마커</text>
+      <text x="492" y="270" fill="#52696a">180px 마커</text>
+      <text x="492" y="325" fill="#ad4b25" font-weight="700">55% 마커</text>
+    </g>
+
+    <g fill="#52696a" font-size="21">
+      <rect x="155" y="562" width="25" height="18" fill="none" stroke="#326895" stroke-width="3"/>
+      <text x="191" y="580">scroller</text>
+      <rect x="321" y="562" width="25" height="18" fill="#e7eee2"/>
+      <text x="357" y="580">stage</text>
+      <rect x="464" y="562" width="25" height="18" rx="4" fill="#fffefb" stroke="#176b5c" stroke-width="2"/>
+      <text x="500" y="580">시트</text>
+    </g>
+  </g>
+</svg>
