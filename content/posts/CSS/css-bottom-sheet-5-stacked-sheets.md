@@ -322,7 +322,7 @@ export function createSheet(overlay) {
     <div class="sheet-scroller">
       <div class="snap-marker snap-marker--exit"></div>
       <div class="sheet-stage">
-        <div class="sheet">
+        <div class="sheet overscroll-padding">
           <div class="sheet-content">
             <div class="grabber"></div>
             <header class="sheet-header">
@@ -348,7 +348,7 @@ export function createSheet(overlay) {
     <div class="sheet-scroller">
       <div class="snap-marker snap-marker--exit"></div>
       <div class="sheet-stage">
-        <div class="sheet">
+        <div class="sheet overscroll-padding">
           <div class="sheet-content">
             <div class="grabber"></div>
             <header class="sheet-header">
@@ -370,7 +370,7 @@ export function createSheet(overlay) {
     <div class="sheet-scroller">
       <div class="snap-marker snap-marker--exit"></div>
       <div class="sheet-stage">
-        <div class="sheet">
+        <div class="sheet overscroll-padding">
           <div class="sheet-content">
             <div class="grabber"></div>
             <header class="sheet-header">
@@ -639,6 +639,7 @@ html.ios-safari {
    padding으로 배경을 늘리고 음수 margin으로 배치상 늘어난 공간을 상쇄해요.
    --viewport-padding(stage·마커 위치와 닫힘 판정 보정)과는 별개의 역할이에요. */
 .sheet.overscroll-padding {
+  box-sizing: content-box; /* 최소 높이 바깥에 배경 연장분을 더한다. */
   padding-bottom: 100vh;   /* 배경을 화면 1칸만큼 아래로 늘리고 */
   margin-bottom: -100vh;   /* 배치에는 영향 없게 상쇄 */
 }
@@ -695,8 +696,6 @@ export function createSheet(overlay, options = {}) {
   // ⑤ 열기 ─ 스크롤 자체가 애니메이션 ─────────────────────────────────────────
   function open() {
     if (!overlay.hidden) return;
-    const overscrollOption = document.querySelector('#opt-overscroll');
-    if (overscrollOption) sheet.classList.toggle('overscroll-padding', overscrollOption.checked);
 
     // [공통 배치] 모든 브라우저에서 overlay는 문서 기준 absolute다.
     // overlay에 페이지 전체 크기를 알려주고, scroller를 현재 화면 맨 위에 맞춘다.
@@ -744,7 +743,7 @@ export function createSheet(overlay, options = {}) {
       {rootMargin: `0px 0px ${paddingPx}px 0px`}
     );
 
-    // .sheet가 아니라 .sheet-content를 본다. overscrollPadding을 켜면 .sheet는 아래로 100vh 늘어나기 때문.
+    // 아래로 연장한 배경을 제외하고 실제 콘텐츠의 닫힘을 감지한다.
     observer.observe(content);
   }
 
