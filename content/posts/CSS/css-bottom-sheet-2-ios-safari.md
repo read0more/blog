@@ -11,7 +11,7 @@ tags: ["CSS"]
 > 2. iOS Safari 툴바 뒤에서 시트가 덜 사라질 때 (이 글)
 > 3. [지도 앱처럼 중간에 멈추고, 스와이프로는 닫히지 않게](../css-bottom-sheet-3-snap-points/)
 > 4. [손가락을 따라오는 backdrop과 모서리](../css-bottom-sheet-4-scroll-animation/)
-> 5. 여러 시트를 겹쳐 열고 뒤 시트를 밀어내기 (준비 중)
+> 5. [여러 시트를 겹쳐 열고 뒤 시트를 밀어내기](../css-bottom-sheet-5-stacked-sheets/)
 > 6. 키보드가 시트를 가릴 때 (준비 중)
 > 7. 키보드 애니메이션에 시트를 맞추기 (준비 중)
 
