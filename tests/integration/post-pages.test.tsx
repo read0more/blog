@@ -12,9 +12,12 @@ vi.mock("next/navigation", () => ({
 
 // 서버 페이지 함수를 실제 파일 파이프라인과 연결해 렌더한다.
 // Next 라우팅·정적 URL 서빙은 navigation E2E의 책임이다.
-beforeAll(() => {
+beforeAll(async () => {
   vi.stubEnv("POSTS_DIR", "tests/fixtures/posts");
   vi.stubEnv("OMIT_DRAFTS", "false");
+  // 공통 픽스처의 마크다운 렌더링을 페이지 단언 전에 마친다.
+  const { getAllPostMeta } = await import("@/lib/posts");
+  await getAllPostMeta();
 });
 afterAll(() => vi.unstubAllEnvs());
 
