@@ -17,8 +17,8 @@ export default async function GlobalNotFound() {
       getAllTags("en"),
     ]);
   return (
-    <html lang="ko">
-      <body>
+    <html lang="ko" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <noscript>
           <p lang="en">
             {getUiTranslator("en")("notFoundTitle")}.{" "}
