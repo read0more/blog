@@ -17,8 +17,8 @@ export async function SiteLayout({
     getCategories(language),
   ]);
   return (
-    <html lang={language}>
-      <body>
+    <html lang={language} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <AppShell
           language={language}
           originalSlugs={originals.map((post) => post.slug)}
