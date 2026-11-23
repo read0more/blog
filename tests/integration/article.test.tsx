@@ -1,3 +1,4 @@
+import { StrictMode } from "react";
 import { afterAll, afterEach, beforeAll, expect, test, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -40,7 +41,12 @@ test("마크다운은 읽을 수 있는 본문·앵커·코드로 렌더되고 �
     "## 소개\n\n본문 문장\n\n### 상세\n\n> 인용 문장\n\n- 목록 항목\n\n```js\nconst secretCodeToken = 1;\n```",
   );
   const { ArticleClient } = await import("@/components/post/ArticleClient");
-  render(<ArticleClient post={post} />);
+  // 개발 서버처럼 effect를 두 번 실행해, 재실행 뒤에도 복사 버튼이 살아 있는지 본다.
+  render(
+    <StrictMode>
+      <ArticleClient post={post} />
+    </StrictMode>,
+  );
   expect(screen.getByRole("heading", { name: "소개" })).toHaveAttribute(
     "id",
     post.toc[0].id,
