@@ -72,3 +72,43 @@ test("이미지 로드 전에는 표시 크기를, 로드 후에는 원본 크�
   expect(anchor).toHaveAttribute("data-pswp-width", "1600");
   expect(anchor).toHaveAttribute("data-pswp-height", "900");
 });
+
+test("HTML로 쓴 figure 이미지도 라이트박스 대상이 되고, 영상·코드블록 figure는 제외한다", async () => {
+  const result = await renderMarkdown(
+    [
+      '<figure style="margin:0">',
+      '<img src="/before.png" alt="수정 전 화면">',
+      "<figcaption><strong>Safari</strong><br>수정 전 화면</figcaption>",
+      "</figure>",
+      "",
+      '<figure><video src="/demo.mp4" aria-label="영상"></video></figure>',
+      "",
+      "```js",
+      "const a = 1;",
+      "```",
+    ].join("\n"),
+  );
+  render(
+    <ArticleClient
+      post={{
+        slug: "raw-figure",
+        language: "ko",
+        hasEnglish: false,
+        title: "HTML 이미지 글",
+        description: "설명",
+        date: "2026-10-23",
+        categories: ["성능"],
+        tags: [],
+        readingMinutes: 1,
+        contentHtml: result.html,
+        plainText: result.plainText,
+        toc: result.toc,
+      }}
+    />,
+  );
+  const anchor = screen.getByRole("link", { name: "수정 전 화면" });
+  expect(anchor).toHaveAttribute("data-pswp-caption", "Safari 수정 전 화면");
+  // 인라인 스타일은 그대로 둔다
+  expect(anchor.closest("figure")).toHaveAttribute("style", "margin:0");
+  expect(document.querySelectorAll("a.pswp-anchor")).toHaveLength(1);
+});

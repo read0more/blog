@@ -36,9 +36,13 @@ export function useImageLightbox(
       // href 는 PhotoSwipe 가 요구하는 형식상 채워두고, 실제 src/치수는 아래 filter 로 넘긴다.
       anchor.href = img.getAttribute("src") ?? img.src;
 
-      const caption = figure.querySelector("figcaption");
-      if (caption?.textContent)
-        anchor.dataset.pswpCaption = caption.textContent;
+      // HTML 로 쓴 캡션의 <br> 은 textContent 에서 사라져 앞뒤 글자가 붙으므로 공백으로 바꿔 읽는다.
+      const caption = figure.querySelector("figcaption")?.cloneNode(true);
+      if (caption instanceof HTMLElement) {
+        caption.querySelectorAll("br").forEach((br) => br.replaceWith(" "));
+        if (caption.textContent)
+          anchor.dataset.pswpCaption = caption.textContent;
+      }
 
       // 클릭 시점에 img.naturalWidth/Height 를 그대로 읽으면, 로드가 끝나기 전에
       // 클릭된 경우 둘 다 0 이라 PhotoSwipe 슬라이드가 사이즈를 못 갖고(줌/팬 불가)
