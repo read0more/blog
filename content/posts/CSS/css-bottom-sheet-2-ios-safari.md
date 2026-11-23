@@ -27,7 +27,7 @@ tags: ["CSS"]
 
 아래 영상은 iPhone 18 Pro 시뮬레이터(iOS 27.0)의 Safari에서 촬영했습니다. 같은 위치에서 두 시트를 내려 보면 왼쪽은 먼저 사라지고, 오른쪽은 반투명 주소창 뒤로 계속 내려갑니다.
 
-<video controls playsinline preload="metadata" aria-label="iOS 27.0 Safari 시뮬레이터에서 촬영한 시트 닫힘 보정 전후 비교" src="../../css-bottom-sheet-2-ios-safari/viewport-padding-ios-simulator.mp4" style="display:block;width:100%;max-height:602px;border-radius:12px;background:#f4f7fa"></video>
+<video controls playsinline preload="metadata" aria-label="iOS 27.0 Safari 시뮬레이터에서 촬영한 시트 닫힘 보정 전후 비교" src="/css-bottom-sheet-2-ios-safari/viewport-padding-ios-simulator.mp4" style="display:block;width:100%;max-height:602px;border-radius:12px;background:#f4f7fa"></video>
 
 이 차이를 맞추려면 시트가 툴바 뒤에서도 사라질 만큼 아래로 이동할 수 있어야 합니다. 닫힘을 감지하는 범위도 그만큼 넓혀야 합니다. 1편 코드에서는 같은 보정값을 배치와 관찰 범위에 함께 사용합니다.
 
