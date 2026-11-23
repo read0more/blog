@@ -62,5 +62,20 @@ export function rehypeFigure() {
       };
       parent.children[index] = figure;
     });
+
+    // 3) HTML 로 직접 쓴 <figure><img> 도 .md-figure 로 표시해 라이트박스 대상에 넣는다.
+    //    코드블록 figure 는 img 를 담지 않고, <video> 만 담은 figure 도 제외된다.
+    //    인라인 style 은 클래스 규칙보다 우선하므로 글에서 지정한 여백·모서리는 유지된다.
+    visit(tree, "element", (node: Element) => {
+      if (node.tagName !== "figure") return;
+      const hasImg = node.children.some(
+        (child) => child.type === "element" && child.tagName === "img",
+      );
+      if (!hasImg) return;
+      const className = node.properties.className;
+      const classes = Array.isArray(className) ? className : [];
+      if (!classes.includes("md-figure"))
+        node.properties.className = [...classes, "md-figure"];
+    });
   };
 }
