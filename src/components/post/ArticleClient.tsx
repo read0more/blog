@@ -112,11 +112,12 @@ export function ArticleClient({ post }: ArticleClientProps) {
       setLabel(translate("copy"));
 
       let timer: ReturnType<typeof setTimeout> | undefined;
-      const onClick = () => {
+      const onClick = async () => {
         try {
-          navigator.clipboard?.writeText(rawCode);
+          await navigator.clipboard.writeText(rawCode);
         } catch {
-          /* clipboard 미지원 환경은 조용히 무시 */
+          // 비보안 주소(http LAN IP)라 clipboard 가 없거나 권한이 거부되면 "복사됨"을 띄우지 않는다
+          return;
         }
         button.classList.add(styles.copied);
         setLabel(translate("copied"));
@@ -132,9 +133,13 @@ export function ArticleClient({ post }: ArticleClientProps) {
       header.appendChild(button);
       figure.insertBefore(header, figure.firstChild);
 
+      // 리스너만 떼고 enhanced 표시를 남기면, 재실행(StrictMode·translate 변경) 때
+      // 위 가드에 걸려 리스너 없는 버튼이 남는다. 헤더째 걷어 내고 표시도 지운다.
       cleanups.push(() => {
         button.removeEventListener("click", onClick);
         if (timer) clearTimeout(timer);
+        header.remove();
+        delete figure.dataset.enhanced;
       });
     });
 
