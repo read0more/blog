@@ -23,11 +23,11 @@ tags: ["CSS"]
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px;margin:24px 0">
 <figure style="margin:0">
-<video controls playsinline preload="metadata" aria-label="iOS 키보드 기본 동작 영상" src="../../css-bottom-sheet-6-keyboard/ios-unadjusted.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="iOS 키보드 기본 동작 영상" src="/css-bottom-sheet-6-keyboard/ios-unadjusted.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>iOS 기본 동작</strong><br>맨 아래 입력칸을 누르면 화면 전체가 위로 밀리고, 키보드를 닫아도 시트가 내려오지 않습니다.</figcaption>
 </figure>
 <figure style="margin:0">
-<video controls playsinline preload="metadata" aria-label="Android 키보드 기본 동작 영상" src="../../css-bottom-sheet-6-keyboard/android-unadjusted.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="Android 키보드 기본 동작 영상" src="/css-bottom-sheet-6-keyboard/android-unadjusted.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>Android 기본 동작</strong><br>화면 전체가 위로 밀리지만, 키보드를 닫으면 제자리로 돌아옵니다.</figcaption>
 </figure>
 </div>
@@ -55,11 +55,11 @@ iOS와 Android 모두 키보드가 올라와 보이는 높이가 줄어도 `100d
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px;margin:24px 0">
 <figure style="margin:0">
-<img src="../../css-bottom-sheet-6-keyboard/ios-layout-viewport.png" alt="iOS에서 위쪽 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라온 뒤에도 100dvh는 577px 그대로이고, 보이는 높이만 317px로 줄었습니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/ios-layout-viewport.png" alt="iOS에서 위쪽 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라온 뒤에도 100dvh는 577px 그대로이고, 보이는 높이만 317px로 줄었습니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>iOS</strong><br><code>100dvh</code>는 577px 그대로이고, 보이는 높이만 317px로 줄었습니다.</figcaption>
 </figure>
 <figure style="margin:0">
-<img src="../../css-bottom-sheet-6-keyboard/android-layout-viewport.png" alt="Android에서 위쪽 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라온 뒤에도 100dvh는 797px 그대로이고, 보이는 높이만 471px로 줄었습니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/android-layout-viewport.png" alt="Android에서 위쪽 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라온 뒤에도 100dvh는 797px 그대로이고, 보이는 높이만 471px로 줄었습니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>Android</strong><br><code>100dvh</code>는 797px 그대로이고, 보이는 높이만 471px로 줄었습니다.</figcaption>
 </figure>
 </div>
@@ -71,7 +71,7 @@ Android Chrome은 108부터 이 방식을 기본값으로 사용합니다. `inte
 그래서 이번 예제에서는 `window.visualViewport`에서 실제로 보이는 구간을 읽습니다. 아래는 같은 Android 화면에서 키보드 윗변에 거의 닿는 상세 주소를 누른 경우입니다.
 
 <figure style="margin:24px 0;max-width:min(100%,460px)">
-<img src="../../css-bottom-sheet-6-keyboard/android-offset-top.png" alt="Android에서 상세 주소 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라오자 브라우저가 화면을 246px 밀어 올렸고, 보이는 높이는 471px입니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/android-offset-top.png" alt="Android에서 상세 주소 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라오자 브라우저가 화면을 246px 밀어 올렸고, 보이는 높이는 471px입니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>Android</strong><br>브라우저가 화면을 246px 밀어 올렸고, 보이는 높이는 471px입니다.</figcaption>
 </figure>
 
@@ -131,11 +131,11 @@ iOS에서는 `100dvh` 577px과 보이는 높이 317px의 차이인 260px을, And
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px;margin:24px 0">
 <figure style="margin:0">
-<img src="../../css-bottom-sheet-6-keyboard/ios-keyboard-inset.png" alt="iOS에서 맨 아래 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라오면 콘텐츠 아래 패딩에 260px이 더해지고, 그 입력칸이 키보드 위로 올라옵니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/ios-keyboard-inset.png" alt="iOS에서 맨 아래 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라오면 콘텐츠 아래 패딩에 260px이 더해지고, 그 입력칸이 키보드 위로 올라옵니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>iOS</strong><br>아래 패딩에 260px을 더해 맨 아래 입력칸을 키보드 위까지 올렸습니다.</figcaption>
 </figure>
 <figure style="margin:0">
-<img src="../../css-bottom-sheet-6-keyboard/android-keyboard-inset.png" alt="Android에서 맨 아래 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라오면 콘텐츠 아래 패딩에 326px이 더해지고, 그 입력칸이 키보드 위로 올라옵니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/android-keyboard-inset.png" alt="Android에서 맨 아래 입력칸을 누르기 전과 후의 화면입니다. 키보드가 올라오면 콘텐츠 아래 패딩에 326px이 더해지고, 그 입력칸이 키보드 위로 올라옵니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>Android</strong><br>아래 패딩에 326px을 더해 맨 아래 입력칸을 키보드 위까지 올렸습니다.</figcaption>
 </figure>
 </div>
@@ -182,7 +182,7 @@ if (isClipped) {
 ```
 
 <figure style="margin:24px 0">
-<img src="../../css-bottom-sheet-6-keyboard/android-visible-overlap.png" alt="Android에서 맨 아래 입력칸을 누르기 전과 후의 화면입니다. box인 콘텐츠 상자는 250부터 798, viewport인 보이는 화면은 0부터 471이라 visibleContentTop과 visibleContentBottom은 250과 471입니다. 588부터 664에 있던 입력칸 target은 이 구간 밖이라 isClipped가 true가 되고, 322부터 399로 옮겨집니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/android-visible-overlap.png" alt="Android에서 맨 아래 입력칸을 누르기 전과 후의 화면입니다. box인 콘텐츠 상자는 250부터 798, viewport인 보이는 화면은 0부터 471이라 visibleContentTop과 visibleContentBottom은 250과 471입니다. 588부터 664에 있던 입력칸 target은 이 구간 밖이라 isClipped가 true가 되고, 322부터 399로 옮겨집니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>Android</strong><br><code>box</code>(콘텐츠 상자 250~798px)와 <code>viewport</code>(보이는 화면 0~471px)가 겹치는 <code>visibleContentTop</code>~<code>visibleContentBottom</code>(250~471px)만 실제로 보입니다. 맨 아래 입력칸 <code>target</code>(588~664px)은 이 구간 밖이라 <code>isClipped</code>가 <code>true</code>가 되고, 구간 가운데인 322~399px로 옮겼습니다.</figcaption>
 </figure>
 
@@ -197,7 +197,7 @@ iOS에서는 두 가지 문제가 더 있었습니다.
 이 글의 영상을 찍은 iPhone SE에서는 키보드가 바로 올라와 같은 상황을 재현하지 못했습니다. 첫 키보드만 늦게 뜨는 현상은 [WKWebView로 만든 Ionic 앱에서도 보고됩니다](https://forum.ionicframework.com/t/the-first-show-of-keyboard-in-app-is-very-slow/250616).
 
 <figure style="margin:24px 0">
-<img src="../../css-bottom-sheet-6-keyboard/ios-first-keyboard-late.png" alt="iPhone 18 Pro 시뮬레이터에서 재부팅 후 처음 맨 아래 입력칸을 누른 화면입니다. 수정 전에는 그 입력칸이 키보드 뒤에 남고, 수정 후에는 키보드 위에 보입니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/ios-first-keyboard-late.png" alt="iPhone 18 Pro 시뮬레이터에서 재부팅 후 처음 맨 아래 입력칸을 누른 화면입니다. 수정 전에는 그 입력칸이 키보드 뒤에 남고, 수정 후에는 키보드 위에 보입니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>iPhone 18 Pro 시뮬레이터 · Safari</strong><br>수정 전에는 맨 아래 입력칸이 키보드 뒤에 남고, 수정 후에는 처음부터 키보드 위에 보입니다.</figcaption>
 </figure>
 
@@ -209,11 +209,11 @@ iOS에서도 가려진 입력칸을 가운데로 즉시 옮기자, 키보드가 
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px;margin:24px 0">
 <figure style="margin:0">
-<video controls playsinline preload="metadata" aria-label="iOS 입력칸 덜컥거림 수정 전 영상" src="../../css-bottom-sheet-6-keyboard/ios-before-input-jump.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="iOS 입력칸 덜컥거림 수정 전 영상" src="/css-bottom-sheet-6-keyboard/ios-before-input-jump.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>수정 전 · 덜컥거림</strong><br>맨 아래 입력칸을 누르면 한 번에 위로 튀고, 시트 윗변과 키보드 사이 67px에 입력칸이 다 들어가지 않습니다.</figcaption>
 </figure>
 <figure style="margin:0">
-<video controls playsinline preload="metadata" aria-label="iOS 입력칸 덜컥거림 수정 후 영상" src="../../css-bottom-sheet-6-keyboard/ios-after-input-jump.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="iOS 입력칸 덜컥거림 수정 후 영상" src="/css-bottom-sheet-6-keyboard/ios-after-input-jump.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>수정 후</strong><br>위쪽 여백을 줄이고 가려진 만큼만 부드럽게 올려, 입력칸이 튀지 않고 라벨까지 키보드 위에 남습니다.</figcaption>
 </figure>
 </div>
@@ -238,7 +238,7 @@ if (isClipped) {
 시트 안에서 입력칸을 올리게 됐으니, 브라우저가 입력칸을 보여 주려고 화면을 옮기는 동작은 막아야 합니다. 그대로 두면 iOS에서는 뒤 페이지가 밀린 채 남습니다.
 
 <figure style="margin:24px 0;max-width:min(100%,270px)">
-<video controls playsinline preload="metadata" aria-label="iOS 입력칸 전환 때 뒤 페이지 이동 영상" src="../../css-bottom-sheet-6-keyboard/ios-before-page-shift.mp4" style="display:block;width:100%;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="iOS 입력칸 전환 때 뒤 페이지 이동 영상" src="/css-bottom-sheet-6-keyboard/ios-before-page-shift.mp4" style="display:block;width:100%;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>수정 전 · 뒤 페이지 이동</strong><br>맨 아래 입력칸과 바로 위 입력칸을 차례로 누른 뒤 시트를 닫았습니다. 처음의 "배송 정보 입력" 버튼 위치와 비교하면, 뒤 페이지가 위로 밀린 채 남아 있습니다.</figcaption>
 </figure>
 
@@ -340,11 +340,11 @@ stage의 높이는 유지하고, 그 바닥에 붙어 있는 시트에 아래 �
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px;margin:24px 0">
 <figure style="margin:0">
-<img src="../../css-bottom-sheet-6-keyboard/ios-sheet-resize.png" alt="iOS에서 키보드 전후의 시트입니다. 위쪽 여백 56px은 그대로이고, 시트 콘텐츠는 521px에서 261px로 줄고, 키보드가 가린 260px만큼 시트 아래 여백이 생깁니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/ios-sheet-resize.png" alt="iOS에서 키보드 전후의 시트입니다. 위쪽 여백 56px은 그대로이고, 시트 콘텐츠는 521px에서 261px로 줄고, 키보드가 가린 260px만큼 시트 아래 여백이 생깁니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>iOS</strong><br>시트 콘텐츠가 521px에서 261px로 줄고, 아래 여백 260px만큼 올라갑니다.</figcaption>
 </figure>
 <figure style="margin:0">
-<img src="../../css-bottom-sheet-6-keyboard/android-sheet-resize.png" alt="Android에서 키보드 전후의 시트입니다. 위쪽 여백 56px은 그대로이고, 시트 콘텐츠는 741px에서 415px로 줄고, 키보드가 가린 326px만큼 시트 아래 여백이 생깁니다." style="display:block;width:100%;border-radius:12px">
+<img src="/css-bottom-sheet-6-keyboard/android-sheet-resize.png" alt="Android에서 키보드 전후의 시트입니다. 위쪽 여백 56px은 그대로이고, 시트 콘텐츠는 741px에서 415px로 줄고, 키보드가 가린 326px만큼 시트 아래 여백이 생깁니다." style="display:block;width:100%;border-radius:12px">
 <figcaption style="margin-top:8px;font-size:14px"><strong>Android</strong><br>시트 콘텐츠가 741px에서 415px로 줄고, 아래 여백 326px만큼 올라갑니다.</figcaption>
 </figure>
 </div>
@@ -374,11 +374,11 @@ if (target.top < box.top || target.bottom > box.bottom) {
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px;margin:24px 0">
 <figure style="margin:0">
-<video controls playsinline preload="metadata" aria-label="iOS 키보드 기본 동작 영상" src="../../css-bottom-sheet-6-keyboard/ios-unadjusted.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="iOS 키보드 기본 동작 영상" src="/css-bottom-sheet-6-keyboard/ios-unadjusted.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>기본 동작</strong><br>화면 전체가 위로 밀리고, 키보드를 닫아도 시트가 내려오지 않습니다.</figcaption>
 </figure>
 <figure style="margin:0">
-<video controls playsinline preload="metadata" aria-label="iOS 네 가지를 고친 뒤 영상" src="../../css-bottom-sheet-6-keyboard/ios-sheet-resize.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="iOS 네 가지를 고친 뒤 영상" src="/css-bottom-sheet-6-keyboard/ios-sheet-resize.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>고친 뒤</strong><br>제목과 저장 버튼을 남기고 가운데 폼만 줄이며, 키보드를 닫으면 시트가 원래 높이로 돌아옵니다.</figcaption>
 </figure>
 </div>
@@ -387,11 +387,11 @@ if (target.top < box.top || target.bottom > box.bottom) {
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px;margin:24px 0">
 <figure style="margin:0">
-<video controls playsinline preload="metadata" aria-label="Android 키보드 기본 동작 영상" src="../../css-bottom-sheet-6-keyboard/android-unadjusted.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="Android 키보드 기본 동작 영상" src="/css-bottom-sheet-6-keyboard/android-unadjusted.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>기본 동작</strong><br>화면 전체가 위로 밀려 제목이 화면 밖으로 나가고, 키보드를 닫으면 제자리로 돌아옵니다.</figcaption>
 </figure>
 <figure style="margin:0">
-<video controls playsinline preload="metadata" aria-label="Android 네 가지를 고친 뒤 영상" src="../../css-bottom-sheet-6-keyboard/android-sheet-resize.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
+<video controls playsinline preload="metadata" aria-label="Android 네 가지를 고친 뒤 영상" src="/css-bottom-sheet-6-keyboard/android-sheet-resize.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
 <figcaption style="margin-top:8px;font-size:14px"><strong>고친 뒤</strong><br>제목과 저장 버튼을 남기고 가운데 폼만 줄이며, 키보드를 닫으면 시트가 원래 높이로 돌아옵니다.</figcaption>
 </figure>
 </div>

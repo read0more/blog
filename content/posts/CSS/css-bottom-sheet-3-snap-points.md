@@ -64,7 +64,7 @@ tags: ["CSS"]
 
 `scroll-margin-top`의 역할은 시트와 마커를 고정하고, scroller가 보는 구간을 옮겨 보면 이해하기 쉽습니다. 아래 데모에서 180px만 보이는 자리와, scroller 윗변을 마커에 맞춘 자리를 비교해 봅니다.
 
-<iframe src="../../css-bottom-sheet-3-snap-points/snap-window-demo.html" title="내용을 고정하고 scroller가 보는 구간을 옮기는 데모" loading="lazy" style="display:block;width:100%;height:1000px;border:0;margin:24px 0;"></iframe>
+<iframe src="/css-bottom-sheet-3-snap-points/snap-window-demo.html" title="내용을 고정하고 scroller가 보는 구간을 옮기는 데모" loading="lazy" style="display:block;width:100%;height:1000px;border:0;margin:24px 0;"></iframe>
 
 **180px만 보이려면 화면 아랫변이 마커에 와야 합니다.** `scroll-margin-top: 100dvh`는 스냅 영역을 마커보다 화면 한 높이만큼 위로 넓혀, 그 장면을 `start` 정렬의 스냅 위치로 만듭니다. [CSS Scroll Snap의 scroll-margin 정의](https://www.w3.org/TR/css-scroll-snap-1/#scroll-margin)
 
