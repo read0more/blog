@@ -12,8 +12,8 @@ tags: ["CSS"]
 > 3. [지도 앱처럼 중간에 멈추고, 스와이프로는 닫히지 않게](../css-bottom-sheet-3-snap-points/)
 > 4. [손가락을 따라오는 backdrop과 모서리](../css-bottom-sheet-4-scroll-animation/)
 > 5. [여러 시트를 겹쳐 열고 뒤 시트를 밀어내기](../css-bottom-sheet-5-stacked-sheets/)
-> 6. 키보드가 시트를 가릴 때 (준비 중)
-> 7. 키보드 애니메이션에 시트를 맞추기 (준비 중)
+> 6. 부록: [키보드가 시트를 가릴 때](../css-bottom-sheet-6-keyboard/)
+> 7. 부록: 키보드 애니메이션에 시트를 맞추기 (준비 중)
 
 1편에서는 스크롤 스냅으로 시트를 여닫았습니다. exit 마커가 닫힘 위치를, enter 마커가 열림 위치를 정하고, 시트 콘텐츠가 뷰포트를 벗어나면 `IntersectionObserver`가 닫힘을 감지했습니다.
 

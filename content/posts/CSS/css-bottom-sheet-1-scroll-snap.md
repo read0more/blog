@@ -5,7 +5,7 @@ description: "React Aria의 Sheet 글을 빌드 도구 없이 따라 만든 시�
 tags: ["CSS"]
 ---
 
-이번 글부터 **CSS로 만드는 네이티브 같은 바텀시트** 시리즈를 시작하려고 합니다. React Aria 팀의 글 [Scrolling is All You Need: Building a Swipeable Sheet](https://react-aria.adobe.com/blog/sheet)를 보고 같은 시트를 직접 따라 만든 과정을 일곱 편에 나눠 정리합니다.
+이번 글부터 **CSS로 만드는 네이티브 같은 바텀시트** 시리즈를 시작하려고 합니다. React Aria 팀의 글 [Scrolling is All You Need: Building a Swipeable Sheet](https://react-aria.adobe.com/blog/sheet)를 보고 같은 시트를 직접 따라 만든 과정을 다섯 편에 나눠 정리하고, 시트 안 입력칸과 키보드 처리는 부록 두 편으로 덧붙입니다.
 
 > **시리즈 목차**
 >
@@ -14,8 +14,8 @@ tags: ["CSS"]
 > 3. [지도 앱처럼 중간에 멈추고, 스와이프로는 닫히지 않게](../css-bottom-sheet-3-snap-points/)
 > 4. [손가락을 따라오는 backdrop과 모서리](../css-bottom-sheet-4-scroll-animation/)
 > 5. [여러 시트를 겹쳐 열고 뒤 시트를 밀어내기](../css-bottom-sheet-5-stacked-sheets/)
-> 6. 키보드가 시트를 가릴 때 (준비 중)
-> 7. 키보드 애니메이션에 시트를 맞추기 (준비 중)
+> 6. 부록: [키보드가 시트를 가릴 때](../css-bottom-sheet-6-keyboard/)
+> 7. 부록: 키보드 애니메이션에 시트를 맞추기 (준비 중)
 
 ## 시트를 끌어내리는데 터치 이벤트가 없다
 
