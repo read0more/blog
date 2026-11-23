@@ -193,6 +193,23 @@
   margin: 14px 0 0;
 }
 
+/* 인용 블록 안 리스트(예: 시리즈 목차): 한 줄 항목을 나열하므로 촘촘하게 두고,
+   아래 여백은 인용 블록 padding 에 맡긴다. 색도 인용 블록을 따른다. */
+.prose :global(blockquote) :global(ul),
+.prose :global(blockquote) :global(ol) {
+  margin: 0;
+}
+.prose :global(blockquote) :global(p + ul),
+.prose :global(blockquote) :global(p + ol) {
+  margin-top: 8px;
+}
+.prose :global(blockquote) :global(li) {
+  color: inherit;
+}
+.prose :global(blockquote) :global(li + li) {
+  margin-top: 4px;
+}
+
 /* 번호 리스트: tint 숫자 */
 .prose :global(ol) {
   padding-left: 26px;
