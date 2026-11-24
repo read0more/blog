@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { PostLanguage } from "@/lib/types";
 import { getAllPostMeta, getAllTags, getCategories } from "@/lib/posts";
 import { fontVariables } from "@/app/fonts";
+import { ThemeHead } from "@/app/theme-head";
 import { AppShell } from "./AppShell";
 
 export async function SiteLayout({
@@ -19,6 +20,7 @@ export async function SiteLayout({
   ]);
   return (
     <html lang={language} className={fontVariables} suppressHydrationWarning>
+      <ThemeHead />
       <body suppressHydrationWarning>
         <AppShell
           language={language}

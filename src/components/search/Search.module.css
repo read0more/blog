@@ -57,7 +57,7 @@
 .panelScrim {
   position: fixed;
   inset: var(--header-h) 0 0 0;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--veil);
   z-index: 35;
   animation: r0-fade 0.18s ease;
 }
@@ -133,7 +133,7 @@
   color: var(--ink-2);
 }
 .resultSnippet mark {
-  background: rgba(0, 122, 255, 0.14);
+  background: var(--highlight);
   color: var(--ink);
   font-weight: 600;
 }

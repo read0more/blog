@@ -31,14 +31,26 @@
   --material-thick-dark: rgba(20, 20, 20, 0.9);
   --material-chrome-dark: rgba(22, 22, 22, 0.8);
 
-  /* Theme-resolved material defaults (light) */
-  --material-thin: var(--material-thin-light);
-  --material-regular: var(--material-regular-light);
-  --material-thick: var(--material-thick-light);
-  --material-chrome: var(--material-chrome-light);
+  /* 테마에 맞춘 재질. colors.css 의 color-scheme 이 light-dark() 의 쪽을 고른다. */
+  --material-thin: light-dark(
+    var(--material-thin-light),
+    var(--material-thin-dark)
+  );
+  --material-regular: light-dark(
+    var(--material-regular-light),
+    var(--material-regular-dark)
+  );
+  --material-thick: light-dark(
+    var(--material-thick-light),
+    var(--material-thick-dark)
+  );
+  --material-chrome: light-dark(
+    var(--material-chrome-light),
+    var(--material-chrome-dark)
+  );
 
   /* Scrim behind modal sheets / alerts */
-  --scrim: rgba(0, 0, 0, 0.4);
+  --scrim: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5));
 
   /* ---- Motion ---- */
   /* iOS easing: a gentle spring-like ease; standard durations are short. */
@@ -51,13 +63,4 @@
   /* Press feedback: gentle dim + 0.96 scale is the house style */
   --press-scale: 0.96; /* @kind other */
   --press-dim: 0.4; /* @kind other */
-}
-
-:root[data-theme="dark"],
-.dark {
-  --material-thin: var(--material-thin-dark);
-  --material-regular: var(--material-regular-dark);
-  --material-thick: var(--material-thick-dark);
-  --material-chrome: var(--material-chrome-dark);
-  --scrim: rgba(0, 0, 0, 0.5);
 }

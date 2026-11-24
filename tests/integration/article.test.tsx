@@ -75,6 +75,36 @@ test("마크다운은 읽을 수 있는 본문·앵커·코드로 렌더되고 �
   );
 });
 
+test("코드 블록은 라이트·다크 구문 색을 함께 싣고 바탕은 칠하지 않는다", async () => {
+  const { html } = await renderMarkdown(
+    "```js\n// 주석\nconst token = 1;\n```",
+  );
+  const root = document.createElement("div");
+  root.innerHTML = html;
+  const pre = root.querySelector("pre")!;
+  const token = (text: string) =>
+    [...pre.querySelectorAll<HTMLElement>("span[style]")].find(
+      (span) => span.textContent === text,
+    )!;
+  // 라이트는 기존 github-light 색 그대로, 다크는 github-dark 색이다. CSS 가 현재 테마 쪽을 고른다.
+  expect(token("const").style.getPropertyValue("--shiki-light")).toBe(
+    "#D73A49",
+  );
+  expect(token("const").style.getPropertyValue("--shiki-dark")).toBe("#F97583");
+  // 다크 주석만 코드 바탕 대비 4.5:1 이 되도록 밝힌 색이고, 라이트 주석은 그대로다.
+  expect(token("// 주석").style.getPropertyValue("--shiki-light")).toBe(
+    "#6A737D",
+  );
+  expect(token("// 주석").style.getPropertyValue("--shiki-dark")).toBe(
+    "#8B949E",
+  );
+  // 색 없는 일반 텍스트는 pre 의 기본 글자색 변수를 물려받는다.
+  expect(pre.style.getPropertyValue("--shiki-light")).toBe("#24292e");
+  expect(pre.style.getPropertyValue("--shiki-dark")).toBe("#e1e4e8");
+  // 바탕은 figure 의 --paper-2 가 맡으므로 shiki 가 직접 칠하지 않는다.
+  expect(pre.style.backgroundColor).toBe("");
+});
+
 test.each([2, 3])(
   "목차는 heading %i개일 때 임계값 3개에 따라 제공된다",
   async (count) => {

@@ -1,12 +1,23 @@
 /* ============================================================
-   iOS Design System — Color tokens
-   System palette + grays from Apple Human Interface Guidelines,
-   verified against the source Figma "Colors" frame.
-   Two layers:
-   1. Base palette  (--red, --blue, --gray-06 …) — raw hues, light + dark.
-   2. Semantic roles (--label, --fill, --bg, --separator, --tint) — what
-      you actually reference in components. Semantics flip with the theme.
+   Color tokens
+   1. iOS 시절 기본 팔레트와 의미 토큰(--sys-*, --gray-*, --label, --bg …): 남은 참조를 위해 값만 둔다.
+   2. 지면형(editorial) 토큰(--ink, --paper, --rule, --accent …): 컴포넌트가 실제로 쓰는 색.
+
+   테마: 지면형 토큰은 light-dark(<라이트>, <다크>) 로 두 값을 한 번에 적는다.
+   어느 쪽을 쓸지는 color-scheme 이 정한다. 기본은 시스템 설정(light dark)이고,
+   <head> 의 스크립트나 전환 버튼이 붙인 <html data-theme> 이 있으면 그 값으로 고정한다.
+   JS 가 없으면 data-theme 이 없으므로 CSS 만으로 시스템 설정을 따른다.
    ============================================================ */
+
+:root {
+  color-scheme: light dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
 
 :root {
   /* ---- System colors · Light (default) ---- */
@@ -64,21 +75,28 @@
   /* On-color foreground for filled tinted surfaces */
   --on-tint: #ffffff;
 
-  /* ---- 지면형(editorial) 토큰 ---- */
-  /* 새 컴포넌트는 아래 이름을 쓴다. 위 iOS 토큰은 남은 참조를 위해 값만 맞춘다. */
-  --ink: #111111; /* 글자, 굵은·가는 검정 괘선 */
-  --ink-2: #333333; /* 보조 본문 */
-  --ink-3: #555555; /* 메타, 날짜 */
-  --paper: #ffffff;
-  --paper-2: #f5f5f5; /* 코드 블록 바탕 */
-  --code-inline-bg: #f1f1f1;
-  --rule: #111111;
-  --rule-soft: #d0d0d0; /* 목록 항목 사이 옅은 괘선 */
-  --accent: #007aff; /* 선, 면, 24px 이상 글자에만 */
-  --accent-text: #0060d0; /* 24px 미만 파란 글씨, 링크 (흰 바탕 대비 4.5:1 이상) */
+  /* ---- 지면형(editorial) 토큰: light-dark(라이트, 다크) ---- */
+  /* 새 컴포넌트는 아래 이름을 쓴다. 위 iOS 토큰은 남은 참조를 위해 값만 맞춘다.
+     글자는 각 테마 바탕 대비 4.5:1, 선과 24px 이상 글자는 3:1 이상을 지킨다. */
+  --ink: light-dark(#111111, #f2f2f2); /* 글자, 굵은·가는 괘선 */
+  --ink-2: light-dark(#333333, #d4d4d4); /* 보조 본문 */
+  --ink-3: light-dark(#555555, #a3a3a3); /* 메타, 날짜 */
+  /* 바탕. 다크도 순수 검정은 쓰지 않는다. 바꾸면 theme-script.ts 의 THEME_COLORS 도 맞춘다. */
+  --paper: light-dark(#ffffff, #111113);
+  --paper-2: light-dark(#f5f5f5, #1c1c1f); /* 코드 블록 바탕 */
+  --code-inline-bg: light-dark(#f1f1f1, #26262a);
+  --rule: light-dark(#111111, #f2f2f2); /* 다크에서는 밝은 괘선으로 뒤집힌다 */
+  --rule-soft: light-dark(#d0d0d0, #3a3a3e); /* 목록 항목 사이 옅은 괘선 */
+  --accent: #007aff; /* 퍼스널 컬러. 선, 면, 24px 이상 글자에만 */
+  /* 24px 미만 파란 글씨, 링크 (바탕 대비 4.5:1 이상) */
+  --accent-text: light-dark(#0060d0, #5cadff);
+  /* 검색어 강조 바탕. 어두운 바탕에서는 더 진하게 깐다. */
+  --highlight: light-dark(rgba(0, 122, 255, 0.14), rgba(0, 122, 255, 0.32));
+  /* 패널 뒤 화면을 옅게 가리는 막(바탕색 60%) */
+  --veil: light-dark(rgba(255, 255, 255, 0.6), rgba(17, 17, 19, 0.6));
 }
 
-/* 기존 iOS 의미 토큰을 지면형 규칙(검정 글자, 불투명 괘선)에 맞춘다. 다크 테마보다 앞에 둔다. */
+/* 기존 iOS 의미 토큰을 지면형 토큰에서 파생한다. 그래서 테마도 함께 따라간다. */
 :root {
   --label: var(--ink);
   --label-secondary: var(--ink-3);
@@ -87,61 +105,11 @@
   --placeholder: #767676;
   --bg: var(--paper);
   --bg-secondary: var(--paper-2);
+  --bg-tertiary: var(--paper);
   --bg-grouped: var(--paper);
+  --bg-grouped-secondary: var(--paper);
   --bg-grouped-tertiary: var(--paper-2);
   --separator: var(--rule-soft);
   --separator-opaque: var(--rule-soft);
   --tint-pressed: var(--accent-text);
-}
-
-/* ============================================================
-   Dark theme — opt in explicitly by setting [data-theme="dark"]
-   (or class="dark") on a root/ancestor element. Defaults to light.
-   ============================================================ */
-:root[data-theme="dark"],
-.dark {
-  --sys-red: #ff453a;
-  --sys-orange: #ff9f0a;
-  --sys-yellow: #ffd60a;
-  --sys-green: #32d74b;
-  --sys-mint: #63e6e2;
-  --sys-teal: #64d2ff;
-  --sys-cyan: #64d2ff;
-  --sys-blue: #0a84ff;
-  --sys-indigo: #5e5ce6;
-  --sys-purple: #bf5af2;
-  --sys-pink: #ff375f;
-  --sys-brown: #ac8e68;
-
-  --gray: #8e8e93;
-  --gray-02: #636366;
-  --gray-03: #48484a;
-  --gray-04: #3a3a3c;
-  --gray-05: #2c2c2e;
-  --gray-06: #1c1c1e;
-
-  --label: #ffffff;
-  --label-secondary: rgba(235, 235, 245, 0.6);
-  --label-tertiary: rgba(235, 235, 245, 0.3);
-  --label-quaternary: rgba(235, 235, 245, 0.16);
-  --placeholder: rgba(235, 235, 245, 0.3);
-
-  --bg: #000000;
-  --bg-secondary: #1c1c1e;
-  --bg-tertiary: #2c2c2e;
-  --bg-grouped: #000000;
-  --bg-grouped-secondary: #1c1c1e;
-  --bg-grouped-tertiary: #2c2c2e;
-
-  --fill: rgba(120, 120, 128, 0.36);
-  --fill-secondary: rgba(120, 120, 128, 0.32);
-  --fill-tertiary: rgba(118, 118, 128, 0.24);
-  --fill-quaternary: rgba(118, 118, 128, 0.18);
-
-  --separator: rgba(84, 84, 88, 0.6);
-  --separator-opaque: #38383a;
-
-  --tint: var(--sys-blue);
-  --tint-pressed: #3d9bff;
-  --on-tint: #ffffff;
 }

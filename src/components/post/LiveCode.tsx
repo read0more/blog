@@ -8,6 +8,7 @@ import {
 import type { LiveCodeFiles, LiveCodeView } from "@/lib/remark-live-code";
 import type { PostLanguage } from "@/lib/types";
 import { getUiTranslator } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 import styles from "./LiveCode.module.css";
 
 const PANEL_HEIGHT = 480;
@@ -36,6 +37,8 @@ export function LiveCode({
     code: translate("code"),
   };
   const [view, setView] = useState(initialView);
+  // 편집기 색만 화면 테마를 따른다. Provider 는 그대로라 고친 코드와 미리보기 상태가 남는다.
+  const theme = useTheme();
   // 기본 activeFile 은 템플릿 진입점(/index.html)이라, hidden 이어도 탭에 끼어든다.
   // 처음 보이는 파일을 활성으로 지정해 hidden 이 실제로 숨겨지게 한다.
   const activeFile = Object.keys(files).find((path) => !files[path].hidden);
@@ -69,6 +72,7 @@ export function LiveCode({
         template="static"
         files={files}
         options={{ activeFile }}
+        theme={theme}
       >
         <SandpackLayout>
           <SandpackCodeEditor style={panel(view !== "preview")} />

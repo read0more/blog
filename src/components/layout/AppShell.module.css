@@ -90,6 +90,24 @@
   color: var(--accent-text);
 }
 
+/* 테마 전환: 언어 전환과 한 묶음으로 붙이고(32px - 20px), 아이콘 끝을 괘선 끝에 맞춘다. */
+.themeToggle {
+  margin: 0 -12px 0 -20px;
+}
+/* 라이트에서는 달(다크로 전환), 다크에서는 해(라이트로 전환)를 보인다.
+   첫 페인트 전 스크립트가 붙인 data-theme 으로 고르므로 hydration 전에도 맞는 아이콘이 나온다. */
+.sunIcon,
+:root[data-theme="dark"] .moonIcon {
+  display: none;
+}
+:root[data-theme="dark"] .sunIcon {
+  display: block;
+}
+/* JS 가 없으면 data-theme 이 없고 버튼도 동작하지 않으므로 자리만 남기고 숨긴다. */
+:root:not([data-theme]) .themeToggle {
+  visibility: hidden;
+}
+
 /* Hamburger + mobile search are hidden on desktop */
 .mobileOnly {
   display: none;
@@ -297,6 +315,9 @@
   }
   .headerInner > .iconButton:last-child {
     margin-right: -12px;
+  }
+  .themeToggle {
+    margin: 0;
   }
   .wordmark {
     flex: 1;

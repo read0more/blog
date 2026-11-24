@@ -7,6 +7,7 @@ import type { Category, PostLanguage } from "@/lib/types";
 import { sitePath, getUiTranslator } from "@/lib/i18n";
 import { SidebarNav } from "./SidebarNav";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { ThemeToggle } from "./ThemeToggle";
 import { HamburgerIcon, SearchIcon, CloseIcon } from "./icons";
 import { useSearch } from "../search/useSearch";
 import { DesktopSearch } from "../search/DesktopSearch";
@@ -71,7 +72,7 @@ export function AppShell({
 
   return (
     <div className={styles.shell}>
-      {/* ---- Header: 워드마크 / 카테고리 내비 / 검색 / 언어 전환, 아래 3px 괘선 ---- */}
+      {/* ---- Header: 워드마크 / 카테고리 내비 / 검색 / 언어 전환 / 테마 전환, 아래 3px 괘선 ---- */}
       <header className={styles.header} data-testid="app-header">
         <div className={styles.headerInner}>
           <button
@@ -115,6 +116,8 @@ export function AppShell({
             originalSlugs={originalSlugs}
             translatedSlugs={translatedSlugs}
           />
+
+          <ThemeToggle language={language} />
 
           {/* Mobile search button */}
           <button

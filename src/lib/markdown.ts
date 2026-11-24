@@ -7,12 +7,23 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeStringify from "rehype-stringify";
+import githubDark from "shiki/themes/github-dark.mjs";
 import { visit } from "unist-util-visit";
 import type { Root as MdastRoot } from "mdast";
 import { rehypeExtractToc } from "./rehype-extract-toc";
 import { rehypeFigure } from "./rehype-figure";
 import { remarkLiveCode } from "./remark-live-code";
 import type { TocItem } from "./types";
+
+/**
+ * 다크 코드 블록 테마. github-dark 의 주석색 #6a737d 는 다크 코드 바탕(#1c1c1f) 대비 3.5:1 이라
+ * GitHub 새 다크 테마(github-dark-default)의 주석색 #8b949e(5.5:1)로만 바꾼다. 나머지 색은 그대로다.
+ * 이름을 그대로 둬서 pre 의 data-theme 값도 바뀌지 않는다.
+ */
+const githubDarkReadable = {
+  ...githubDark,
+  colorReplacements: { "#6a737d": "#8B949E" },
+};
 
 export interface RenderedMarkdown {
   html: string;
@@ -64,7 +75,11 @@ export async function renderMarkdown(
       properties: { className: ["heading-anchor"] },
     })
     .use(rehypePrettyCode, {
-      theme: "github-light",
+      // 두 테마 색을 토큰마다 --shiki-light·--shiki-dark 변수로 함께 싣고,
+      // Article.module.css 가 현재 테마 쪽 변수를 골라 칠한다.
+      // keepBackground 를 끄면 pre 의 기본 글자색 변수까지 사라지므로 켜 둔다.
+      // 이중 테마에서는 바탕도 변수(--shiki-*-bg)로만 실려 figure 의 --paper-2 가 그대로 보인다.
+      theme: { light: "github-light", dark: githubDarkReadable },
       keepBackground: true,
       // 언어 없는 펜스 블록도 figure[data-rehype-pretty-code-figure]로 감싸
       // 다른 코드블록과 동일한 overflow-x:auto·스타일·복사 헤더를 받게 한다.

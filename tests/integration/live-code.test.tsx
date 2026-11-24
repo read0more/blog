@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { afterEach, expect, test, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderMarkdown } from "@/lib/markdown";
 import { ArticleClient } from "@/components/post/ArticleClient";
@@ -100,6 +100,29 @@ test("본문의 live 파일을 SDK에 전달하고 보기 전환 후에도 미�
   await user.click(screen.getByRole("button", { name: "미리보기" }));
   expect(screen.getByTitle("미리보기 경계")).toBe(preview);
   expect(preview).toBeVisible();
+});
+
+test("편집기 테마는 화면 테마를 따르고, 바뀌어도 SDK 를 다시 마운트하지 않는다", async () => {
+  document.documentElement.dataset.theme = "dark";
+  try {
+    await renderArticle("```html live file=index.html\n<p>테마</p>\n```");
+    const preview = await screen.findByTitle("미리보기 경계");
+    expect(receiveFiles).toHaveBeenLastCalledWith(
+      expect.objectContaining({ theme: "dark" }),
+    );
+    // 전환 버튼과 첫 페인트 전 스크립트가 바꾸는 것은 <html data-theme> 뿐이다.
+    act(() => {
+      document.documentElement.dataset.theme = "light";
+    });
+    await waitFor(() =>
+      expect(receiveFiles).toHaveBeenLastCalledWith(
+        expect.objectContaining({ theme: "light" }),
+      ),
+    );
+    expect(screen.getByTitle("미리보기 경계")).toBe(preview);
+  } finally {
+    delete document.documentElement.dataset.theme;
+  }
 });
 
 test("height= 는 그 블록의 편집기·미리보기 높이가 되고 잘못된 값은 빌드 오류다", async () => {
