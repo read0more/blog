@@ -40,7 +40,10 @@
     "languageHome": "한국어 홈",
     "translationUnavailable": "영어 번역이 없습니다",
     "translationUnavailableMessage": "이 글은 현재 한국어로만 제공됩니다.",
-    "readOriginal": "한국어 원문 읽기"
+    "readOriginal": "한국어 원문 읽기",
+    "latestPost": "최신 글",
+    "readNext": "이어서 읽기",
+    "tags": "태그"
   },
   "taxonomy": {
     "categories": {

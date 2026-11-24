@@ -1,62 +1,74 @@
 /* ============================================================
-   AppShell — 공통 레이아웃(헤더 + 좌측 사이드바 + 본문)
-   디자인(read0more.dc.html)의 프레임 내부 레이아웃을 실제 반응형으로 옮긴다.
-   디자인의 미리보기 프레임/디바이스 토글은 재현하지 않는다(뷰포트가 프레임).
+   AppShell: 공통 레이아웃(헤더 + 본문 단일 컬럼)
+   지면형 규칙: 검정 글자, 직각, 3px·1px 괘선. 반투명 blur 와 둥근 칩을 쓰지 않는다.
    ============================================================ */
 
 .shell {
   min-height: 100dvh;
-  background: var(--bg);
+  background: var(--paper);
 }
 
-/* ---- Frosted header (57px) ---- */
+/* ---- Header ----
+   바깥 header 는 화면 폭 전체를 흰색으로 덮는 sticky 띠, 안쪽은 --page-max 안의 한 줄이다.
+   3px 괘선은 시안처럼 본문 폭에만 긋는다. 높이는 globals.css 의 --header-h 와 맞춘다. */
 .header {
   position: sticky;
   top: 0;
   z-index: 30;
+  padding: 0 var(--page-pad);
+  background: var(--paper);
+}
+
+.headerInner {
   display: flex;
   align-items: center;
-  gap: 14px;
-  height: 57px;
-  padding: 0 22px;
-  background: var(--material-chrome);
-  /* lightningcss(Turbopack)가 var() 값을 가진 backdrop-filter 선언을 drop 하므로
-     토큰(--blur-regular) 값을 리터럴로 작성한다. blur(30px) saturate(180%). */
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  backdrop-filter: blur(30px) saturate(180%);
-  border-bottom: var(--hairline) solid var(--separator);
+  gap: 32px;
+  max-width: calc(var(--page-max) - 2 * var(--page-pad));
+  height: var(--header-h);
+  margin: 0 auto;
+  border-bottom: var(--rule-thick) solid var(--rule);
 }
 
 .wordmark {
-  font-family: var(--font-display);
-  font-weight: var(--weight-bold);
-  font-size: 19px;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  min-height: 48px;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  color: var(--label);
+  color: var(--ink);
   user-select: none;
   text-decoration: none;
 }
 .wordmark:hover {
+  color: var(--accent-text);
   text-decoration: none;
 }
 
 .languageLink {
   display: inline-flex;
   align-items: center;
+  flex: none;
   min-height: 44px;
-  padding: 0 8px;
-  color: var(--label-secondary);
+  padding: 0 4px;
+  color: var(--ink);
   font-size: 13px;
+  font-weight: 500;
   white-space: nowrap;
 }
-.languageLink:focus-visible {
-  outline: 2px solid var(--tint);
-  outline-offset: 2px;
+.languageLink:hover {
+  color: var(--accent-text);
 }
 
-/* Desktop search box (300x36) — 검색 동작은 Task #7. 여기선 모양/슬롯. */
+/* 검색은 오른쪽으로 민다. 폭이 모자라면 검색칸이 먼저 줄어든다. */
 .headerSearchSlot {
+  flex: 0 1 200px;
+  min-width: 120px;
   margin-left: auto;
+  /* 검색칸과 언어 전환은 한 묶음이라 간격을 좁힌다(32px - 12px). */
+  margin-right: -12px;
 }
 
 /* Icon buttons (hamburger / mobile search) */
@@ -64,16 +76,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   border: none;
+  border-radius: 0;
   background: transparent;
   cursor: pointer;
-  border-radius: 9px;
-  color: var(--label);
+  color: var(--ink);
 }
 .iconButton:hover {
-  background: var(--fill-quaternary);
+  color: var(--accent-text);
 }
 
 /* Hamburger + mobile search are hidden on desktop */
@@ -84,97 +98,68 @@
   display: flex;
 }
 
-/* ---- Content grid: [sidebar 200] [main] ---- */
-.contentWrap {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: 44px;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 0 32px;
-  align-items: start;
-}
-
-/* 글 상세 컨테이너 폭(dc.html 689-694):
-   - TOC 없음 → maxW 900 (짧은 글 가독성: 본문 줄길이 제한)
-   - TOC 있음 → maxW 1280 (본문 + 우측 TOC 188px). 1140 이면 좌측 사이드바·우측 TOC 를
-     뺀 본문이 ~600px 로 좁아 갑갑해, 본문이 ~740px 폭을 갖도록 넓혔다.
-   우측 TOC(.tocCol, [data-testid="toc"]) 가 실제 렌더될 때만 :has 로 넓힌다.
-   본문/TOC 의 내부 2컬럼 분할은 글 상세 컴포넌트(Article)가 담당한다. */
-.contentWrap.post {
-  max-width: 900px;
-}
-.contentWrap.post:has([data-testid="toc"]) {
-  max-width: 1280px;
-}
-
-/* Sidebar (sticky) */
-.sidebar {
-  position: sticky;
-  top: 57px;
-  align-self: start;
-  padding-top: 26px;
-}
-
-.sidebarHeading {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--label-tertiary);
-  padding: 0 10px 10px;
-}
-
+/* ---- 카테고리 내비 (SidebarNav) ---- */
 .catRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
-  border-radius: 8px;
-  cursor: pointer;
+  gap: 6px;
+  color: var(--ink);
   font-size: 15px;
-  margin-bottom: 1px;
-  transition: background 0.12s;
-  color: var(--label);
+  font-weight: 500;
   text-decoration: none;
+  white-space: nowrap;
 }
 .catRow:hover {
-  background: var(--fill-quaternary);
+  color: var(--accent-text);
   text-decoration: none;
 }
 .catRow.active {
-  background: rgba(0, 122, 255, 0.12);
-  color: var(--tint);
-  font-weight: 600;
+  font-weight: 700;
 }
-
-.catName {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-.catDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex: none;
+.catRow.active:hover {
+  color: var(--ink);
 }
 .catCount {
-  font-size: 14px;
-  color: var(--label-tertiary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-3);
   font-variant-numeric: tabular-nums;
 }
-.catRow.active .catCount {
-  color: var(--tint);
+
+/* 헤더 안 가로 내비. 카테고리가 많아 넘치면 줄바꿈 대신 가로로 스크롤한다(헤더 높이 고정). */
+.headerNav {
+  min-width: 0;
+}
+.headerNav .catNav {
+  display: flex;
+  gap: 28px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.headerNav .catRow {
+  min-height: 48px;
+}
+.headerNav .catRow.active {
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+.headerNav .catRow:focus-visible {
+  outline-offset: -2px;
 }
 
 /* Main column */
+.contentWrap {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+}
 .main {
   min-width: 0;
   padding: 0 0 64px;
 }
 
-/* ---- Mobile sidebar (slide-in 272px) + scrim ---- */
+/* ---- Mobile slide-in menu (272px) + scrim ---- */
 .scrim {
   position: fixed;
   inset: 0;
@@ -195,9 +180,9 @@
   left: 0;
   bottom: 0;
   width: 272px;
-  background: var(--bg);
+  background: var(--paper);
+  border-right: var(--rule-thin) solid var(--rule);
   z-index: 41;
-  box-shadow: var(--shadow-popover);
   transition: transform 0.28s var(--ease-out);
   transform: translateX(-100%);
   overflow-y: auto;
@@ -210,25 +195,52 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 18px 10px;
+  height: var(--header-h);
+  margin: 0 20px;
+  border-bottom: var(--rule-thick) solid var(--rule);
 }
-.mobileSidebarBody {
-  padding: 0 12px 18px;
+.drawerHeading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink);
 }
 .closeButton {
   display: flex;
-  border: none;
-  background: var(--fill-tertiary);
-  border-radius: 50%;
-  width: 26px;
-  height: 26px;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -12px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
   cursor: pointer;
-  color: var(--label-secondary);
+}
+.closeButton:hover {
+  color: var(--accent-text);
 }
 
-/* ---- Back-to-top FAB (우하단 플로팅, PRD §5.9) ---- */
+/* 모바일 메뉴 안 세로 목록: 행 사이 옅은 괘선, 현재 항목은 왼쪽 파란 막대 */
+.mobileSidebarBody {
+  padding: 0 20px 20px;
+}
+.mobileSidebarBody .catRow {
+  justify-content: space-between;
+  min-height: 48px;
+  padding: 0 0 0 12px;
+  font-size: 16px;
+}
+.mobileSidebarBody .catRow + .catRow {
+  border-top: var(--rule-thin) solid var(--rule-soft);
+}
+.mobileSidebarBody .catRow.active {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* ---- Back-to-top (우하단, 직각 괘선 상자) ---- */
 .backToTop {
   position: fixed;
   right: 24px;
@@ -236,71 +248,66 @@
   z-index: 50;
   width: 44px;
   height: 44px;
-  border-radius: 50%;
-  border: none;
-  background: var(--tint);
-  color: var(--on-tint);
+  padding: 0;
+  border: var(--rule-thin) solid var(--rule);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: var(--shadow-fab);
-  /* 기본 숨김: opacity + scale 조합으로 iOS FAB 등장 느낌 */
+  /* 기본 숨김 */
   opacity: 0;
-  transform: scale(0.8);
+  transform: translateY(8px);
   pointer-events: none;
   transition:
     opacity 0.2s var(--ease-out),
-    transform 0.2s var(--ease-out);
+    transform 0.2s var(--ease-out),
+    background 0.12s,
+    color 0.12s;
 }
 .backToTop.backToTopVisible {
   opacity: 1;
-  transform: scale(1);
+  transform: none;
   pointer-events: auto;
 }
 .backToTop:hover {
-  background: var(--tint-pressed);
-}
-.backToTop:active {
-  transform: scale(var(--press-scale));
-  opacity: calc(1 - var(--press-dim) * 0.3);
+  background: var(--ink);
+  color: var(--paper);
 }
 @media (prefers-reduced-motion: reduce) {
   .backToTop {
     transition: opacity 0.01s;
   }
-  .backToTop:active {
-    transform: none;
-  }
 }
 
 /* ============================================================
-   Responsive: collapse to single column under 900px.
+   900px 이하: 헤더는 햄버거 / 워드마크 / 언어 / 검색 아이콘 한 줄.
+   카테고리 내비와 데스크톱 검색은 숨기고 햄버거 메뉴·검색 오버레이를 쓴다.
    ============================================================ */
 @media (max-width: 900px) {
-  .header {
+  .headerInner {
     gap: 4px;
-    padding: 0 8px;
+    max-width: none;
+  }
+  /* 아이콘 버튼은 44px 터치 영역을 유지하되 아이콘 자체는 괘선 끝선에 맞춘다. */
+  .headerInner > .iconButton:first-child {
+    margin-left: -11px;
+  }
+  .headerInner > .iconButton:last-child {
+    margin-right: -12px;
   }
   .wordmark {
     flex: 1;
-    text-align: center;
+    justify-content: center;
+    font-size: 20px;
   }
   .desktopOnly {
     display: none;
   }
   .mobileOnly {
     display: flex;
-  }
-  .contentWrap,
-  .contentWrap.post,
-  .contentWrap.post:has([data-testid="toc"]) {
-    display: block;
-    max-width: 100%;
-    padding: 0 18px;
-  }
-  .sidebar {
-    display: none;
   }
   .main {
     padding: 0 0 48px;

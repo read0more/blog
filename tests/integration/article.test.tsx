@@ -67,6 +67,8 @@ test("마크다운은 읽을 수 있는 본문·앵커·코드로 렌더되고 �
   expect(await navigator.clipboard.readText()).toBe(
     "const secretCodeToken = 1;",
   );
+  // 복사가 끝나면 버튼 문구로 결과를 알린다(1.5초 뒤 원복은 검사하지 않는다).
+  expect(screen.getByRole("button", { name: "복사됨" })).toBeInTheDocument();
   expect(screen.getByRole("link", { name: "#Hooks" })).toHaveAttribute(
     "href",
     "/tag/Hooks",

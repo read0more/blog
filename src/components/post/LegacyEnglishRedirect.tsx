@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { getUiTranslator } from "@/lib/i18n";
+import styles from "./Article.module.css";
 
 export function LegacyEnglishRedirect({ slug }: { slug: string }) {
   const translate = getUiTranslator("en");
@@ -12,7 +13,7 @@ export function LegacyEnglishRedirect({ slug }: { slug: string }) {
     );
   }, [destination]);
   return (
-    <section lang="en">
+    <section lang="en" className={styles.notice}>
       <h1>{translate("legacyTitle")}</h1>
       <p>
         <a href={destination} data-testid="legacy-english-link">

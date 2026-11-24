@@ -13,13 +13,12 @@ interface SidebarNavProps {
   totalCount: number;
   /** 행 클릭 시 호출(모바일 사이드바 닫기 등). */
   onNavigate?: () => void;
-  /** "카테고리" 헤딩 표시 여부(모바일 사이드바는 자체 헤딩이 있어 false). */
-  showHeading?: boolean;
 }
 
 /**
- * 카테고리 목록 — "전체 글"(홈) + 카테고리별 행(컬러칩 + 카운트).
- * 현재 경로를 보고 active 행을 강조한다. 데스크톱/모바일 사이드바 공용.
+ * 카테고리 목록: "전체 글"(홈) + 카테고리별 행(이름 + 글 수).
+ * 현재 경로를 보고 active 행을 강조한다. 데스크톱 헤더 내비와 모바일 메뉴 공용이며,
+ * 가로·세로 배치는 감싸는 요소(.headerNav / .mobileSidebarBody)의 CSS 가 정한다.
  *
  * 카테고리 slug 는 한글 그대로 허용(PRD §3)하므로 링크는 encodeURIComponent 로 만든다.
  */
@@ -28,9 +27,9 @@ export function SidebarNav({
   categories,
   totalCount,
   onNavigate,
-  showHeading = true,
 }: SidebarNavProps) {
   const pathname = usePathname();
+  const translate = getUiTranslator(language);
 
   // "전체 글"은 홈(/)에서만 active.
   const home = sitePath(language);
@@ -47,13 +46,7 @@ export function SidebarNav({
   };
 
   return (
-    <nav>
-      {showHeading && (
-        <div className={styles.sidebarHeading}>
-          {getUiTranslator(language)("categories")}
-        </div>
-      )}
-
+    <nav aria-label={translate("categories")} className={styles.catNav}>
       <Link
         href={home}
         onClick={onNavigate}
@@ -61,7 +54,7 @@ export function SidebarNav({
         data-testid="sidebar-all"
         aria-current={homeActive ? "page" : undefined}
       >
-        <span>{getUiTranslator(language)("allPosts")}</span>
+        <span>{translate("allPosts")}</span>
         <span className={styles.catCount}>{totalCount}</span>
       </Link>
 
@@ -76,10 +69,7 @@ export function SidebarNav({
             data-testid={`sidebar-category-${c.name}`}
             aria-current={active ? "page" : undefined}
           >
-            <span className={styles.catName}>
-              <span className={styles.catDot} style={{ background: c.color }} />
-              {categoryLabel(c.name, language)}
-            </span>
+            <span>{categoryLabel(c.name, language)}</span>
             <span className={styles.catCount}>{c.count}</span>
           </Link>
         );

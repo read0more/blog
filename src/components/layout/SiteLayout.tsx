@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { PostLanguage } from "@/lib/types";
 import { getAllPostMeta, getAllTags, getCategories } from "@/lib/posts";
+import { fontVariables } from "@/app/fonts";
 import { AppShell } from "./AppShell";
 
 export async function SiteLayout({
@@ -17,7 +18,7 @@ export async function SiteLayout({
     getCategories(language),
   ]);
   return (
-    <html lang={language} suppressHydrationWarning>
+    <html lang={language} className={fontVariables} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <AppShell
           language={language}

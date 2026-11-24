@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getAllPostMeta, getAllTags, getCategories } from "@/lib/posts";
 import { GlobalNotFoundView } from "@/components/GlobalNotFoundView";
 import { getUiTranslator } from "@/lib/i18n";
+import { fontVariables } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = { title: "404 · read0more" };
@@ -17,7 +18,7 @@ export default async function GlobalNotFound() {
       getAllTags("en"),
     ]);
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang="ko" className={fontVariables} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <noscript>
           <p lang="en">

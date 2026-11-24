@@ -11,9 +11,10 @@ function ChevronRight() {
       height="16"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="var(--label-tertiary)"
-      strokeWidth="2.2"
-      strokeLinecap="round"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="square"
+      aria-hidden="true"
     >
       <path d="m9 18 6-6-6-6" />
     </svg>
@@ -27,8 +28,8 @@ interface NotFoundViewProps {
 }
 
 /**
- * 404 화면 — 큰 404 + 안내 + 홈 버튼 + 최근 글.
- * 디자인 read0more.dc.html 의 404 블록을 재현한다.
+ * 404 화면: 큰 404 + 안내 + 홈 버튼 + 최근 글.
+ * 지면형 디자인 규칙(직각·괘선)으로 그린다.
  */
 export function NotFoundView({
   recentPosts,

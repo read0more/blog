@@ -49,11 +49,7 @@ export function AppShell({
     search.clear();
   };
 
-  // 글 상세(/posts/...)는 기본 maxW 900(TOC 없음), 우측 TOC 가 실제 렌더될 때만
-  // maxW 1140 으로 넓힌다(CSS :has). dc.html 689-694 명세.
   const pathname = usePathname();
-  const isPost = pathname.startsWith(sitePath(language, "/posts/"));
-  const contentWrapClass = `${styles.contentWrap} ${isPost ? styles.post : ""}`;
 
   // 위로가기 버튼: 400px 이상 스크롤 시 노출.
   const [showBackTop, setShowBackTop] = useState(false);
@@ -75,61 +71,66 @@ export function AppShell({
 
   return (
     <div className={styles.shell}>
-      {/* ---- Header ---- */}
+      {/* ---- Header: 워드마크 / 카테고리 내비 / 검색 / 언어 전환, 아래 3px 괘선 ---- */}
       <header className={styles.header} data-testid="app-header">
-        <button
-          type="button"
-          className={`${styles.iconButton} ${styles.mobileOnly}`}
-          aria-label={translate("menu")}
-          onClick={() => setSidebarOpen((v) => !v)}
-          data-testid="header-hamburger"
-        >
-          <HamburgerIcon />
-        </button>
+        <div className={styles.headerInner}>
+          <button
+            type="button"
+            className={`${styles.iconButton} ${styles.mobileOnly}`}
+            aria-label={translate("menu")}
+            onClick={() => setSidebarOpen((v) => !v)}
+            data-testid="header-hamburger"
+          >
+            <HamburgerIcon />
+          </button>
 
-        <Link
-          href={sitePath(language)}
-          className={styles.wordmark}
-          data-testid="header-wordmark"
-        >
-          read0more
-        </Link>
+          <Link
+            href={sitePath(language)}
+            className={styles.wordmark}
+            data-testid="header-wordmark"
+          >
+            read0more
+          </Link>
 
-        {/* Desktop search (box + result panel) */}
-        <div className={`${styles.headerSearchSlot} ${styles.desktopOnly}`}>
-          <DesktopSearch search={search} tags={tags} language={language} />
+          {/* 데스크톱 카테고리 내비(예전 좌측 사이드바). 900px 이하에서는 햄버거 메뉴로 대신한다. */}
+          <div
+            className={`${styles.headerNav} ${styles.desktopOnly}`}
+            data-testid="sidebar-desktop"
+          >
+            <SidebarNav
+              categories={categories}
+              totalCount={totalCount}
+              language={language}
+            />
+          </div>
+
+          {/* Desktop search (box + result panel) */}
+          <div className={`${styles.headerSearchSlot} ${styles.desktopOnly}`}>
+            <DesktopSearch search={search} tags={tags} language={language} />
+          </div>
+
+          <LanguageSwitch
+            language={language}
+            pathname={pathname}
+            originalSlugs={originalSlugs}
+            translatedSlugs={translatedSlugs}
+          />
+
+          {/* Mobile search button */}
+          <button
+            type="button"
+            className={`${styles.iconButton} ${styles.mobileOnly}`}
+            aria-label={translate("search")}
+            onClick={openMobileSearch}
+            data-testid="header-mobile-search"
+          >
+            <SearchIcon size={20} />
+          </button>
         </div>
-
-        <LanguageSwitch
-          language={language}
-          pathname={pathname}
-          originalSlugs={originalSlugs}
-          translatedSlugs={translatedSlugs}
-        />
-
-        {/* Mobile search button */}
-        <button
-          type="button"
-          className={`${styles.iconButton} ${styles.mobileOnly}`}
-          style={{ marginLeft: "auto" }}
-          aria-label={translate("search")}
-          onClick={openMobileSearch}
-          data-testid="header-mobile-search"
-        >
-          <SearchIcon size={20} stroke="currentColor" />
-        </button>
       </header>
 
-      {/* ---- Content: sidebar + main ---- */}
-      <div className={contentWrapClass} data-testid="content-wrap">
-        <aside className={styles.sidebar} data-testid="sidebar-desktop">
-          <SidebarNav
-            categories={categories}
-            totalCount={totalCount}
-            language={language}
-          />
-        </aside>
-
+      {/* ---- Content: --page-max 가운데 정렬 단일 컬럼. 글 상세의 2열 배치는 글 컴포넌트가 맡는다. ---- */}
+      <div className={styles.contentWrap} data-testid="content-wrap">
         <main className={styles.main} data-testid="main">
           {children}
         </main>
@@ -148,7 +149,7 @@ export function AppShell({
         aria-hidden={!sidebarOpen}
       >
         <div className={styles.mobileSidebarHead}>
-          <span className={styles.sidebarHeading} style={{ padding: 0 }}>
+          <span className={styles.drawerHeading}>
             {translate("categories")}
           </span>
           <button
@@ -158,7 +159,7 @@ export function AppShell({
             onClick={closeSidebar}
             data-testid="sidebar-mobile-close"
           >
-            <CloseIcon />
+            <CloseIcon size={16} />
           </button>
         </div>
         <div className={styles.mobileSidebarBody}>
@@ -167,7 +168,6 @@ export function AppShell({
             categories={categories}
             totalCount={totalCount}
             onNavigate={closeSidebar}
-            showHeading={false}
           />
         </div>
       </aside>
@@ -182,7 +182,7 @@ export function AppShell({
         />
       )}
 
-      {/* ---- Back to top (플로팅 FAB, 400px 스크롤 후 노출) ---- */}
+      {/* ---- Back to top (400px 스크롤 후 노출) ---- */}
       <button
         type="button"
         className={`${styles.backToTop} ${showBackTop ? styles.backToTopVisible : ""}`}

@@ -1,35 +1,54 @@
-/* 라이브 코드 블록: 보기 모드 버튼 줄. 코드블록 헤더(.codeHeader)·복사 버튼과 톤을 맞춘다. */
+/* 라이브 코드 블록: 보기 모드 버튼 줄 + Sandpack. 코드블록과 같이 직각, 위 검정 괘선. */
 .liveCode {
-  margin: 24px 0;
+  margin: 30px 0;
+}
+
+/* Sandpack 테마 변수는 래퍼의 테마 클래스(.light)에 정의되므로 한 단계 더 구체적인 선택자로 덮는다 */
+.liveCode :global(.sp-wrapper) {
+  --sp-border-radius: 0;
+  --sp-font-body: var(--font-sans);
+  --sp-font-mono: var(--font-mono);
+  --sp-font-size: 14px;
+  --sp-font-lineHeight: 22px;
+  --sp-colors-accent: var(--accent-text);
+}
+.liveCode :global(.sp-layout) {
+  border: var(--rule-thin) solid var(--rule-soft);
+  border-top-color: var(--rule);
+}
+/* 미리보기 위 버튼(새로고침·Open Sandbox)은 둥근 알약 모양이 고정값이라 직접 직각으로 바꾸고,
+   본문 링크 밑줄(.prose a)이 Open Sandbox 링크에 번지지 않게 한다 */
+.liveCode :global(.sp-preview-actions > *) {
+  border-radius: 0;
+  text-decoration: none;
 }
 
 .toolbar {
   display: flex;
   justify-content: flex-end;
-  gap: 4px;
   margin-bottom: 8px;
 }
 
+/* 직각 세그먼트 버튼. 겹치는 테두리는 -1px 로 한 줄만 보이게 한다 */
 .viewButton {
-  font-family: var(--font-text);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 9px;
-  border-radius: 7px;
-  border: none;
+  min-height: 36px;
+  padding: 0 12px;
+  margin-left: -1px;
+  border: var(--rule-thin) solid var(--rule-soft);
+  background: transparent;
+  font-size: 13px;
+  color: var(--ink-2);
   cursor: pointer;
-  background: var(--fill-quaternary);
-  color: var(--label-secondary);
-  transition:
-    background 0.12s,
-    color 0.12s;
 }
 
 .viewButton:hover {
-  background: var(--fill-tertiary);
+  color: var(--accent-text);
 }
 
 .viewButton[aria-pressed="true"] {
-  background: var(--label);
-  color: var(--bg);
+  position: relative;
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
 }

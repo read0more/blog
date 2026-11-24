@@ -1,77 +1,82 @@
 /* ============================================================
-   NotFoundView — 404 화면(디자인 read0more.dc.html 의 404 블록)
+   NotFoundView: 404 화면
+   지면형 규칙: 큰 mono 숫자, 검정 괘선, 직각 버튼, 옅은 괘선으로 나눈 최근 글 목록.
    ============================================================ */
 
 .wrap {
-  padding: 80px 0;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 72px 0 40px;
   text-align: center;
 }
 
+/* 24px 이상 글자라 --accent 를 그대로 쓴다. */
 .code {
-  font-family: var(--font-display);
-  font-size: 90px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--tint);
+  font-family: var(--font-mono);
+  font-size: 96px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
   line-height: 1;
+  color: var(--accent);
 }
 
 .heading {
-  font-family: var(--font-display);
-  font-size: 26px;
+  margin: 24px 0 10px;
+  font-size: 30px;
   font-weight: 700;
-  margin: 18px 0 8px;
-  color: var(--label);
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  color: var(--ink);
 }
 
 .message {
+  margin: 0 0 32px;
   font-size: 16px;
-  color: var(--label-secondary);
-  margin: 0 0 28px;
-  line-height: 1.5;
+  line-height: 1.75;
+  color: var(--ink-2);
 }
 
 .homeButtonWrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 34px;
+  margin-bottom: 56px;
 }
 
-/* iOS filled large button (200x50) — 디자인 시스템 Button 재현 */
 .homeButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 200px;
-  height: 50px;
-  border-radius: var(--radius-md);
-  background: var(--tint);
-  color: var(--on-tint);
-  font-family: var(--font-text);
-  font-size: 17px;
+  min-width: 200px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: var(--rule-thin) solid var(--ink);
+  border-radius: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 16px;
   font-weight: 600;
-  border: none;
-  cursor: pointer;
   text-decoration: none;
-  transition: background 0.15s;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
 }
 .homeButton:hover {
-  background: var(--tint-pressed);
+  border-color: var(--accent-text);
+  background: var(--accent-text);
   text-decoration: none;
 }
 
 .recentLabel {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--label-tertiary);
-  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: var(--rule-thick) solid var(--rule);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  text-align: left;
 }
 
 .recentList {
-  max-width: 420px;
-  margin: 0 auto;
   text-align: left;
 }
 
@@ -80,20 +85,37 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 13px 14px;
-  border-radius: 10px;
-  cursor: pointer;
+  min-height: 52px;
+  padding: 12px 0;
+  color: var(--ink-3);
   text-decoration: none;
-  color: inherit;
-  transition: background 0.12s;
+}
+.recentRow + .recentRow {
+  border-top: var(--rule-thin) solid var(--rule-soft);
 }
 .recentRow:hover {
-  background: var(--fill-quaternary);
   text-decoration: none;
+}
+.recentRow:hover .recentTitle {
+  color: var(--accent-text);
 }
 
 .recentTitle {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--label);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .wrap {
+    padding-top: 56px;
+  }
+  .code {
+    font-size: 72px;
+  }
+  .heading {
+    font-size: 24px;
+  }
 }

@@ -1,4 +1,4 @@
-/** 레이아웃에서 쓰는 인라인 SVG 아이콘들(디자인 read0more.dc.html 기준). */
+/** 레이아웃에서 쓰는 인라인 SVG 아이콘들. 지면형 디자인에 맞춰 선 끝을 각지게 그린다. */
 
 export function HamburgerIcon() {
   return (
@@ -9,29 +9,25 @@ export function HamburgerIcon() {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
-      strokeLinecap="round"
+      strokeLinecap="square"
+      aria-hidden="true"
     >
-      <path d="M3 6h18M3 12h18M3 18h18" />
+      <path d="M4 6h16M4 12h16M4 18h16" />
     </svg>
   );
 }
 
-export function SearchIcon({
-  size = 16,
-  stroke = "var(--label-tertiary)",
-}: {
-  size?: number;
-  stroke?: string;
-}) {
+export function SearchIcon({ size = 16 }: { size?: number }) {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={stroke}
-      strokeWidth="2.2"
-      strokeLinecap="round"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="square"
+      aria-hidden="true"
     >
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.2-3.2" />
@@ -47,8 +43,9 @@ export function CloseIcon({ size = 12 }: { size?: number }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.6"
-      strokeLinecap="round"
+      strokeWidth="2"
+      strokeLinecap="square"
+      aria-hidden="true"
     >
       <path d="M5 5l14 14M19 5L5 19" />
     </svg>

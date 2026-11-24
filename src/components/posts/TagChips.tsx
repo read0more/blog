@@ -7,13 +7,13 @@ import styles from "./TagChips.module.css";
 interface TagChipsProps {
   language?: PostLanguage;
   tags: string[];
-  /** 현재 보고 있는 태그(태그 페이지의 상단 태그 줄에서 강조). */
+  /** 현재 보고 있는 태그(태그 페이지의 태그 줄에서 강조). */
   activeTag?: string;
   className?: string;
 }
 
 /**
- * #태그 칩 묶음 — 목록 상단 태그 줄 / 글 카드 / 글 상세 공용.
+ * #태그 밑줄 링크 묶음. 목록 아래 태그 줄 / 글 카드 / 글 상세 공용.
  * 태그 slug 는 카테고리와 같이 한글 그대로 허용하므로 encodeURIComponent 로 링크를 만든다.
  */
 export function TagChips({
