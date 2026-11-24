@@ -51,7 +51,7 @@ test("분류 번역은 같은 카탈로그를 사용하고 미등록 식별자�
 test.each([
   ["ko", "/posts/translated/", "/en/posts/translated/", "English"],
   ["en", "/en/posts/translated/", "/posts/translated/", "한국어"],
-  ["ko", "/posts/korean-only/", "/en/", "English home"],
+  ["ko", "/posts/korean-only/", "/en/", "English"],
   ["en", "/en/posts/korean-only/", "/posts/korean-only/", "한국어"],
   ["ko", "/", "/en/", "English"],
   ["en", "/en/category/React/", "/", "한국어"],

@@ -84,7 +84,7 @@ test("글의 언어 전환은 헤더 하나만 제공하고 같은 글을 가리
   ).toMatch(/^\/en\/posts\/example\/?$/);
 });
 
-test("번역 없는 글의 헤더는 영어 홈으로 이동함을 명시한다", () => {
+test("번역 없는 글의 헤더도 English로 표시하고 영어 홈으로 이동한다", () => {
   render(
     <LanguageSwitch
       language="ko"
@@ -94,7 +94,7 @@ test("번역 없는 글의 헤더는 영어 홈으로 이동함을 명시한다"
     />,
   );
   expect(
-    screen.getByRole("link", { name: "English home" }).getAttribute("href"),
+    screen.getByRole("link", { name: "English" }).getAttribute("href"),
   ).toMatch(/^\/en\/?$/);
 });
 

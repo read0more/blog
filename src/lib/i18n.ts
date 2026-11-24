@@ -45,9 +45,7 @@ export function languageSwitchTarget(
     href: hasCounterpart
       ? sitePath(targetLanguage, `/posts/${encodeURIComponent(slug)}/`)
       : sitePath(targetLanguage),
-    label: getUiTranslator(targetLanguage)(
-      isPost && !hasCounterpart ? "languageHome" : "languageName",
-    ),
+    label: getUiTranslator(targetLanguage)("languageName"),
   };
 }
 
