@@ -40,7 +40,10 @@
     "languageHome": "English home",
     "translationUnavailable": "English translation unavailable",
     "translationUnavailableMessage": "This post is currently available only in Korean.",
-    "readOriginal": "Read the Korean original"
+    "readOriginal": "Read the Korean original",
+    "latestPost": "Latest post",
+    "readNext": "Read next",
+    "tags": "Tags"
   },
   "taxonomy": {
     "categories": {

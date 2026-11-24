@@ -4,8 +4,8 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import type { PostLanguage } from "@/lib/types";
 import { getUiTranslator } from "@/lib/i18n";
-import { SearchIcon } from "../layout/icons";
 import { matchTags } from "@/lib/search";
+import { CloseIcon } from "../layout/icons";
 import { ResultList, EmptyState, TagChipList } from "./SearchResults";
 import type { useSearch } from "./useSearch";
 import styles from "./Search.module.css";
@@ -16,7 +16,7 @@ interface DesktopSearchProps {
   tags: string[];
 }
 
-/** 데스크톱 헤더 검색박스 + 결과 패널(560px). */
+/** 데스크톱 헤더 검색칸(밑줄형) + 결과 패널(560px, 헤더 괘선 아래 오른쪽 정렬). */
 export function DesktopSearch({
   search,
   tags,
@@ -49,7 +49,6 @@ export function DesktopSearch({
   return (
     <>
       <div className={styles.searchBox} data-testid="header-search">
-        <SearchIcon />
         <input
           type="text"
           className={styles.searchInput}
@@ -70,17 +69,7 @@ export function DesktopSearch({
             onClick={clear}
             data-testid="search-clear"
           >
-            <svg
-              width="9"
-              height="9"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="3"
-              strokeLinecap="round"
-            >
-              <path d="M5 5l14 14M19 5L5 19" />
-            </svg>
+            <CloseIcon size={12} />
           </button>
         )}
       </div>

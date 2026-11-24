@@ -5,7 +5,6 @@ import type { SearchResult } from "@/lib/search";
 import type { PostLanguage } from "@/lib/types";
 import { sitePath, getUiTranslator } from "@/lib/i18n";
 import { categoryLabel, tagLabel } from "@/lib/taxonomy.mjs";
-import { categoryColor } from "@/lib/categories";
 import styles from "./Search.module.css";
 
 interface ResultListProps {
@@ -31,14 +30,7 @@ export function ResultList({
           data-testid={`search-result-${r.slug}`}
         >
           <div className={styles.resultCategory}>
-            {r.categories.map((c, i) => (
-              <span key={c}>
-                {i > 0 && <span className={styles.resultCategoryDot}> · </span>}
-                <span style={{ color: categoryColor(c) }}>
-                  {categoryLabel(c, language)}
-                </span>
-              </span>
-            ))}
+            {r.categories.map((c) => categoryLabel(c, language)).join(" · ")}
           </div>
           <div className={styles.resultTitle}>{r.title}</div>
           <div className={styles.resultSnippet}>
@@ -64,7 +56,7 @@ interface EmptyStateProps {
   onSelect?: () => void;
 }
 
-/** 결과 없음 — "OOO"에 대한 결과가 없습니다 + (데스크톱) 태그 칩. */
+/** 결과 없음: "OOO"에 대한 결과가 없습니다 + (데스크톱) 태그 링크. */
 export function EmptyState({
   query,
   tags,

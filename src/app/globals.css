@@ -1,9 +1,8 @@
 /* ============================================================
-   globals.css — 블로그 전역 스타일
-   .design 의 iOS 디자인 시스템 토큰을 이식해 사용한다.
-   토큰 원본은 src/styles/tokens/ 에 그대로 두고 여기서 import 한다.
-   (다크모드는 MVP 범위 밖이나 토큰의 [data-theme="dark"] 정의는
-    backlog 대비해 그대로 보존한다.)
+   globals.css: 블로그 전역 스타일
+   지면형(editorial) 디자인: 검정 글자·흰 바탕·직각·괘선, IBM Plex 글꼴.
+   토큰 원본은 src/styles/tokens/ 에 두고 여기서 import 한다.
+   (다크모드는 범위 밖이나 토큰의 [data-theme="dark"] 정의는 보존한다.)
    ============================================================ */
 
 @import "../styles/tokens/colors.css";
@@ -27,9 +26,9 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  background: var(--bg);
-  color: var(--label);
-  font-family: var(--font-text);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
   font-size: var(--type-body-size);
   /* line-height는 px(고정)도 normal(폰트 의존)도 아닌 font-size 상대값(unitless)으로 둔다.
      이러면 어떤 폰트 크기든 비례해 줄높이가 잡힌다.
@@ -37,7 +36,8 @@ body {
      line-height 미지정 소형 UI 텍스트(사이드바/메타/wordmark 등)만 이 값을 상속한다.
      헤딩은 아래 h1~h6 리셋의 line-height:normal이 막아 1.5를 상속하지 않는다. */
   line-height: 1.5;
-  letter-spacing: var(--type-body-tracking);
+  /* IBM Plex Sans KR 은 기본 자간이 맞춰져 있어 iOS 식 음수 자간을 쓰지 않는다. */
+  letter-spacing: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -48,7 +48,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   /* body의 22px line-height가 헤딩에 상속되지 않도록 리셋.
      dc.html이 각 헤딩에 line-height를 명시한 경우 해당 CSS Module에서 덮어씀. */
   line-height: normal;
@@ -59,8 +59,9 @@ p {
   margin: 0;
 }
 
+/* 24px 미만 파란 글씨는 대비 4.5:1 이상인 --accent-text 를 쓴다. */
 a {
-  color: var(--tint);
+  color: var(--accent-text);
   text-decoration: none;
 }
 
@@ -73,14 +74,27 @@ img {
   height: auto;
 }
 
-button {
+button,
+input {
   font-family: inherit;
 }
 
-/* Smooth-scroll + anchor offset for TOC navigation.
-   sticky 헤더가 도입되면 --header-h 만 조정하면 된다. */
+/* 키보드 포커스 표시: 컴포넌트가 따로 정하지 않으면 파란 2px 테두리.
+   :where 로 명시도를 0 으로 둬 CSS 가 들어오는 순서와 상관없이 컴포넌트의 포커스 규칙이 이기게 한다. */
+:where(:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* sticky 헤더 높이(아래 3px 괘선 포함). 목차 이동 앵커 여백과 sticky 요소의 top 이 이 값을 쓴다.
+   AppShell.module.css 의 .headerInner 높이와 함께 바꾼다. */
 :root {
-  --header-h: var(--nav-bar-h);
+  --header-h: 65px;
+}
+@media (max-width: 900px) {
+  :root {
+    --header-h: 56px;
+  }
 }
 
 html {
@@ -98,7 +112,7 @@ html {
   }
 }
 
-/* 라이트박스(PhotoSwipe) 캡션 — figcaption(alt) 텍스트를 하단 중앙에 표시 */
+/* 라이트박스(PhotoSwipe) 캡션: figcaption(alt) 텍스트를 하단 중앙에 표시 */
 .pswp-blog-caption {
   position: absolute;
   left: 0;
@@ -107,8 +121,7 @@ html {
   margin: 0 auto;
   max-width: 80%;
   padding: 8px 14px;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.7);
   color: #fff;
   font-size: 14px;
   line-height: 1.6;

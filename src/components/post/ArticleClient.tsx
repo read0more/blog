@@ -3,7 +3,6 @@
 import { Fragment, memo, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Post } from "@/lib/types";
-import { categoryColor } from "@/lib/categories";
 import { formatDate } from "@/lib/format";
 import { sitePath, getUiTranslator } from "@/lib/i18n";
 import { categoryLabel } from "@/lib/taxonomy.mjs";
@@ -20,8 +19,6 @@ import styles from "./Article.module.css";
 interface ArticleClientProps {
   post: Post;
 }
-
-const COPY_ICON = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>`;
 
 /**
  * 본문 HTML. activeId(scroll-spy) 변경으로 ArticleClient 가 리렌더돼도
@@ -49,9 +46,9 @@ const Prose = memo(function Prose({
 
 /**
  * 글 상세 레이아웃 + 인터랙션.
- * - 좌측 카테고리 사이드바는 AppShell 이 제공. 여기서는 [본문][우측 TOC] 2컬럼.
+ * - 가운데 제목 구역 아래에 [왼쪽 TOC][본문] 2열. TOC aside 는 article 바깥 형제다.
  * - 코드블록 enhance(헤더 lang + 복사버튼, 복사→복사됨 1.5s).
- * - scroll-spy(현재 heading 추적) → 우측/모바일 TOC active.
+ * - scroll-spy(현재 heading 추적) → 왼쪽/모바일 TOC active.
  */
 export function ArticleClient({ post }: ArticleClientProps) {
   const translate = getUiTranslator(post.language);
@@ -106,10 +103,7 @@ export function ArticleClient({ post }: ArticleClientProps) {
       button.type = "button";
       button.className = styles.copyButton;
       button.setAttribute("data-testid", "code-copy");
-      const setLabel = (text: string) => {
-        button.innerHTML = `${COPY_ICON}<span>${text}</span>`;
-      };
-      setLabel(translate("copy"));
+      button.textContent = translate("copy");
 
       let timer: ReturnType<typeof setTimeout> | undefined;
       const onClick = async () => {
@@ -119,12 +113,10 @@ export function ArticleClient({ post }: ArticleClientProps) {
           // 비보안 주소(http LAN IP)라 clipboard 가 없거나 권한이 거부되면 "복사됨"을 띄우지 않는다
           return;
         }
-        button.classList.add(styles.copied);
-        setLabel(translate("copied"));
+        button.textContent = translate("copied");
         if (timer) clearTimeout(timer);
         timer = setTimeout(() => {
-          button.classList.remove(styles.copied);
-          setLabel(translate("copy"));
+          button.textContent = translate("copy");
         }, 1500);
       };
       button.addEventListener("click", onClick);
@@ -176,7 +168,8 @@ export function ArticleClient({ post }: ArticleClientProps) {
         .filter((el): el is HTMLElement => el !== null);
       if (!headings.length) return;
 
-      // 헤더(57px) + 여유를 둔 기준선. 이 선 위로 올라온 마지막 heading 이 활성.
+      // 헤더(--header-h, 데스크톱 65px) + 여유를 둔 기준선. 이 선 위로 올라온 마지막 heading 이 활성.
+      // 목차로 이동한 heading 은 scroll-margin-top(--header-h + 16px)에 멈추므로 이 선보다 위에 온다.
       const lineY = 96;
       const scrollY = window.scrollY;
       const maxScroll = Math.max(
@@ -251,43 +244,44 @@ export function ArticleClient({ post }: ArticleClientProps) {
         data-testid="article"
         lang={post.language}
       >
-        <div className={styles.category}>
-          {post.categories.map((c, i) => (
-            <Fragment key={c}>
-              {i > 0 && <span className={styles.metaDot}>·</span>}
-              <PostElementTransition
-                slug={post.slug}
-                language={post.language}
-                element="category"
-                category={c}
-              >
-                <Link
-                  href={sitePath(
-                    post.language,
-                    `/category/${encodeURIComponent(c)}`,
-                  )}
-                  className={styles.categoryLink}
-                  style={{ color: categoryColor(c) }}
+        <header className={styles.head}>
+          <div className={styles.category}>
+            {post.categories.map((c, i) => (
+              <Fragment key={c}>
+                {i > 0 && <span>·</span>}
+                <PostElementTransition
+                  slug={post.slug}
+                  language={post.language}
+                  element="category"
+                  category={c}
                 >
-                  {categoryLabel(c, post.language)}
-                </Link>
-              </PostElementTransition>
-            </Fragment>
-          ))}
-        </div>
+                  <Link
+                    href={sitePath(
+                      post.language,
+                      `/category/${encodeURIComponent(c)}`,
+                    )}
+                    className={styles.categoryLink}
+                  >
+                    {categoryLabel(c, post.language)}
+                  </Link>
+                </PostElementTransition>
+              </Fragment>
+            ))}
+          </div>
 
-        <PostElementTransition
-          slug={post.slug}
-          language={post.language}
-          element="title"
-        >
-          <h1 className={styles.title} data-testid="article-title">
-            {post.title}
-          </h1>
-        </PostElementTransition>
+          <PostElementTransition
+            slug={post.slug}
+            language={post.language}
+            element="title"
+          >
+            <h1 className={styles.title} data-testid="article-title">
+              {post.title}
+            </h1>
+          </PostElementTransition>
 
-        <div className={styles.metaBlock}>
-          <div className={styles.metaRow}>
+          <p className={styles.lead}>{post.description}</p>
+
+          <div className={styles.dateRow}>
             <PostElementTransition
               slug={post.slug}
               language={post.language}
@@ -298,21 +292,27 @@ export function ArticleClient({ post }: ArticleClientProps) {
             {/* <span>·</span>
             <span>{post.readingMinutes}분 읽기</span> */}
           </div>
-          <TagChips tags={post.tags} language={post.language} />
-        </div>
-
-        {showToc && (
-          <MobileToc
-            items={toc}
-            activeId={activeId}
-            onSelect={selectFromToc}
+          <TagChips
+            tags={post.tags}
             language={post.language}
+            className={styles.tags}
           />
-        )}
+        </header>
 
-        <Prose html={post.contentHtml} innerRef={bodyRef} />
+        <div className={styles.content}>
+          {showToc && (
+            <MobileToc
+              items={toc}
+              activeId={activeId}
+              onSelect={selectFromToc}
+              language={post.language}
+            />
+          )}
 
-        <Comments language={post.language} />
+          <Prose html={post.contentHtml} innerRef={bodyRef} />
+
+          <Comments language={post.language} />
+        </div>
       </article>
 
       {showToc && (

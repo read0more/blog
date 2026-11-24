@@ -1,7 +1,6 @@
 import path from "node:path";
 import { renderMarkdown } from "./markdown";
 import { readingMinutes } from "./reading-time";
-import { categoryColor } from "./categories";
 import { readPostSources } from "./post-files.mjs";
 import { tagLabel } from "./taxonomy.mjs";
 import type {
@@ -119,8 +118,8 @@ export async function getAllPostRoutes(): Promise<{ slug: string[] }[]> {
 }
 
 /**
- * 카테고리 자동 수집 — 최상위 디렉토리 이름을 distinct 수집하고
- * 글 개수와 결정적 색상을 붙인다. CATEGORY_ORDER 우선, 나머지는 가나다순.
+ * 카테고리 자동 수집: 최상위 디렉토리 이름을 distinct 수집하고
+ * 글 개수를 붙인다. CATEGORY_ORDER 우선, 나머지는 가나다순.
  */
 export async function getCategories(
   language: PostLanguage = "ko",
@@ -145,7 +144,6 @@ export async function getCategories(
   return names.map((name) => ({
     name,
     count: counts.get(name) ?? 0,
-    color: categoryColor(name),
   }));
 }
 

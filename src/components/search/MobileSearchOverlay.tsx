@@ -17,7 +17,7 @@ interface MobileSearchOverlayProps {
   onClose: () => void;
 }
 
-/** 모바일 전체화면 검색 오버레이 — 유휴 안내 / 결과 / 결과 없음. */
+/** 모바일 전체화면 검색 오버레이: 유휴 안내 / 결과 / 결과 없음. */
 export function MobileSearchOverlay({
   language = "ko",
   search,
@@ -47,7 +47,7 @@ export function MobileSearchOverlay({
     <div className={styles.mobileOverlay} data-testid="mobile-search-overlay">
       <div className={styles.mobileBar}>
         <div className={styles.mobileSearchField}>
-          <SearchIcon size={17} />
+          <SearchIcon size={18} />
           <input
             ref={inputRef}
             type="text"

@@ -12,30 +12,28 @@ interface TocProps {
   onSelect: (id: string) => void;
 }
 
-/** 우측 sticky 목차(데스크톱). scroll-spy 로 현재 섹션을 강조. */
+/** 왼쪽 sticky 목차(데스크톱). scroll-spy 로 현재 섹션을 강조. */
 export function Toc({ items, activeId, onSelect, language = "ko" }: TocProps) {
   return (
     <aside className={styles.tocCol} data-testid="toc">
       <div className={styles.tocLabel}>{getUiTranslator(language)("toc")}</div>
-      <div className={styles.tocList}>
-        {items.map((t) => (
-          <a
-            key={t.id}
-            href={`#${t.id}`}
-            onClick={(e) => {
-              handleTocClick(e, t.id);
-              onSelect(t.id);
-            }}
-            className={`${styles.tocItem} ${depthClass(t.depth)} ${
-              activeId === t.id ? styles.active : ""
-            }`}
-            data-testid={`toc-item-${t.id}`}
-            aria-current={activeId === t.id ? "true" : undefined}
-          >
-            {t.text}
-          </a>
-        ))}
-      </div>
+      {items.map((t) => (
+        <a
+          key={t.id}
+          href={`#${t.id}`}
+          onClick={(e) => {
+            handleTocClick(e, t.id);
+            onSelect(t.id);
+          }}
+          className={`${styles.tocItem} ${depthClass(t.depth)} ${
+            activeId === t.id ? styles.active : ""
+          }`}
+          data-testid={`toc-item-${t.id}`}
+          aria-current={activeId === t.id ? "true" : undefined}
+        >
+          {t.text}
+        </a>
+      ))}
     </aside>
   );
 }

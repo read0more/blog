@@ -54,6 +54,31 @@
   --slider-knob: 28px;
 
   /* ---- Border widths ---- */
-  --hairline: 0.5px; /* iOS separators render as a physical hairline */
+  --hairline: 1px; /* 지면형: 괘선은 1px 로 또렷하게 */
   --border: 1px;
+
+  /* ---- 지면형(editorial) 괘선과 페이지 폭 ---- */
+  --rule-thick: 3px;
+  --rule-thin: 1px;
+  --page-max: 1120px;
+  --page-pad: 40px;
+}
+
+/* 지면형은 모서리가 직각이다. 남은 radius 참조도 0 으로 맞춘다(원형 표시는 --radius-full 유지). */
+:root {
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-card: 0;
+  --radius-sheet: 0;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --page-pad: 20px;
+  }
 }

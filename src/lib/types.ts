@@ -49,12 +49,10 @@ export interface Post extends PostMeta {
   plainText: string;
 }
 
-/** 카테고리 — 자동 수집된 이름 + 글 개수 + 결정적 색상 */
+/** 카테고리: 자동 수집된 이름 + 글 개수 */
 export interface Category {
   name: string;
   count: number;
-  /** catColor() 로 산출된 iOS 시스템 컬러 */
-  color: string;
 }
 
 /** 빌드타임에 생성되어 클라이언트 검색이 로드하는 인덱스 항목 */

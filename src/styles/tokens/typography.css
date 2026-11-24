@@ -1,27 +1,27 @@
 /* ============================================================
-   iOS Design System — Typography tokens
-   Apple's type system is SF Pro (Text + Display optical sizes) and
-   SF Mono. SF Pro is proprietary and not redistributable, so we use
-   the Apple system font stack: on macOS / iOS this renders GENUINE
-   SF Pro; elsewhere it falls back gracefully. See readme "Caveats".
+   Typography tokens
+   글꼴은 IBM Plex Sans KR(제목·본문)과 IBM Plex Mono(워드마크·날짜·코드)다.
+   파일은 src/app/fonts.ts 의 next/font 가 자체 호스팅한다.
 
-   The 11 iOS text styles (Caption2 → LargeTitle) are encoded as
+   아래 크기 토큰은 iOS 시절 값을 남긴 것이다. The 11 iOS text styles (Caption2 → LargeTitle) are encoded as
    size / line-height / weight / tracking triples taken from the HIG
    Default (Large) Dynamic Type setting.
    ============================================================ */
 
 :root {
   /* ---- Font families ---- */
-  --font-text:
-    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
-    "Segoe UI", Roboto, sans-serif;
-  --font-display:
-    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
-    "Segoe UI", Roboto, sans-serif;
-  --font-rounded:
-    ui-rounded, "SF Pro Rounded", -apple-system, "Helvetica Neue", sans-serif;
+  /* --font-plex-sans / --font-plex-mono 는 루트 레이아웃의 next/font 가 <html> 에 선언한다.
+     테스트처럼 선언이 없는 환경에서는 이름 지정 글꼴과 시스템 글꼴로 내려간다. */
+  --font-sans:
+    var(--font-plex-sans, "IBM Plex Sans KR"), -apple-system,
+    BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI",
+    Roboto, sans-serif;
   --font-mono:
-    ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    var(--font-plex-mono, "IBM Plex Mono"), ui-monospace, "SF Mono",
+    "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-text: var(--font-sans);
+  --font-display: var(--font-sans);
+  --font-rounded: var(--font-sans);
 
   /* ---- Weights ---- */
   --weight-regular: 400;
