@@ -42,7 +42,9 @@
     "readOriginal": "Read the Korean original",
     "latestPost": "Latest post",
     "readNext": "Read next",
-    "tags": "Tags"
+    "tags": "Tags",
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode"
   },
   "taxonomy": {
     "categories": {

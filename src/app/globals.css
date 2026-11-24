@@ -2,7 +2,8 @@
    globals.css: 블로그 전역 스타일
    지면형(editorial) 디자인: 검정 글자·흰 바탕·직각·괘선, IBM Plex 글꼴.
    토큰 원본은 src/styles/tokens/ 에 두고 여기서 import 한다.
-   (다크모드는 범위 밖이나 토큰의 [data-theme="dark"] 정의는 보존한다.)
+   다크 모드: 색 토큰이 light-dark() 로 두 테마 값을 함께 가진다(colors.css).
+   기본은 시스템 설정이고 <html data-theme="light|dark"> 가 있으면 그 테마로 고정한다.
    ============================================================ */
 
 @import "../styles/tokens/colors.css";
@@ -112,7 +113,8 @@ html {
   }
 }
 
-/* 라이트박스(PhotoSwipe) 캡션: figcaption(alt) 텍스트를 하단 중앙에 표시 */
+/* 라이트박스(PhotoSwipe) 캡션: figcaption(alt) 텍스트를 하단 중앙에 표시.
+   PhotoSwipe 배경은 테마와 상관없이 검정이라 캡션 색도 토큰 대신 고정값으로 둔다. */
 .pswp-blog-caption {
   position: absolute;
   left: 0;

@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { sitePath } from "./i18n";
 import { tagLabel } from "./taxonomy.mjs";
+import { THEME_COLORS } from "./theme-script";
 import type { Post, PostLanguage } from "./types";
 
 // ponytail: 배포 주소 상수. 커스텀 도메인으로 옮기면 여기만 바꾼다.
@@ -36,6 +37,18 @@ export function siteMetadata(language: PostLanguage): Metadata {
     twitter: { card: "summary_large_image" },
   };
 }
+
+/**
+ * 루트 레이아웃 공통 viewport. 브라우저 상단 색을 시스템 설정별로 둔다.
+ * ponytail: 전환 버튼으로 시스템과 반대 테마를 고르면 상단 색은 시스템 쪽으로 남는다.
+ * JS 로 메타를 고쳐도 Next 가 클라이언트 이동 때 메타를 다시 그려 되돌리므로 맞추지 않는다.
+ */
+export const siteViewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: THEME_COLORS.light },
+    { media: "(prefers-color-scheme: dark)", color: THEME_COLORS.dark },
+  ],
+};
 
 /** 글 상세 메타데이터. 자식의 openGraph는 레이아웃 것을 통째로 덮으므로 전부 채운다. */
 export function postMetadata(post: Post): Metadata {

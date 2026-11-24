@@ -42,7 +42,9 @@
     "readOriginal": "한국어 원문 읽기",
     "latestPost": "최신 글",
     "readNext": "이어서 읽기",
-    "tags": "태그"
+    "tags": "태그",
+    "switchToDark": "다크 모드로 전환",
+    "switchToLight": "라이트 모드로 전환"
   },
   "taxonomy": {
     "categories": {

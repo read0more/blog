@@ -3,7 +3,7 @@
   margin: 30px 0;
 }
 
-/* Sandpack 테마 변수는 래퍼의 테마 클래스(.light)에 정의되므로 한 단계 더 구체적인 선택자로 덮는다 */
+/* Sandpack 테마 변수는 래퍼의 테마 클래스(.light·.dark)에 정의되므로 한 단계 더 구체적인 선택자로 덮는다 */
 .liveCode :global(.sp-wrapper) {
   --sp-border-radius: 0;
   --sp-font-body: var(--font-sans);
@@ -11,6 +11,12 @@
   --sp-font-size: 14px;
   --sp-font-lineHeight: 22px;
   --sp-colors-accent: var(--accent-text);
+}
+/* Sandpack 기본 다크 테마의 주석(#757575)과 숫자·불리언(static, #C64640)은 편집기 바탕(#151515) 대비 4.5:1 에 못 미친다.
+   편집기 테마는 <html data-theme> 을 따르므로(LiveCode.tsx) 같은 조건에서 두 색만 GitHub 다크 팔레트 값으로 밝힌다. */
+:root[data-theme="dark"] .liveCode :global(.sp-wrapper) {
+  --sp-syntax-color-comment: #8b949e;
+  --sp-syntax-color-static: #ff7b72;
 }
 .liveCode :global(.sp-layout) {
   border: var(--rule-thin) solid var(--rule-soft);

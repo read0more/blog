@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import type { PostLanguage } from "@/lib/types";
 import { getUiTranslator } from "@/lib/i18n";
+import { readTheme, useTheme } from "@/lib/theme";
 import styles from "./Comments.module.css";
+
+const GISCUS_ORIGIN = "https://giscus.app";
 
 /** giscus 설정(빌드타임 env). 미설정 시 안내만 표시한다. */
 const GISCUS_REPO = process.env.NEXT_PUBLIC_GISCUS_REPO; // "owner/repo"
@@ -29,13 +32,14 @@ function GitHubMark() {
 }
 
 /**
- * 댓글 — giscus(GitHub Discussions). PRD: pathname 매핑, 라이트 테마, 클라이언트 임베드.
+ * 댓글: giscus(GitHub Discussions). PRD: pathname 매핑, 화면 테마(라이트/다크) 따름, 클라이언트 임베드.
  * 대상 repo 의 Discussions 활성화 + giscus 앱 설치 + repo/category ID 가
  * env(NEXT_PUBLIC_GISCUS_*)로 주입돼야 동작한다. 미설정 시 안내만 표시.
  */
 export function Comments({ language = "ko" }: { language?: PostLanguage }) {
   const translate = getUiTranslator(language);
   const mountRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
 
   useEffect(() => {
     if (!isConfigured) return;
@@ -56,11 +60,34 @@ export function Comments({ language = "ko" }: { language?: PostLanguage }) {
     script.setAttribute("data-reactions-enabled", "1");
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");
-    script.setAttribute("data-theme", "light");
+    // hydration 직후 이펙트에서는 useTheme 이 아직 "light" 일 수 있어, 첫 테마는 <html> 에서 직접 읽는다.
+    script.setAttribute("data-theme", readTheme());
     script.setAttribute("data-loading", "lazy");
     script.setAttribute("data-lang", language);
     el.appendChild(script);
   }, [language]);
+
+  // 테마가 바뀌면 스크립트를 다시 넣지 않고 giscus 에 설정 변경만 알린다.
+  useEffect(() => {
+    if (!isConfigured) return;
+    const send = () =>
+      mountRef.current
+        ?.querySelector<HTMLIFrameElement>("iframe.giscus-frame")
+        ?.contentWindow?.postMessage(
+          { giscus: { setConfig: { theme } } },
+          GISCUS_ORIGIN,
+        );
+    send();
+    // lazy iframe 은 화면 가까이 오기 전까지 비어 있어 위 메시지가 버려진다.
+    // giscus 가 준비되어 처음 보내는 메시지(높이 알림)를 받으면 한 번 더 보낸다.
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== GISCUS_ORIGIN) return;
+      window.removeEventListener("message", onMessage);
+      send();
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [theme]);
 
   return (
     <section className={styles.section} data-testid="comments">
