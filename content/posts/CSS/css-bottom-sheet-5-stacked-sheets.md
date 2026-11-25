@@ -13,7 +13,7 @@ tags: ["CSS"]
 > 4. [손가락을 따라오는 backdrop과 모서리](../css-bottom-sheet-4-scroll-animation/)
 > 5. 여러 시트를 겹쳐 열고 뒤 시트를 밀어내기 (이 글)
 > 6. 부록: [키보드가 시트를 가릴 때](../css-bottom-sheet-6-keyboard/)
-> 7. 부록: React Native WebView에서 키보드 애니메이션에 시트를 맞추기 (준비 중)
+> 7. 부록: [React Native WebView에서 키보드 애니메이션에 시트를 맞추기](../css-bottom-sheet-7-keyboard-sync/)
 
 장바구니 위에 쿠폰 선택 시트를 열고, 그 위에서 쿠폰의 상세 설명을 확인하는 흐름을 만들려고 합니다. 앞 시트를 닫아도 뒤 시트는 열려 있던 상태를 유지해야 합니다.
 

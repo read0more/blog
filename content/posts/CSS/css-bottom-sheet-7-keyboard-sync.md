@@ -1,9 +1,8 @@
 ---
 title: "(부록) CSS로 만드는 네이티브 같은 바텀시트 7편: React Native WebView에서 키보드 애니메이션에 시트를 맞추기"
-date: "2026-11-06T09:00:00.000Z"
+date: "2026-11-25T07:22:22.000Z"
 description: "React Native에서 키보드가 움직이는 동안의 높이를 WebView에 전달합니다. 안전 영역을 중복으로 빼지 않고, Android의 자동 이동을 조정해 시트의 저장 버튼이 키보드를 따라가게 만듭니다."
 tags: ["CSS"]
-draft: true
 ---
 
 > **시리즈 목차**

@@ -13,7 +13,7 @@ tags: ["CSS"]
 > 4. [손가락을 따라오는 backdrop과 모서리](../css-bottom-sheet-4-scroll-animation/)
 > 5. [여러 시트를 겹쳐 열고 뒤 시트를 밀어내기](../css-bottom-sheet-5-stacked-sheets/)
 > 6. 부록: [키보드가 시트를 가릴 때](../css-bottom-sheet-6-keyboard/)
-> 7. 부록: React Native WebView에서 키보드 애니메이션에 시트를 맞추기 (준비 중)
+> 7. 부록: [React Native WebView에서 키보드 애니메이션에 시트를 맞추기](../css-bottom-sheet-7-keyboard-sync/)
 
 지도 앱에서 주변 맛집을 찾을 때는 목록을 조금만 열어 두고 지도를 보다가, 더 궁금해지면 목록을 끝까지 올려 봅니다. 이때는 닫힘과 완전 열림 사이에도 멈출 자리가 필요합니다.
 

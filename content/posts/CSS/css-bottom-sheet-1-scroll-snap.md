@@ -15,7 +15,7 @@ tags: ["CSS"]
 > 4. [손가락을 따라오는 backdrop과 모서리](../css-bottom-sheet-4-scroll-animation/)
 > 5. [여러 시트를 겹쳐 열고 뒤 시트를 밀어내기](../css-bottom-sheet-5-stacked-sheets/)
 > 6. 부록: [키보드가 시트를 가릴 때](../css-bottom-sheet-6-keyboard/)
-> 7. 부록: React Native WebView에서 키보드 애니메이션에 시트를 맞추기 (준비 중)
+> 7. 부록: [React Native WebView에서 키보드 애니메이션에 시트를 맞추기](../css-bottom-sheet-7-keyboard-sync/)
 
 ## 시트를 끌어내리는데 터치 이벤트가 없다
 

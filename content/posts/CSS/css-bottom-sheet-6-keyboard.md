@@ -13,7 +13,7 @@ tags: ["CSS"]
 > 4. [손가락을 따라오는 backdrop과 모서리](../css-bottom-sheet-4-scroll-animation/)
 > 5. [여러 시트를 겹쳐 열고 뒤 시트를 밀어내기](../css-bottom-sheet-5-stacked-sheets/)
 > 6. 부록: 키보드가 시트를 가릴 때 (이 글)
-> 7. 부록: React Native WebView에서 키보드 애니메이션에 시트를 맞추기 (준비 중)
+> 7. 부록: [React Native WebView에서 키보드 애니메이션에 시트를 맞추기](../css-bottom-sheet-7-keyboard-sync/)
 
 이번 글과 다음 글은 시리즈의 부록입니다. 시트를 여닫고, 중간에 멈추고, 여러 장을 겹치는 동작은 5편까지 CSS와 브라우저 스크롤로 만들었습니다. 부록에서는 같은 시트에 입력 폼을 넣었을 때 키보드가 입력칸을 가리는 문제를 다룹니다.
 
@@ -400,4 +400,4 @@ if (target.top < box.top || target.bottom > box.bottom) {
 
 키보드가 다 올라온 뒤에는 입력칸과 저장 버튼이 보입니다. 하지만 녹화한 두 기기 모두 시트가 먼저 줄어들고 키보드가 뒤따라오는 차이가 남았습니다.
 
-`transition`으로 시트에 임의의 시간을 더해도 키보드와 같은 속도라고 보장할 수 없습니다. 다음 글은 두 번째 부록인 7편 「React Native WebView에서 키보드 애니메이션에 시트를 맞추기」(준비 중)입니다. 앱의 키보드 진행 정보를 받아 시트가 움직이는 시점을 맞추려고 합니다.
+`transition`으로 시트에 임의의 시간을 더해도 키보드와 같은 속도라고 보장할 수 없습니다. 다음 글은 두 번째 부록인 7편 [「React Native WebView에서 키보드 애니메이션에 시트를 맞추기」](../css-bottom-sheet-7-keyboard-sync/)입니다. 앱의 키보드 진행 정보를 받아 시트가 움직이는 시점을 맞추려고 합니다.
