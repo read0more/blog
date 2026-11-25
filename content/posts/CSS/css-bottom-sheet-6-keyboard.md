@@ -13,7 +13,7 @@ tags: ["CSS"]
 > 4. [손가락을 따라오는 backdrop과 모서리](../css-bottom-sheet-4-scroll-animation/)
 > 5. [여러 시트를 겹쳐 열고 뒤 시트를 밀어내기](../css-bottom-sheet-5-stacked-sheets/)
 > 6. 부록: 키보드가 시트를 가릴 때 (이 글)
-> 7. 부록: 키보드 애니메이션에 시트를 맞추기 (준비 중)
+> 7. 부록: React Native WebView에서 키보드 애니메이션에 시트를 맞추기 (준비 중)
 
 이번 글과 다음 글은 시리즈의 부록입니다. 시트를 여닫고, 중간에 멈추고, 여러 장을 겹치는 동작은 5편까지 CSS와 브라우저 스크롤로 만들었습니다. 부록에서는 같은 시트에 입력 폼을 넣었을 때 키보드가 입력칸을 가리는 문제를 다룹니다.
 
@@ -379,7 +379,7 @@ if (target.top < box.top || target.bottom > box.bottom) {
 </figure>
 <figure style="margin:0">
 <video controls playsinline preload="metadata" aria-label="iOS 네 가지를 고친 뒤 영상" src="/css-bottom-sheet-6-keyboard/ios-sheet-resize.mp4" style="display:block;width:100%;max-height:480px;border-radius:12px;background:#111"></video>
-<figcaption style="margin-top:8px;font-size:14px"><strong>고친 뒤</strong><br>제목과 저장 버튼을 남기고 가운데 폼만 줄이며, 키보드를 닫으면 시트가 원래 높이로 돌아옵니다.</figcaption>
+<figcaption style="margin-top:8px;font-size:14px"><strong>고친 뒤</strong><br>11월 25일에 아래 배경 연장 옵션(<code>overscrollPadding</code>)을 켜고 다시 촬영했습니다. 제목과 저장 버튼을 남기고 가운데 폼만 줄이며, 키보드를 닫으면 시트가 원래 높이로 돌아옵니다.</figcaption>
 </figure>
 </div>
 
@@ -400,4 +400,4 @@ if (target.top < box.top || target.bottom > box.bottom) {
 
 키보드가 다 올라온 뒤에는 입력칸과 저장 버튼이 보입니다. 하지만 녹화한 두 기기 모두 시트가 먼저 줄어들고 키보드가 뒤따라오는 차이가 남았습니다.
 
-`transition`으로 시트에 임의의 시간을 더해도 키보드와 같은 속도라고 보장할 수 없습니다. 다음 글은 두 번째 부록인 7편 「키보드 애니메이션에 시트를 맞추기」(준비 중)입니다. 앱의 키보드 진행 정보를 받아 시트가 움직이는 시점을 맞추려고 합니다.
+`transition`으로 시트에 임의의 시간을 더해도 키보드와 같은 속도라고 보장할 수 없습니다. 다음 글은 두 번째 부록인 7편 「React Native WebView에서 키보드 애니메이션에 시트를 맞추기」(준비 중)입니다. 앱의 키보드 진행 정보를 받아 시트가 움직이는 시점을 맞추려고 합니다.
